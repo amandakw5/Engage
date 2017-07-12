@@ -16,7 +16,7 @@
         android:layout_margin="10dp"/>
 
     <TextView
-        android:id="@+id/tvEventName"
+        android:id="@+id/tvHost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/ivPicture"
@@ -24,12 +24,13 @@
         android:layout_toEndOf="@+id/ivPicture"
         android:text="@string/host"
         android:textAppearance="@android:style/TextAppearance.Large" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/location"
         android:id="@+id/tvLocation"
-        android:layout_below="@+id/tvEventName"
+        android:layout_below="@+id/tvHost"
         android:layout_toEndOf="@+id/ivPicture"
         android:layout_marginBottom="5dp"/>
     <TextView
