@@ -65,7 +65,8 @@
         android:layout_alignTop="@+id/tvPeopleParticipating"
         android:layout_toEndOf="@+id/tvPeopleParticipating"
         android:text="@string/people_attending"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="5dp"/>
 
     <Button
         android:id="@+id/btnSave"
