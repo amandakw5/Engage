@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.engage.models.Event;
 
 import java.util.List;
@@ -18,13 +19,15 @@ import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
     private List<Event> mEvents;
+    Context context;
     public EventAdapter(List<Event> events){
         mEvents = events;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
+
+        context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View eventView= inflater.inflate(R.layout.event_item,parent,false);
@@ -38,6 +41,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         holder.tvEventName.setText(event.tvEventName);
         holder.tvEventInfo.setText(event.tvEventInfo);
         holder.tvDescription.setText(event.tvDescription);
+        Glide.with(context).load(event.ivEventImage).into(holder.ivProfileImage);
     }
 
     @Override
@@ -58,5 +62,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
         }
 
+    }
+    public void clear(){
+        mEvents.clear();
+        notifyDataSetChanged();
     }
 }

@@ -1,5 +1,7 @@
 package com.codepath.engage.models;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,7 +41,10 @@ public class Event {
         //Getting teh id of the event for future use
         event.eventId = jsonObject.getString("id");
         //Getting a thumbnail of the image for futer use.
-        event.ivEventImage = jsonObject.getString("url");
+        JSONObject logo = jsonObject.getJSONObject("logo");
+        JSONObject original= logo.getJSONObject("original");
+        event.ivEventImage = original.getString("url");
+        Log.i("Ingo",event.ivEventImage);
         return event;
     }
     public String getTvEventName() {

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class ViewEvents extends AppCompatActivity {
+public class ViewEvents extends AppCompatActivity  {
     //Variable that will refrence the Search view/ Search bar icon
     private SearchView searchView;
     //Will hold teh text that the user inputs to the serach view
@@ -70,6 +70,7 @@ public class ViewEvents extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                events.clear();
                 populateEvents(query);
                 return true;
             }
