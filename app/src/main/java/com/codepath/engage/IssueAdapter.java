@@ -38,7 +38,7 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         String issue = issues.get(position);
-        holder.specificIssue.setText(issue);
+        holder.issueTitle.setText(issue);
     }
 
     @Override
@@ -47,25 +47,43 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.specificIssue) TextView specificIssue;
+        @BindView(R.id.issueTitle) TextView issueTitle;
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view){
+                        //get the position of row element
+                    int position = getAdapterPosition();
+                    // fire the listnener callback
+                    if (position != RecyclerView.NO_POSITION) {
+                        String currentIssue = issues.get(position);
+                        // create intent for the new activity
+                        Intent intent = new Intent(context, IssueDetailsActivity.class);
+                        intent.putExtra("current", currentIssue);
+                        // serialize the movie using parceler, use its short name as a key
+                        // show the activity
+                        context.startActivity(intent);
+                    }
+                }
+            });
         }
+
         @Override
         public void onClick(View v) {
-            // gets item position
             int position = getAdapterPosition();
-            // make sure the position is valid, i.e. actually exists in the view
+            // fire the listnener callback
             if (position != RecyclerView.NO_POSITION) {
-                // get the movie at the position, this won't work if the class is static
                 String currentIssue = issues.get(position);
                 // create intent for the new activity
                 Intent intent = new Intent(context, IssueDetailsActivity.class);
+                intent.putExtra("current", currentIssue);
                 // serialize the movie using parceler, use its short name as a key
                 // show the activity
                 context.startActivity(intent);
             }
+
         }
     }
 }
