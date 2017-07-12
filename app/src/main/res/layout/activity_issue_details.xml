@@ -19,39 +19,12 @@
         android:text="issueTitle"
         android:textSize="30sp" />
 
-    <TextView
-        android:id="@+id/detailedIssues"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Specific Issues"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvIssueSubsections"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/issueTitle"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_marginTop="18dp" />
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:id="@+id/issueList"
-        android:layout_below="@+id/detailedIssues"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:id="@+id/organizations"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Organizations"
-        android:layout_marginTop="28dp"
-        android:layout_below="@+id/issueList"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <ListView
-        android:id="@+id/organizationList"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/organizations" />
 </RelativeLayout>

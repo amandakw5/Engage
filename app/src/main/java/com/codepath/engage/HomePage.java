@@ -20,13 +20,8 @@ public class HomePage extends AppCompatActivity {
         String[] strs = {"Women", "Food", "Climate Change", "LGBTQ Rights", "Education",
         "Refugees", "Poverty"};
         issues = new ArrayList<>();
-
         adapter = new IssueAdapter(issues);
         issues.addAll(Arrays.asList(strs));
-//        issues.add("Women");
-//        adapter.notifyItemInserted(issues.size() -1);
-//        issues.add("Food");
-//        adapter.notifyItemInserted(issues.size() -1);
         rvIssues = (RecyclerView) findViewById(R.id.rvIssues);
         rvIssues.setLayoutManager(new LinearLayoutManager(this));
         rvIssues.setAdapter(adapter);

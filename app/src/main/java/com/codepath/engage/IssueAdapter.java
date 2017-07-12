@@ -1,6 +1,7 @@
 package com.codepath.engage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Config;
 import android.view.LayoutInflater;
@@ -45,11 +46,26 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
         return issues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.specificIssue) TextView specificIssue;
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+        @Override
+        public void onClick(View v) {
+            // gets item position
+            int position = getAdapterPosition();
+            // make sure the position is valid, i.e. actually exists in the view
+            if (position != RecyclerView.NO_POSITION) {
+                // get the movie at the position, this won't work if the class is static
+                String currentIssue = issues.get(position);
+                // create intent for the new activity
+                Intent intent = new Intent(context, IssueDetailsActivity.class);
+                // serialize the movie using parceler, use its short name as a key
+                // show the activity
+                context.startActivity(intent);
+            }
         }
     }
 }
