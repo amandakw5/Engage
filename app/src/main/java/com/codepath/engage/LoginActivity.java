@@ -35,8 +35,6 @@ public class LoginActivity extends AppCompatActivity {
         AppEventsLogger.activateApp(this);
         mCallbackManager = CallbackManager.Factory.create();
 
-//        getSupportActionBar().hide();
-
         setContentView(R.layout.activity_login);
 
         try {
