@@ -8,12 +8,12 @@
 
     <ImageView
         android:id="@+id/ivPicture"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        app:srcCompat="@android:color/black"
-        android:layout_margin="10dp"/>
+        android:layout_below="@+id/tvEventName"
+        android:layout_margin="10dp"
+        app:srcCompat="@android:color/black" />
 
     <TextView
         android:id="@+id/tvHost"
@@ -76,5 +76,26 @@
         android:text="@string/save"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_margin="5dp"/>
+
+    <TextView
+        android:id="@+id/tvEventName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/ivPicture"
+        android:layout_marginTop="10dp"
+        android:fontFamily="serif"
+        android:text="@string/event_name"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/map"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
         android:layout_margin="5dp"/>
 </RelativeLayout>

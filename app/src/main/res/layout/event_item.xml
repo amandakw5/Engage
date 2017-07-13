@@ -41,7 +41,7 @@
         android:id="@+id/tvLocationInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvEventName"
+        android:layout_below="@+id/tvHost"
         android:layout_toEndOf="@+id/ivProfileImage"
         android:text="@string/location" />
 
@@ -65,6 +65,14 @@
         android:background="@android:color/darker_gray"
         android:layout_margin="5dp"
         android:layout_below="@+id/tvDescription" />
+
+    <TextView
+        android:id="@+id/tvHost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvEventName"
+        android:layout_toEndOf="@+id/ivProfileImage"
+        android:text="@string/host" />
 
 
 </RelativeLayout>

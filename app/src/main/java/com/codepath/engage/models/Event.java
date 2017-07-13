@@ -42,11 +42,13 @@ public class Event {
         event.tvDescription = eventDescription.getString("text");
         //Getting teh id of the event for future use
         event.eventId = jsonObject.getString("id");
+        Log.d("id", event.eventId);
         //Getting a thumbnail of the image for futer use.
         JSONObject logo = jsonObject.getJSONObject("logo");
         JSONObject original= logo.getJSONObject("original");
         event.ivEventImage = original.getString("url");
         Log.i("Ingo",event.ivEventImage);
+
         return event;
     }
     public String getTvEventName() {
