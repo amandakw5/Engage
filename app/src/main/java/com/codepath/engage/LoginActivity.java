@@ -1,11 +1,18 @@
 package com.codepath.engage;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+
 import android.util.Log;
 import android.widget.Toast;
+
+import android.util.Base64;
+import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -23,6 +30,9 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class LoginActivity extends AppCompatActivity {
 
     public static CallbackManager mCallbackManager;
@@ -34,6 +44,18 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo("com.codepath.engage", PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+
+        } catch (NoSuchAlgorithmException | PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+
+        }
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         mCallbackManager = CallbackManager.Factory.create();
@@ -65,9 +87,10 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+
                 handleFacebookAccessToken(loginResult.getAccessToken());
                 Intent intent = new Intent(LoginActivity.this, ViewEvents.class);
-                startActivity(intent);
+
             }
 
             @Override

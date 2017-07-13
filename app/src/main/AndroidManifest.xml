@@ -52,6 +52,9 @@
 
         </activity>
 
+        <activity android:name=".HomePage" />
+        <activity android:name=".IssueDetailsActivity"></activity>
+
     </application>
 
 </manifest>
