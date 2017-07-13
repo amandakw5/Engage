@@ -17,8 +17,7 @@ public class HomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-        String[] strs = {"Women", "Food", "Climate Change", "LGBTQ Rights", "Education",
-        "Refugees", "Poverty"};
+        String[] strs = {"Women", "Food", "Climate Change", "Human Rights", "Poverty"};
         issues = new ArrayList<>();
         adapter = new IssueAdapter(issues);
         issues.addAll(Arrays.asList(strs));

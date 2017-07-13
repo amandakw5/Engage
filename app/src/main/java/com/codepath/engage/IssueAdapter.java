@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> {
     ArrayList<String> issues;
     Context context;
+
     Config config;
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -39,6 +40,7 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         String issue = issues.get(position);
         holder.issueTitle.setText(issue);
+
     }
 
     @Override
