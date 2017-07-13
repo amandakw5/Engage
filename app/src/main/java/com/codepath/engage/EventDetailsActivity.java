@@ -23,7 +23,6 @@ public class EventDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setTitle("Event Name");
         setContentView(R.layout.activity_event_details);
 
         ButterKnife.bind(this);

@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         AppEventsLogger.activateApp(this);
         mCallbackManager = CallbackManager.Factory.create();
 
-        getSupportActionBar().hide();
+//        getSupportActionBar().hide();
 
         setContentView(R.layout.activity_login);
 
@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 //TODO make sure to change this before pushing to master
-                Intent intent = new Intent(LoginActivity.this, EventDetailsActivity.class);
+                Intent intent = new Intent(LoginActivity.this, ViewEvents.class);
                 startActivity(intent);
             }
 
