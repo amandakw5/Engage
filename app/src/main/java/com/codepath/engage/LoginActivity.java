@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (AccessToken.getCurrentAccessToken()!=null){
-            Intent i = new Intent(LoginActivity.this, EventDetailsActivity.class);
+            Intent i = new Intent(LoginActivity.this, ViewEvents.class);
             startActivity(i);
         }
 

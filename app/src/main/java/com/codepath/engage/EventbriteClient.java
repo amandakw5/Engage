@@ -12,6 +12,7 @@ public class EventbriteClient {
     static final String baseApiUrl = "https://www.eventbriteapi.com/v3/";
     //Endpint for seraching with a string input
     static final String searchBaseUrl="events/search/?q=";
+    static final String eventFindUrl = "events/";
     //TODO fix secret key with authentication token. Was getting werid errors when referencing from a R.id.string
     static final String endBaseUrl = "&token=ZVEFG6DHKZONNTXLL5HM";
     //variable to hold the complete url.
@@ -24,6 +25,11 @@ public class EventbriteClient {
 
         finalUrl = baseApiUrl + searchBaseUrl + query + endBaseUrl;
         client.get(finalUrl,asyncHttpResponseHandler);
+    }
+
+    public void getEventInfo(String eventId, AsyncHttpResponseHandler asynchHttpResponseHandler){
+        finalUrl = baseApiUrl + eventFindUrl + eventId + endBaseUrl;
+        client.get(finalUrl, asynchHttpResponseHandler);
     }
 
 }

@@ -10,4 +10,5 @@
     <string name="number_of_people">Number of People</string>
     <string name="people_attending">People Attending</string>
     <string name="save">Save</string>
+    <string name="event_name">Event Name</string>
 </resources>

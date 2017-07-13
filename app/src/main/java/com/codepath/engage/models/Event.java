@@ -4,11 +4,13 @@ import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 /**
  * Created by calderond on 7/11/17.
  */
 
+@Parcel
 public class Event {
     public String tvEventName;
     public String tvEventInfo;
