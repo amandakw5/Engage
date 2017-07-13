@@ -2,7 +2,10 @@ package com.codepath.engage;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,9 +17,8 @@ import org.parceler.Parcels;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-public class EventDetailsActivity extends AppCompatActivity {
+public class EventDetailsActivity extends AppCompatActivity{
 
     @Nullable @BindView(R.id.ivPicture) ImageView ivPicture;
     @BindView(R.id.tvHost) TextView tvHost;
@@ -31,6 +33,9 @@ public class EventDetailsActivity extends AppCompatActivity {
     private EventbriteClient client;
     Event event;
     private int position;
+    FragmentManager fm;
+    FragmentTransaction ft;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +53,25 @@ public class EventDetailsActivity extends AppCompatActivity {
         tvEventName.setText(event.tvEventName);
         tvEventDescription.setText(event.tvDescription);
         tvTimeDate.setText(event.tvEventInfo);
-
     }
-    @OnClick(R.id.btnMap)
-    public void getMap() {
-//        Intent intent = new Intent(this, MapActivity.class);
-//        startActivity(intent);
+    public void openFragment(View view){
+        fm = getSupportFragmentManager();
+        ft = fm.beginTransaction();
+        ft.add(R.id.map,new MapFragment()).addToBackStack(null).commit();
+        btnSave.setVisibility(View.GONE);
+        btnMap.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onBackPressed(){
+        if (fm.getBackStackEntryCount() > 0) {
+            fm.popBackStack();
+            btnSave.setVisibility(View.VISIBLE);
+            btnMap.setVisibility(View.VISIBLE);
+        } else {
+            super.onBackPressed();
+            btnSave.setVisibility(View.VISIBLE);
+            btnMap.setVisibility(View.VISIBLE);
+        }
     }
 }

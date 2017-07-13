@@ -1,74 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.codepath.engage.EventDetailsActivity">
-
-    <ImageView
-        android:id="@+id/ivPicture"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/tvEventName"
-        android:layout_margin="10dp"
-        app:srcCompat="@android:color/black" />
-
-    <TextView
-        android:id="@+id/tvHost"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/ivPicture"
-        android:layout_marginBottom="5dp"
-        android:layout_toEndOf="@+id/ivPicture"
-        android:text="@string/host"
-        android:textAppearance="@android:style/TextAppearance.Large" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/location"
-        android:id="@+id/tvLocation"
-        android:layout_below="@+id/tvHost"
-        android:layout_toEndOf="@+id/ivPicture"
-        android:layout_marginBottom="5dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/time_and_date"
-        android:id="@+id/tvTimeDate"
-        android:layout_below="@+id/tvLocation"
-        android:layout_toEndOf="@+id/ivPicture"
-        android:layout_marginBottom="5dp"/>
-
-    <TextView
-        android:id="@+id/tvEventDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/event_description"
-        android:layout_below="@+id/ivPicture"
-        android:layout_alignStart="@+id/ivPicture" />
-
-    <TextView
-        android:id="@+id/tvPeopleParticipating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvTimeDate"
-        android:layout_toEndOf="@+id/ivPicture"
-        android:text="@string/number_of_people"
-        android:layout_marginBottom="10dp"/>
-
-    <TextView
-        android:id="@+id/tvPeople"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/tvPeopleParticipating"
-        android:layout_toEndOf="@+id/tvPeopleParticipating"
-        android:text="@string/people_attending"
-        android:layout_marginBottom="10dp"
-        android:layout_marginStart="5dp"/>
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/ivPicture"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/tvEventName"
+                    android:layout_margin="10dp"
+                    app:srcCompat="@android:color/black" />
+                <TextView
+                    android:id="@+id/tvHost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/ivPicture"
+                    android:layout_marginBottom="5dp"
+                    android:layout_toEndOf="@+id/ivPicture"
+                    android:text="@string/host"
+                    android:textAppearance="@android:style/TextAppearance.Large" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/location"
+                    android:id="@+id/tvLocation"
+                    android:layout_below="@+id/tvHost"
+                    android:layout_toEndOf="@+id/ivPicture"
+                    android:layout_marginBottom="5dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/time_and_date"
+                    android:id="@+id/tvTimeDate"
+                    android:layout_below="@+id/tvLocation"
+                    android:layout_toEndOf="@+id/ivPicture"
+                    android:layout_marginBottom="5dp"/>
+                <TextView
+                    android:id="@+id/tvEventDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/event_description"
+                    android:layout_below="@+id/ivPicture"
+                    android:layout_alignStart="@+id/ivPicture" />
+                <TextView
+                    android:id="@+id/tvPeopleParticipating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvTimeDate"
+                    android:layout_toEndOf="@+id/ivPicture"
+                    android:text="@string/number_of_people"
+                    android:layout_marginBottom="10dp"/>
+                <TextView
+                    android:id="@+id/tvPeople"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/tvPeopleParticipating"
+                    android:layout_toEndOf="@+id/tvPeopleParticipating"
+                    android:text="@string/people_attending"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginStart="5dp"/>
+            <TextView
+                android:id="@+id/tvEventName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignStart="@+id/ivPicture"
+                android:layout_marginTop="10dp"
+                android:fontFamily="serif"
+                android:text="@string/event_name"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+    </ScrollView>
     <Button
         android:id="@+id/btnSave"
         android:layout_width="wrap_content"
@@ -77,25 +91,26 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="5dp"/>
-
-    <TextView
-        android:id="@+id/tvEventName"
+        <Button
+            android:id="@+id/btnMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/map"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="5dp"
+            android:onClick="openFragment"/>
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/ivPicture"
-        android:layout_marginTop="10dp"
-        android:fontFamily="serif"
-        android:text="@string/event_name"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+        android:id="@+id/flMap">
 
-    <Button
-        android:id="@+id/btnMap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/map"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_margin="5dp"/>
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 </RelativeLayout>
