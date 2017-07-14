@@ -53,6 +53,11 @@
             android:theme="@style/AppTheme">
 
         </activity>
+        <activity android:name=".HomePage" />
+        <activity android:name=".IssueDetailsActivity">
+
+        </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAb-qL9S_hAeFtES2zaQzcqsFpB4a_xAbA"
