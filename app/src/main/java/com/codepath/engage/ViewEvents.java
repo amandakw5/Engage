@@ -119,7 +119,14 @@ public class ViewEvents extends AppCompatActivity  {
                                         Log.i("INFO WORKS", venue.getSimpleAddress());
                                         venues.add(venue);
                                         events.get(counterToGetPositionOfEvent).setVenue(venue);
-                                        events.get(counterToGetPositionOfEvent).setTvEventInfo(events.get(counterToGetPositionOfEvent).getTvEventInfo() + venue.getCity());
+                                        String address ="";
+                                        if(!venue.getAddress().equals("null"))
+                                            address += venue.getAddress();
+                                        if(!venue.getCity().equals("null"))
+                                            address += ","+venue.getCity();
+                                        if(!venue.getCountry().equals("null"))
+                                            address += ","+ venue.getCountry();
+                                        events.get(counterToGetPositionOfEvent).setTvEventInfo(events.get(counterToGetPositionOfEvent).getTvEventInfo() +"\n"+ address);
                                         counterToGetPositionOfEvent++;
                                         eventAdapter.notifyDataSetChanged();
                                     } catch (JSONException e) {
