@@ -10,6 +10,7 @@ import android.support.v7.widget.SearchView;
 import android.util.Log;
 
 import com.codepath.engage.models.Event;
+import com.codepath.engage.models.Venue;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import cz.msebera.android.httpclient.Header;
 
 public class ViewEvents extends AppCompatActivity  {
+    static int counterToGetPositionOfEvent;
     //Variable that will refrence the Search view/ Search bar icon
     private SearchView searchView;
     //Will hold teh text that the user inputs to the serach view
@@ -30,13 +32,17 @@ public class ViewEvents extends AppCompatActivity  {
     private EventbriteClient client;
     EventAdapter eventAdapter;
     ArrayList<Event> events;
+    ArrayList<Venue> venues;
     RecyclerView rvEvents;
+    Boolean eventRequestCompleted = false;
+    Boolean venueRequestCompleted = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_events);
+        counterToGetPositionOfEvent = 0;
         client = new EventbriteClient();
         //Sets up the listners needed for the input text of search view.
         setUpSearchView();
@@ -45,6 +51,7 @@ public class ViewEvents extends AppCompatActivity  {
         rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
         //init the arraylsit
         events = new ArrayList<>();
+        venues = new ArrayList<>();
         //construcct the adapter from this datasoruce
         eventAdapter = new EventAdapter(events);
         //recycler view setup(layout manager, use adapter'
@@ -90,18 +97,43 @@ public class ViewEvents extends AppCompatActivity  {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
-                    Log.i("ingf",client.finalUrl);
                     JSONArray eventsObject = response.getJSONArray("events");
                     for (int i = 0 ; i < eventsObject.length();i++){
-
                         Event event = Event.fromJSON(eventsObject.getJSONObject(i));
                         events.add(event);
                         eventAdapter.notifyItemInserted(events.size() -1);
+                        if(i == eventsObject.length() -1)
+                            eventRequestCompleted = true;
                     }
-
-                    Log.i("Info",response.getString("events"));
                 } catch (JSONException e) {
                     e.printStackTrace();
+                }
+                finally {
+                    for (int i = 0; i < events.size(); i++) {
+                        if (eventRequestCompleted) {
+                            client.getVenue(events.get(i).getVeneuId(), new JsonHttpResponseHandler() {
+                                @Override
+                                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                    try {
+                                        Venue venue = Venue.fromJSON(response.getJSONObject("address"));
+                                        Log.i("INFO WORKS", venue.getSimpleAddress());
+                                        venues.add(venue);
+                                        events.get(counterToGetPositionOfEvent).setVenue(venue);
+                                        events.get(counterToGetPositionOfEvent).setTvEventInfo(events.get(counterToGetPositionOfEvent).getTvEventInfo() + venue.getCity());
+                                        counterToGetPositionOfEvent++;
+                                        eventAdapter.notifyDataSetChanged();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                @Override
+                                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                                }
+                            });
+
+                        }
+                    }
                 }
             }
 

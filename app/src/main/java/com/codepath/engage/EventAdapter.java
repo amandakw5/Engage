@@ -44,7 +44,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         holder.tvEventName.setText(event.tvEventName);
         holder.tvEventInfo.setText(event.tvEventInfo);
         holder.tvDescription.setText(event.tvDescription);
-        Glide.with(context).load(event.ivEventImage).into(holder.ivProfileImage);
+        Glide.with(context).load(event.ivEventImage).centerCrop().into(holder.ivProfileImage);
     }
 
     @Override
@@ -77,6 +77,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
                 context.startActivity(intent);
             }
         }
+    }
+    public Event getEvent(int i){
+        return mEvents.get(i);
     }
     public void clear(){
         mEvents.clear();

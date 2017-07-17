@@ -13,7 +13,9 @@ public class EventbriteClient {
     //Endpint for seraching with a string input
     static final String searchBaseUrl="events/search/?q=";
     static final String eventFindUrl = "events/";
+    static final String venueUrl = "venues/";
     static final String endBaseUrl = "&token=ZVEFG6DHKZONNTXLL5HM";
+    static final String endVenueUrl = "/?token=ZVEFG6DHKZONNTXLL5HM";
     //variable to hold the complete url.
     public String finalUrl="";
     //Client to handle network calls
@@ -23,10 +25,15 @@ public class EventbriteClient {
 
         finalUrl = baseApiUrl + searchBaseUrl + query + endBaseUrl;
         client.get(finalUrl,asyncHttpResponseHandler);
+
     }
     public void getEventInfo(String eventId, AsyncHttpResponseHandler asynchHttpResponseHandler){
         finalUrl = baseApiUrl + eventFindUrl + eventId + endBaseUrl;
         client.get(finalUrl, asynchHttpResponseHandler);
+    }
+    public void getVenue(String id, AsyncHttpResponseHandler asyncHttpResponseHandler){
+        finalUrl = baseApiUrl + venueUrl + id+ endVenueUrl;
+        client.get(finalUrl,asyncHttpResponseHandler);
     }
 
 }

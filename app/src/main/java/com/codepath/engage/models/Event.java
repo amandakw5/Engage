@@ -6,6 +6,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by calderond on 7/11/17.
  */
@@ -17,13 +21,17 @@ public class Event {
     public String tvDescription;
     public String ivEventImage;
     public String eventId;
+    public String veneuId;
+    public Venue venue;
 
-    public Event(String tvEventName, String tvEventInfo, String tvDescription, String ivEventImage, String eventId) {
+
+    public Event(String tvEventName, String tvEventInfo, String tvDescription, String ivEventImage, String eventId, String veneuId,Venue venue) {
         this.tvEventName = tvEventName;
         this.tvEventInfo = tvEventInfo;
         this.tvDescription = tvDescription;
         this.ivEventImage = ivEventImage;
         this.eventId = eventId;
+        this.veneuId = veneuId;
     }
 
     public Event() {
@@ -36,17 +44,32 @@ public class Event {
         event.tvEventName = nameEvent.getString("text");
         //Getting the description for the event Time and location only
         JSONObject eventInfo = jsonObject.getJSONObject("start");
-        event.tvEventInfo = eventInfo.getString("local");
+        event.tvEventInfo = eventInfo.getString("utc");
+        SimpleDateFormat existingUTCFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat requiredFormat = new SimpleDateFormat("MM-dd hh :mm a");
+        event.eventId = jsonObject.getString("id");
+        try{
+            Date getDate = existingUTCFormat.parse(event.tvEventInfo);
+            String mydate = requiredFormat.format(getDate);
+            event.tvEventInfo = mydate;
+        }
+        catch(ParseException e){
+        }
         //Getting the description of the event
         JSONObject eventDescription = jsonObject.getJSONObject("description");
         event.tvDescription = eventDescription.getString("text");
-        //Getting teh id of the event for future use
-        event.eventId = jsonObject.getString("id");
         //Getting a thumbnail of the image for futer use.
-        JSONObject logo = jsonObject.getJSONObject("logo");
-        JSONObject original= logo.getJSONObject("original");
-        event.ivEventImage = original.getString("url");
-        Log.i("Ingo",event.ivEventImage);
+        try{
+            jsonObject.getJSONObject("logo");
+            JSONObject logo = jsonObject.getJSONObject("logo");
+            JSONObject original= logo.getJSONObject("original");
+            event.ivEventImage = original.getString("url");
+            Log.i("Ingo",event.ivEventImage);
+        }
+        catch (Exception exception){
+            event.ivEventImage ="@drawable/tree";
+        }
+        event.veneuId = jsonObject.getString("venue_id");
         return event;
     }
     public String getTvEventName() {
@@ -65,6 +88,14 @@ public class Event {
         this.tvEventInfo = tvEventInfo;
     }
 
+    public Venue getVenue() {
+        return venue;
+    }
+
+    public void setVenue(Venue venue) {
+        this.venue = venue;
+    }
+
     public String getTvDescription() {
         return tvDescription;
     }
@@ -79,5 +110,13 @@ public class Event {
 
     public void setIvEventImage(String ivEventImage) {
         this.ivEventImage = ivEventImage;
+    }
+
+    public String getVeneuId() {
+        return veneuId;
+    }
+
+    public void setVeneuId(String veneuId) {
+        this.veneuId = veneuId;
     }
 }
