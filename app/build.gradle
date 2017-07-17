@@ -30,11 +30,12 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     compile 'com.github.bumptech.glide:glide:3.8.0'
     compile 'com.github.bumptech.glide:glide:3.8.0'
     compile 'com.google.android.gms:play-services-maps:11.0.2'
     compile 'com.google.android.gms:play-services-location:11.0.2'
+    compile 'com.google.android.gms:play-services-places:11.0.2'
+    compile 'com.github.hotchemi:permissionsdispatcher:2.4.0'
     compile 'com.google.firebase:firebase-auth:11.0.2'
     compile 'com.jakewharton:butterknife:8.4.0'
     compile 'org.parceler:parceler-api:1.1.6'
@@ -45,9 +46,11 @@ dependencies {
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
     compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.google.maps.android:android-maps-utils:0.5+'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     annotationProcessor 'org.parceler:parceler:1.1.6'
+    annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:2.4.0'
 }
 apply plugin: 'com.google.gms.google-services'
 
