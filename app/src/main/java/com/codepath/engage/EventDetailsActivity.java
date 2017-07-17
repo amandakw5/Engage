@@ -1,5 +1,7 @@
 package com.codepath.engage;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -54,24 +56,29 @@ public class EventDetailsActivity extends AppCompatActivity{
         tvEventDescription.setText(event.tvDescription);
         tvTimeDate.setText(event.tvEventInfo);
     }
-    public void openFragment(View view){
-        fm = getSupportFragmentManager();
-        ft = fm.beginTransaction();
-        ft.add(R.id.map,new MapFragment()).addToBackStack(null).commit();
-        btnSave.setVisibility(View.GONE);
-        btnMap.setVisibility(View.GONE);
+
+    public void openMap(View view){
+        Intent intent = new Intent(EventDetailsActivity.this, MapActivity.class);
+        intent.putExtra("latitute", 34.8098080980);
+        intent.putExtra("longitude", 67.09098898);
+        startActivity(intent);
+//        fm = getSupportFragmentManager();
+//        ft = fm.beginTransaction();
+//        ft.add(R.id.map,new MapFragment()).addToBackStack(null).commit();
+//        btnSave.setVisibility(View.GONE);
+//        btnMap.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onBackPressed(){
-        if (fm.getBackStackEntryCount() > 0) {
-            fm.popBackStack();
-            btnSave.setVisibility(View.VISIBLE);
-            btnMap.setVisibility(View.VISIBLE);
-        } else {
-            super.onBackPressed();
-            btnSave.setVisibility(View.VISIBLE);
-            btnMap.setVisibility(View.VISIBLE);
-        }
-    }
+    //    @Override
+//    public void onBackPressed(){
+//        if (fm.getBackStackEntryCount() > 0) {
+//            fm.popBackStack();
+//            btnSave.setVisibility(View.VISIBLE);
+//            btnMap.setVisibility(View.VISIBLE);
+//        } else {
+//            super.onBackPressed();
+//            btnSave.setVisibility(View.VISIBLE);
+//            btnMap.setVisibility(View.VISIBLE);
+//        }
+//    }
 }
