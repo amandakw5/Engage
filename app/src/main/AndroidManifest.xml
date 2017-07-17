@@ -31,7 +31,6 @@
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -40,7 +39,6 @@
             android:name=".ViewEvents"
             android:theme="@style/ViewEventsTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
@@ -61,8 +59,10 @@
             android:theme="@style/AppTheme">
         </activity>
 
-        <activity android:name=".HomePage" />
-        <activity android:name=".IssueDetailsActivity">
+        <activity android:name=".HomePage"
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".IssueDetailsActivity"
+            android:theme="@style/AppTheme">
 
         </activity>
 

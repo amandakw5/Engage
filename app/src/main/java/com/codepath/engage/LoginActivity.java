@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import android.util.Base64;
@@ -44,18 +45,20 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo("com.codepath.engage", PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
+//
+//        try {
+//            PackageInfo info = getPackageManager().getPackageInfo("com.codepath.engage", PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+//            }
+//
+//        } catch (NoSuchAlgorithmException | PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//
+//        }
 
-        } catch (NoSuchAlgorithmException | PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-
-        }
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         mCallbackManager = CallbackManager.Factory.create();
@@ -90,6 +93,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 handleFacebookAccessToken(loginResult.getAccessToken());
                 Intent intent = new Intent(LoginActivity.this, ViewEvents.class);
+                startActivity(intent);
 
             }
 
@@ -99,6 +103,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onError(FacebookException error) { }
         });
+
 //        FirebaseAuth.getInstance().signOut();
     }
 
@@ -118,9 +123,12 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        Intent i = new Intent(LoginActivity.this, ViewEvents.class);
-        startActivity(i);
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            Intent i = new Intent(LoginActivity.this, ViewEvents.class);
+            startActivity(i);
+        }
     }
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
