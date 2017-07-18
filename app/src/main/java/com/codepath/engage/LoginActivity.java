@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-
-import android.util.Base64;
-
 import android.util.Log;
 import android.widget.Toast;
 
@@ -87,9 +84,11 @@ public class LoginActivity extends AppCompatActivity {
                             Log.i("LoginActivity", response.toString());
                             // Get facebook data from login
                             Bundle bFacebookData = getFacebookData(object);
+                            User user = new User();
                             try {
                                 String first_name = object.getString("first_name");
                                 userInfoUpdates.put("first_name", first_name);
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
