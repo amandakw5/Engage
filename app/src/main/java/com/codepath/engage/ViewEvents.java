@@ -54,7 +54,7 @@ public class ViewEvents extends AppCompatActivity   implements LocationListener,
     RecyclerView rvEvents;
     Boolean eventRequestCompleted = false;
 
-    //Google maps variables to get location
+    //Foloowing
     final String TAG = "GPS";
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
