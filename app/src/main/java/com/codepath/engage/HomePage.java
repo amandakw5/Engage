@@ -79,6 +79,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
         issues.addAll(Arrays.asList(strs));
         rvIssues = (RecyclerView) findViewById(R.id.rvIssues);
         rvIssues.setLayoutManager(new LinearLayoutManager(this));
+        rvIssues.setAdapter(adapter);
         List<String> sideItems = new ArrayList<String>();
         sideItems.add("foo");
         sideItems.add("bar");

@@ -14,13 +14,14 @@
         android:layout_height="?attr/actionBarSize"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-    <android.support.v7.widget.SearchView
-        android:id="@+id/search"
-        android:layout_width="294dp"
-        android:layout_height="50dp"
-        android:actionViewClass="android.support.v7.widget.SearchView"
-        android:theme="@style/SearchViewTheme"
-        />
+        <android.support.v7.widget.SearchView
+            android:id="@+id/search"
+            android:layout_width="294dp"
+            android:layout_height="50dp"
+            android:actionViewClass="android.support.v7.widget.SearchView"
+            android:theme="@style/SearchViewTheme"
+            app:iconifiedByDefault="false"
+            app:queryHint="Search Events" />
 
     <ImageView
         android:id="@+id/btnFilter"
