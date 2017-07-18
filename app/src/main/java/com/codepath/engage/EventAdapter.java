@@ -22,7 +22,7 @@ import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
     private List<Event> mEvents;
-    Context context;
+    private Context context;
     public EventAdapter(List<Event> events){
         mEvents = events;
     }
@@ -44,7 +44,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         holder.tvEventName.setText(event.tvEventName);
         holder.tvEventInfo.setText(event.tvEventInfo);
         holder.tvDescription.setText(event.tvDescription);
-        Glide.with(context).load(event.ivEventImage).into(holder.ivProfileImage);
+        Glide.with(context).load(event.ivEventImage).centerCrop().into(holder.ivProfileImage);
     }
 
     @Override
@@ -77,6 +77,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             }
         }
     }
+
+    public Event getEvent(int i){
+        return mEvents.get(i);
+    }
+
     public void clear(){
         mEvents.clear();
         notifyDataSetChanged();

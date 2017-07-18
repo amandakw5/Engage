@@ -17,21 +17,27 @@
         tools:layout_editor_absoluteX="8dp"
         tools:ignore="MissingConstraints">
         <!--Setting the Items for the toolbar-->
-        <android.support.v7.widget.LinearLayoutCompat
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <!--Search View for the tool bar-->
-            <android.support.v7.widget.SearchView
-                android:id="@+id/search"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                app:theme="@style/SearchViewTheme"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="0dp" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <!--Search View for the tool bar-->
+                <android.support.v7.widget.SearchView
+                    android:id="@+id/search"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/SearchViewTheme"
+                    tools:layout_editor_absoluteX="8dp"
+                    tools:layout_editor_absoluteY="0dp" />
+            </android.support.v7.widget.LinearLayoutCompat>
             <!--Filter Button For Search View-->
             <ImageButton
                 android:id="@+id/btnFilter"
-                android:layout_width="10dp"
+                android:layout_width="30dp"
                 android:layout_height="match_parent"
                 android:src="@color/colorPrimaryDark"
                 android:background="@android:color/transparent"/>
@@ -39,10 +45,11 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher"
+                android:src="@drawable/ic_person_black_24dp"
                 android:background="@android:color/transparent"
-                android:layout_marginStart="10dp"/>
-        </android.support.v7.widget.LinearLayoutCompat>
+                android:layout_marginStart="10dp"
+                android:layout_weight="4" />
+        </LinearLayout>
 
     </android.support.v7.widget.Toolbar>
 
@@ -51,6 +58,7 @@
         android:layout_width="375dp"
         android:layout_height="575dp"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="2dp"
         tools:ignore="MissingConstraints" />
 
