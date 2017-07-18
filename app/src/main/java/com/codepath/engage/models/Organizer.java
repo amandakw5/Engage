@@ -1,5 +1,7 @@
 package com.codepath.engage.models;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
@@ -15,6 +17,7 @@ public class Organizer {
     public String numFutureEvents;
     public String website;
     public String facebookUsername;
+    public String twitter;
 
     public Organizer() {
     }
@@ -29,31 +32,44 @@ public class Organizer {
         try {
             organizer.organizerId = jsonObject.getString("id");
         } catch (JSONException e) {
+            organizer.organizerId = "NA";
             e.printStackTrace();
         }
         try {
             organizer.numePastEvents =  jsonObject.getString("num_past_events");
         } catch (JSONException e) {
+            organizer.numePastEvents = "Na";
             e.printStackTrace();
         }
         try {
             organizer.numFutureEvents = jsonObject.getString("num_future_events");
         } catch (JSONException e) {
+            organizer.numFutureEvents = "NA";
             e.printStackTrace();
         }
         try {
             organizer.website = jsonObject.getString("website");
         } catch (JSONException e) {
+            Log.i("Error",e.getMessage());
+            organizer.website = "NA";
             e.printStackTrace();
         }
         try {
             organizer.facebookUsername = jsonObject.getString("facebook");
         } catch (JSONException e) {
+            organizer.facebookUsername = "NA";
             e.printStackTrace();
         }
         return organizer;
     }
 
+    public String getTwitter() {
+        return twitter;
+    }
+
+    public void setTwitter(String twitter) {
+        this.twitter = twitter;
+    }
 
     public String getDescription() {
         return description;

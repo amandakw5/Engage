@@ -21,6 +21,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.codepath.engage.models.Event;
+import com.codepath.engage.models.Organizer;
 import com.codepath.engage.models.Venue;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -41,6 +42,7 @@ import cz.msebera.android.httpclient.Header;
 public class  ViewEvents extends AppCompatActivity   implements LocationListener,GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener  {
     static int counterToGetPositionOfEvent;
+    static int counterToSetOrganizer;
     //Variable that will refrence the Search view/ Search bar icon
     private SearchView searchView;
     //Will hold teh text that the user inputs to the serach view
@@ -71,7 +73,7 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_events);
-
+        counterToSetOrganizer = 0;
         counterToGetPositionOfEvent = 0;
         client = new EventbriteClient();
         //Sets up the listners needed for the input text of search view.
@@ -94,10 +96,6 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
         //Getting the location for the user.
         //Setting up the location google maps
         isGooglePlayServicesAvailable();
-
-        if(!isLocationEnabled())
-            showAlert();
-
         locationRequest = new LocationRequest();
         locationRequest.setInterval(UPDATE_INTERVAL);
         locationRequest.setFastestInterval(FASTEST_INTERVAL);
@@ -107,6 +105,24 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+        if(!isLocationEnabled())
+            showAlert();
+        Intent intentQuery = getIntent();
+        if(intentQuery != null){
+            callSearchFromIntent(intentQuery);
+        }
+    }
+    private void callSearchFromIntent(Intent intent){
+        query = intent.getStringExtra("Query");
+        tvLongitude = intent.getStringExtra("Longitude");
+        tvLatitude = intent.getStringExtra("Latitude");
+        Log.i("Query"," " + query);
+
+        onStart();
+        Log.i("Latitude",""+tvLatitude);
+        Log.i("Longitute",""+tvLongitude);
+        events.clear();
+        populateEvents(query);
     }
     //Perfoms The Searching Of Desired Event Category
     //TODO finish this function
@@ -154,18 +170,19 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
                         if(i == eventsObject.length() -1)
                             eventRequestCompleted = true;
                     }
-//                    for(int i =0 ; i < events.size();i++){
-//                        client.getOrganizerInfo(events.get(i).getOrganizerId(),new JsonHttpResponseHandler(){
-//                            @Override
-//                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//                                Organizer organizer = Organizer.fromJson(response);
-//                                events.get(counterToGetPositionOfEvent).setOrganizer(organizer);
-//                            }
-//                        });
-//                    }
-//                    for(Event event : events){
-//                        Log.i("Organize",event.getOrganizer().getDescription());
-//                    }
+                    if(eventRequestCompleted) {
+                        counterToSetOrganizer =0;
+                        for (int i = 0; i < events.size(); i++) {
+                            client.getOrganizerInfo(events.get(i).getOrganizerId(), new JsonHttpResponseHandler() {
+                                @Override
+                                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                    Organizer organizer = Organizer.fromJson(response);
+                                    events.get(counterToSetOrganizer).setOrganizer(organizer);
+                                    counterToSetOrganizer++;
+                                }
+                            });
+                        }
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -177,7 +194,6 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
                                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                                     try {
                                         Venue venue = Venue.fromJSON(response.getJSONObject("address"));
-                                        Log.i("INFO WORKS", venue.getSimpleAddress());
                                         venues.add(venue);
                                         events.get(counterToGetPositionOfEvent).setVenue(venue);
                                         String address ="";
@@ -207,12 +223,12 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.i("info","T"+client.finalUrl+responseString);
+                Log.i("info",client.finalUrl+responseString);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.i("info","T"+client.finalUrl+errorResponse);
+                Log.i("info",client.finalUrl+errorResponse);
             }
         });
 

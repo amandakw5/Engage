@@ -1,7 +1,5 @@
 package com.codepath.engage;
 
-import android.util.Log;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -36,15 +34,12 @@ public class EventbriteClient {
         requestParams.put("location.latitude",latitude);
         requestParams.put("sort_by","distance");
         requestParams.put("location.within","15mi");
-
-                finalUrl = baseApiUrl + searchBaseUrl + query + endBaseUrl;
-        Log.i("FINAL URL",finalUrl);
-
+        finalUrl = baseApiUrl + searchBaseUrl + query + endBaseUrl;
         client.get(finalUrl,requestParams,asyncHttpResponseHandler);
 
     }
     public void getOrganizerInfo(String id, AsyncHttpResponseHandler asyncHttpResponseHandler){
-        finalUrl = baseApiUrl + venueUrl+id+endOrganizerUrl;
+        finalUrl = baseApiUrl +organizerUrl+id+endOrganizerUrl;
         client.get(finalUrl,asyncHttpResponseHandler);
     }
 
