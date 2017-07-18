@@ -36,7 +36,7 @@ public class IssueDetailsActivity extends AppCompatActivity {
         String[] climateOrganizations = new String[] {"350.org", "GreenPeace","Climate Reality Project", "iMatter"};
         String[] humanRightsSpecificIssues = new String[] {"LGBTQ Rights", "Disability Rights", "Racism", "Refugee Rights"};
         String[] humanRightsOrganizations = new String[] {"Amnesty International", "Human Rights Watch", "Human Rights Campaign"};
-        String[] povertySpecificIssues = new String[] {"Education", "Homeslessness", "Poor Health"};
+        String[] povertySpecificIssues = new String[] {"Education", "Homelessness", "Poor Health"};
         String[] povertyOrganizations = new String[] {"ONE Campaign", "UNICEF", "Partners in Health"};
         Intent intent = getIntent();
         String issue = intent.getStringExtra("current");

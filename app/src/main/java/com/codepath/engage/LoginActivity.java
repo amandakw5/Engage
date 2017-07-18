@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -188,9 +189,6 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        Intent i = new Intent(LoginActivity.this, HomePage.class);
-        startActivity(i);
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             Intent in = new Intent(LoginActivity.this, ViewEvents.class);

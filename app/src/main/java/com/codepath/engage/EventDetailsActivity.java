@@ -35,11 +35,17 @@ public class EventDetailsActivity extends AppCompatActivity{
 
     Event event;
 
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference users;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
         ButterKnife.bind(this);
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        users = firebaseDatabase.getReference("users");
 
         event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
 
@@ -59,5 +65,8 @@ public class EventDetailsActivity extends AppCompatActivity{
         intent.putExtra("latitude", 34.8098080980);
         intent.putExtra("longitude", 67.09098898);
         startActivity(intent);
+    }
+    public void saveEvent(View view){
+
     }
 }
