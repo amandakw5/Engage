@@ -2,7 +2,6 @@ package com.codepath.engage;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -39,7 +38,7 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class ViewEvents extends AppCompatActivity   implements LocationListener,GoogleApiClient.ConnectionCallbacks,
+public class  ViewEvents extends AppCompatActivity   implements LocationListener,GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener  {
     static int counterToGetPositionOfEvent;
     //Variable that will refrence the Search view/ Search bar icon

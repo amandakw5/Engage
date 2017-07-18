@@ -50,7 +50,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-        //mDrawerList = (ListView) findViewById(R.id.navList);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         profileImage = (ImageView) findViewById(R.id.profileImage);
         ActionBar actionbar = getSupportActionBar();
@@ -80,7 +79,8 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
                 mDrawer.openDrawer(Gravity.RIGHT);
             }
         });
-
+//        searchView = toolbar.findViewById(search);
+        setUpSearchView();
     }
     private void configureNavigationDrawer() {
 
