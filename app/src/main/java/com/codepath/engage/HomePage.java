@@ -59,20 +59,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
 
         configureNavigationDrawer();
 
-       // drawerToggle = setupDrawerToggle();
-
-        // Tie DrawerLayout events to the ActionBarToggle
-       // mDrawer.addDrawerListener(drawerToggle);
-
-        // Find our drawer view
-
-        // Setup drawer view
-//        setupDrawerContent(nvDrawer);
-        //
-        // View headerLayout = nvDrawer.getHeaderView(0);
-      //  searchView = (SearchView) headerLayout.findViewById(R.id.search);
-       // profileImage = (ImageView) headerLayout.findViewById(R.id.profileImage);
-        //setUpSearchView();
         String[] strs = {"Women", "Food", "Climate Change", "Human Rights", "Poverty"};
         issues = new ArrayList<>();
         adapter = new IssueAdapter(issues);
@@ -87,11 +73,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
                 this,
                 android.R.layout.simple_list_item_1,
                 sideItems );
-
-        //mDrawerList.setAdapter(arrayAdapter);
-        //   nvDrawer.setItemIconTintList(null);
-       // addDrawerItems();
-       // setupDrawer();
 
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,12 +125,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
     private void closeSearchView(SearchView searchView){
         searchView.setIconified(true);
     }
-    //@Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.topbar, menu);
-//        return true;
-//    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
@@ -189,53 +165,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
             }
         });
     }
-//    private void setupDrawer() {
-//        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, R.string.drawer_open, R.string.drawer_close) {
-//
-//            /** Called when a drawer has settled in a completely open state. */
-//            public void onDrawerOpened(View drawerView) {
-//                super.onDrawerOpened(drawerView);
-//                getSupportActionBar().setTitle("Navigation!");
-//                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-//            }
-//
-//            /** Called when a drawer has settled in a completely closed state. */
-//            public void onDrawerClosed(View view) {
-//                super.onDrawerClosed(view);
-//                getSupportActionBar().setTitle("hi");
-//                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-//            }
-//        };
-//
-//        mDrawerToggle.setDrawerIndicatorEnabled(true);
-//        mDrawer.setDrawerListener(mDrawerToggle);
-//    }
-//    private void setupDrawerContent(NavigationView navigationView) {
-//        navigationView.setNavigationItemSelectedListener(
-//                new NavigationView.OnNavigationItemSelectedListener() {
-//                    @Override
-//                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-//                        selectDrawerItem(menuItem);
-//                        return true;
-//                    }
-//                });
-//    }
-//    private ActionBarDrawerToggle setupDrawerToggle() {
-//        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
-//        // and will not render the hamburger icon without it.
-//        return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
-//    }
-//    @Override
-//    protected void onPostCreate(Bundle savedInstanceState) {
-//        super.onPostCreate(savedInstanceState);
-//        // Sync the toggle state after onRestoreInstanceState has occurred.
-//        mDrawerToggle.syncState();
-//    }
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//        mDrawerToggle.onConfigurationChanged(newConfig);
-//    }
 
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked

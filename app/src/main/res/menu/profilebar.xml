@@ -4,6 +4,9 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
         <group android:id="@+id/drawerSectionOne" android:checkableBehavior="none">
             <item
+                android:id="@+id/nav_fourth_fragment"
+                android:title="My Profile" />
+            <item
                 android:id="@+id/nav_first_fragment"
                 android:title="My Feed" />
             <item
@@ -12,8 +15,6 @@
             <item
                 android:id="@+id/nav_third_fragment"
                 android:title="Past Events" />
-            <item
-                android:id="@+id/nav_fourth_fragment"
-                android:title="My Profile" />
+
         </group>
 </menu>
