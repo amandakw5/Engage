@@ -15,9 +15,10 @@
         android:name=".EventApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="Engage"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -35,36 +36,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".ViewEvents"
-            android:theme="@style/ViewEventsTheme">
+        <activity android:name=".ViewEvents">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".EventDetailsActivity"
-            android:theme="@style/AppTheme">
-        </activity>
+            android:theme="@style/AppTheme"></activity>
+        <activity
+            android:name=".HomePage"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".IssueDetailsActivity"
+            android:theme="@style/AppTheme"></activity>
+        <activity android:name=".ProfileActivity"></activity>
 
         <activity
             android:name=".MapActivity"
             android:theme="@style/AppTheme">
-        </activity>
-
-        <activity android:name=".HomePage"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".IssueDetailsActivity"
-            android:theme="@style/AppTheme">
-
         </activity>
 
         <!--<meta-data-->
@@ -79,6 +74,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
+>
     </application>
 
     <uses-feature

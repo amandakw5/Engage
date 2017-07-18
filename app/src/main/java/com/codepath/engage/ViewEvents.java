@@ -38,7 +38,7 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class ViewEvents extends AppCompatActivity   implements LocationListener,GoogleApiClient.ConnectionCallbacks,
+public class  ViewEvents extends AppCompatActivity   implements LocationListener,GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener  {
     static int counterToGetPositionOfEvent;
     //Variable that will refrence the Search view/ Search bar icon
@@ -52,6 +52,9 @@ public class ViewEvents extends AppCompatActivity   implements LocationListener,
     ArrayList<Event> events;
     ArrayList<Venue> venues;
     RecyclerView rvEvents;
+
+    String query;
+
     Boolean eventRequestCompleted = false;
 
     //Foloowing
@@ -73,7 +76,6 @@ public class ViewEvents extends AppCompatActivity   implements LocationListener,
         client = new EventbriteClient();
         //Sets up the listners needed for the input text of search view.
         setUpSearchView();
-
         //find the recycler view
         rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
         //init the arraylsit
@@ -85,6 +87,10 @@ public class ViewEvents extends AppCompatActivity   implements LocationListener,
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
         // set the adapter
         rvEvents.setAdapter(eventAdapter);
+        Intent intent = getIntent();
+        query = intent.getStringExtra("Query");
+        populateEvents(query);
+
         //Getting the location for the user.
         //Setting up the location google maps
         isGooglePlayServicesAvailable();
@@ -107,7 +113,6 @@ public class ViewEvents extends AppCompatActivity   implements LocationListener,
     private void searchFor(String query){
     }
     private void closeSearchView(SearchView searchView){
-        searchView.setIconified(true);
         searchView.setIconified(true);
     }
     //Initilalizes all necessary values that will hold all the searchview values.
