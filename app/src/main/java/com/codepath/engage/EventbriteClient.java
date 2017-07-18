@@ -1,7 +1,10 @@
 package com.codepath.engage;
 
+import android.util.Log;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 /**
  * Created by calderond on 7/11/17.
@@ -21,10 +24,18 @@ public class EventbriteClient {
     //Client to handle network calls
     private static AsyncHttpClient client = new AsyncHttpClient();
     //Searches for events based on the query passed into the function. Will return a list of objects that fall under the search query
-    public void getInfoByQuery(String query, AsyncHttpResponseHandler asyncHttpResponseHandler){
+    public void getInfoByQuery(String query,String latitude,String longitude, AsyncHttpResponseHandler asyncHttpResponseHandler){
+        RequestParams requestParams= new RequestParams();
+        requestParams.put("location.longitude",longitude);
 
-        finalUrl = baseApiUrl + searchBaseUrl + query + endBaseUrl;
-        client.get(finalUrl,asyncHttpResponseHandler);
+        requestParams.put("location.latitude",latitude);
+        requestParams.put("sort_by","distance");
+        requestParams.put("location.within","15mi");
+
+                finalUrl = baseApiUrl + searchBaseUrl + query + endBaseUrl;
+        Log.i("FINAL URL",finalUrl);
+
+        client.get(finalUrl,requestParams,asyncHttpResponseHandler);
 
     }
     public void getEventInfo(String eventId, AsyncHttpResponseHandler asynchHttpResponseHandler){

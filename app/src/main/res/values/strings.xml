@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Engage</string>
     <string name="facebook_app_id">1356409037788347</string>
+    <string name="google_maps_api_key">AIzaSyAb-qL9S_hAeFtES2zaQzcqsFpB4a_xAbA</string>
     <string name="fb_login_protocol_scheme">fb1356409037788347</string>
     <string name="welcome">Welcome to Engage</string>
     <string name="host">Host</string>
@@ -11,4 +12,8 @@
     <string name="people_attending">People Attending</string>
     <string name="save">Save</string>
     <string name="event_name">Event Name</string>
+    <string name="map">Map</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="cancel">Cancel</string>
 </resources>
+

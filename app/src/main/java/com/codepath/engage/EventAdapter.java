@@ -73,7 +73,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
                 final Event event = mEvents.get(position);
                 Intent intent = new Intent(context, EventDetailsActivity.class);
                 intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
-                intent.putExtra("Position", position);
                 context.startActivity(intent);
             }
         }

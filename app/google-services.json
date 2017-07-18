@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "31412669755",
+    "firebase_url": "https://engage-2da81.firebaseio.com",
+    "project_id": "engage-2da81",
+    "storage_bucket": "engage-2da81.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:31412669755:android:2bb02a362a17477d",
+        "android_client_info": {
+          "package_name": "com.codepath.engage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "31412669755-cev7mnr2m811la8bd3tk71j0rjhv8of7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.codepath.engage",
+            "certificate_hash": "71098dfda6e8d9fca9b18653767bf76bca303044"
+          }
+        },
+        {
+          "client_id": "31412669755-39b29vlurqeetb06skj6cabofeme3pm0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDie8hdtVJOiWboulsNw8XYZ97wNDT3FQs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "31412669755-39b29vlurqeetb06skj6cabofeme3pm0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
