@@ -2,6 +2,7 @@ package com.codepath.engage;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,6 +32,7 @@ public class ViewEvents extends AppCompatActivity  {
     EventAdapter eventAdapter;
     ArrayList<Event> events;
     RecyclerView rvEvents;
+    String query;
 
 
     @Override
@@ -40,7 +42,6 @@ public class ViewEvents extends AppCompatActivity  {
         client = new EventbriteClient();
         //Sets up the listners needed for the input text of search view.
         setUpSearchView();
-
         //find the recycler view
         rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
         //init the arraylsit
@@ -51,13 +52,16 @@ public class ViewEvents extends AppCompatActivity  {
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
         // set the adapter
         rvEvents.setAdapter(eventAdapter);
+        Intent intent = getIntent();
+        query = intent.getStringExtra("Query");
+        populateEvents(query);
+
     }
     //Perfoms The Searching Of Desired Event Category
     //TODO finish this function
     private void searchFor(String query){
     }
     private void closeSearchView(SearchView searchView){
-        searchView.setIconified(true);
         searchView.setIconified(true);
     }
     //Initilalizes all necessary values that will hold all the searchview values.

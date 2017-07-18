@@ -7,12 +7,9 @@ import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-
-import android.util.Log;
-import android.widget.Toast;
-
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -89,8 +86,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(LoginResult loginResult) {
 
                 handleFacebookAccessToken(loginResult.getAccessToken());
-                Intent intent = new Intent(LoginActivity.this, ViewEvents.class);
-
+                Intent intent = new Intent(LoginActivity.this, HomePage.class);
+                startActivity(intent);
             }
 
             @Override
@@ -118,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        Intent i = new Intent(LoginActivity.this, ViewEvents.class);
+        Intent i = new Intent(LoginActivity.this, HomePage.class);
         startActivity(i);
     }
     private void handleFacebookAccessToken(AccessToken token) {

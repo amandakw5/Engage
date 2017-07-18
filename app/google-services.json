@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "31412669755-j7fhissljckebv593mh824hneap05rtn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.codepath.engage",
+            "certificate_hash": "2aab08b7dbc50520c7bbd2bd093fdba23d040190"
+          }
+        },
+        {
           "client_id": "31412669755-cev7mnr2m811la8bd3tk71j0rjhv8of7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
