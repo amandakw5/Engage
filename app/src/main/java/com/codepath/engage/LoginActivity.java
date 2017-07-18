@@ -1,6 +1,7 @@
 package com.codepath.engage;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -39,6 +40,9 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.loopj.android.http.AsyncHttpClient.log;
+
 public class LoginActivity extends AppCompatActivity {
 
     private String TAG = "TOKEN_ACCESS";
@@ -46,6 +50,9 @@ public class LoginActivity extends AppCompatActivity {
     public static CallbackManager mCallbackManager;
 
     private FirebaseAuth mAuth;
+
+    String uid;
+    LoginButton loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,19 +70,22 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference users = database.getReference("users");
 
-        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
 
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
 
-                handleFacebookAccessToken(loginResult.getAccessToken());
-                Intent intent = new Intent(LoginActivity.this, HomePage.class);
-                startActivity(intent);
-                String uid;
+                FirebaseUser user = null;
 
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                
+                while (user == null){
+                    handleFacebookAccessToken(loginResult.getAccessToken());
+                    user = FirebaseAuth.getInstance().getCurrentUser();
+
+                }
+
                 if (user != null) {
                     uid = user.getUid();
                     final DatabaseReference userInfo = users.child(uid);
@@ -116,12 +126,13 @@ public class LoginActivity extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
                             } catch (JSONException e) {
+                                Log.d("Facebook ID", "Failed to get user's id");
                                 e.printStackTrace();
                             }
 
                             userInfo.updateChildren(userInfoUpdates);
 
-                            Intent intent = new Intent(LoginActivity.this, ViewEvents.class);
+                            Intent intent = new Intent(LoginActivity.this, HomePage.class);
                             intent.putExtras(bFacebookData);
                             startActivity(intent);
                         }
@@ -131,6 +142,11 @@ public class LoginActivity extends AppCompatActivity {
                     parameters.putString("fields", "id, first_name, last_name, email,gender, birthday, location");
                     request.setParameters(parameters);
                     request.executeAsync();
+
+                } else {
+                    FirebaseAuth.getInstance().signOut();
+                    Toast.makeText(LoginActivity.this, "Data retrieval failed, please try again", Toast.LENGTH_SHORT).show();
+                    Log.d("Get user info", "user is null");
                 }
             }
 
@@ -176,7 +192,6 @@ public class LoginActivity extends AppCompatActivity {
                 return null;
             }
         });
-//        FirebaseAuth.getInstance().signOut();
     }
 
     @Override
@@ -189,9 +204,8 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            Intent in = new Intent(LoginActivity.this, ViewEvents.class);
+        if (mAuth.getCurrentUser() != null) {
+            Intent in = new Intent(LoginActivity.this, HomePage.class);
             startActivity(in);
         }
     }
@@ -206,7 +220,6 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
