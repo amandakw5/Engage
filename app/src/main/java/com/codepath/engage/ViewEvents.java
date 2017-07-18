@@ -154,6 +154,18 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
                         if(i == eventsObject.length() -1)
                             eventRequestCompleted = true;
                     }
+//                    for(int i =0 ; i < events.size();i++){
+//                        client.getOrganizerInfo(events.get(i).getOrganizerId(),new JsonHttpResponseHandler(){
+//                            @Override
+//                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                                Organizer organizer = Organizer.fromJson(response);
+//                                events.get(counterToGetPositionOfEvent).setOrganizer(organizer);
+//                            }
+//                        });
+//                    }
+//                    for(Event event : events){
+//                        Log.i("Organize",event.getOrganizer().getDescription());
+//                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

@@ -52,6 +52,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener 
         setContentView(R.layout.activity_home_page);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         profileImage = (ImageView) findViewById(R.id.profileImage);
+        searchView = (SearchView) findViewById(R.id.search);
         ActionBar actionbar = getSupportActionBar();
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         setSupportActionBar(toolbar);

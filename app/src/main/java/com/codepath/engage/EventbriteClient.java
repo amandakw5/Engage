@@ -17,8 +17,10 @@ public class EventbriteClient {
     static final String searchBaseUrl="events/search/?q=";
     static final String eventFindUrl = "events/";
     static final String venueUrl = "venues/";
+    static final String organizerUrl = "organizers/";
     static final String endBaseUrl = "&token=ZVEFG6DHKZONNTXLL5HM";
     static final String endVenueUrl = "/?token=ZVEFG6DHKZONNTXLL5HM";
+    static final String endOrganizerUrl = "/?token=ZVEFG6DHKZONNTXLL5HM";
     //variable to hold the complete url.
 
     public String finalUrl="";
@@ -40,6 +42,10 @@ public class EventbriteClient {
 
         client.get(finalUrl,requestParams,asyncHttpResponseHandler);
 
+    }
+    public void getOrganizerInfo(String id, AsyncHttpResponseHandler asyncHttpResponseHandler){
+        finalUrl = baseApiUrl + venueUrl+id+endOrganizerUrl;
+        client.get(finalUrl,asyncHttpResponseHandler);
     }
 
     public void getEventInfo(String eventId, AsyncHttpResponseHandler asynchHttpResponseHandler){

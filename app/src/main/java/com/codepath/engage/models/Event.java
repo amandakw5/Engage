@@ -22,7 +22,9 @@ public class Event {
     public String ivEventImage;
     public String eventId;
     public String veneuId;
+    public String organizerId;
     public Venue venue;
+    public Organizer organizer;
 
 
     public Event(String tvEventName, String tvEventInfo, String tvDescription, String ivEventImage, String eventId, String veneuId,Venue venue) {
@@ -71,8 +73,26 @@ public class Event {
             event.ivEventImage ="@drawable/tree";
         }
         event.veneuId = jsonObject.getString("venue_id");
+        event.organizerId = jsonObject.getString("organizer_id");
         return event;
     }
+
+    public Organizer getOrganizer() {
+        return organizer;
+    }
+
+    public void setOrganizer(Organizer organizer) {
+        this.organizer = organizer;
+    }
+
+    public String getOrganizerId() {
+        return organizerId;
+    }
+
+    public void setOrganizerId(String organizerId) {
+        this.organizerId = organizerId;
+    }
+
     public String getTvEventName() {
         return tvEventName;
     }
