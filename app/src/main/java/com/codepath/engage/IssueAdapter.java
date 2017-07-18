@@ -32,6 +32,7 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
         ViewHolder viewHolder = new ViewHolder(issueView);
         return viewHolder;
     }
+
     public IssueAdapter(ArrayList<String> issues) {
         this.issues = issues;
     }
@@ -40,7 +41,6 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         String issue = issues.get(position);
         holder.issueTitle.setText(issue);
-
     }
 
     @Override
@@ -58,7 +58,7 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
                 public void onClick(View view){
                         //get the position of row element
                     int position = getAdapterPosition();
-                    // fire the listnener callback
+                    // fire the listener callback
                     if (position != RecyclerView.NO_POSITION) {
                         String currentIssue = issues.get(position);
                         // create intent for the new activity
@@ -75,7 +75,7 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            // fire the listnener callback
+            // fire the listener callback
             if (position != RecyclerView.NO_POSITION) {
                 String currentIssue = issues.get(position);
                 // create intent for the new activity

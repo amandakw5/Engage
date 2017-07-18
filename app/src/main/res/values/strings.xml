@@ -8,7 +8,7 @@
     <string name="location">Location</string>
     <string name="time_and_date">Time and Date</string>
     <string name="event_description">Event Description</string>
-    <string name="number_of_people">Number of People</string>
+    <string name="number_of_people">#</string>
     <string name="people_attending">People Attending</string>
     <string name="save">Save</string>
     <string name="event_name">Event Name</string>

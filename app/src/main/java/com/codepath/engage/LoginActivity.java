@@ -37,9 +37,9 @@ import java.util.HashMap;
 import java.util.Map;
 public class LoginActivity extends AppCompatActivity {
 
-    public static CallbackManager mCallbackManager;
     private String TAG = "TOKEN_ACCESS";
-//    private AccessToken token;
+
+    public static CallbackManager mCallbackManager;
 
     private FirebaseAuth mAuth;
 
@@ -58,15 +58,10 @@ public class LoginActivity extends AppCompatActivity {
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference users = database.getReference("users");
-//        final DatabaseReference uid = database.getReference("users/uid");
-//        final DatabaseReference userName = database.getReference("users/name");
-//        final DatabaseReference userFirstName = database.getReference("users/first_name");
-//        final DatabaseReference userLastName = database.getReference("users/last_name");
-//        final DatabaseReference userEmail = database.getReference("users/email");
-//        final DatabaseReference userPicture = database.getReference("users/profileUrl");
 
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
+
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {

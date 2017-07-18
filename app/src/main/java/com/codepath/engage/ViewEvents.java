@@ -167,9 +167,9 @@ public class ViewEvents extends AppCompatActivity   implements LocationListener,
                                         if(!venue.getAddress().equals("null"))
                                             address += venue.getAddress();
                                         if(!venue.getCity().equals("null"))
-                                            address += ","+venue.getCity();
+                                            address += ", "+venue.getCity();
                                         if(!venue.getCountry().equals("null"))
-                                            address += ","+ venue.getCountry();
+                                            address += ", "+ venue.getCountry();
                                         events.get(counterToGetPositionOfEvent).setTvEventInfo(events.get(counterToGetPositionOfEvent).getTvEventInfo() +"\n"+ address);
                                         counterToGetPositionOfEvent++;
                                         eventAdapter.notifyDataSetChanged();
