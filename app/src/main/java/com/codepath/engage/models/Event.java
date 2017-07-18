@@ -56,6 +56,7 @@ public class Event {
             event.tvEventInfo = mydate;
         }
         catch(ParseException e){
+            e.printStackTrace();
         }
         //Getting the description of the event
         JSONObject eventDescription = jsonObject.getJSONObject("description");
