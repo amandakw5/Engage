@@ -67,6 +67,7 @@ public class EventDetailsActivity extends AppCompatActivity{
         startActivity(intent);
     }
     public void saveEvent(View view){
+        
 
     }
 }
