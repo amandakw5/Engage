@@ -21,55 +21,56 @@
                     android:layout_below="@+id/tvEventName"
                     android:layout_margin="10dp"
                     app:srcCompat="@android:color/black" />
-                <TextView
-                    android:id="@+id/tvHost"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/ivPicture"
-                    android:layout_marginBottom="5dp"
-                    android:layout_toEndOf="@+id/ivPicture"
-                    android:text="@string/host"
-                    android:textAppearance="@android:style/TextAppearance.Large" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/location"
-                    android:id="@+id/tvLocation"
-                    android:layout_below="@+id/tvHost"
-                    android:layout_toEndOf="@+id/ivPicture"
-                    android:layout_marginBottom="5dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/time_and_date"
-                    android:id="@+id/tvTimeDate"
-                    android:layout_below="@+id/tvLocation"
-                    android:layout_toEndOf="@+id/ivPicture"
-                    android:layout_marginBottom="5dp"/>
-                <TextView
-                    android:id="@+id/tvEventDescription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/event_description"
-                    android:layout_below="@+id/ivPicture"
-                    android:layout_alignStart="@+id/ivPicture" />
-                <TextView
-                    android:id="@+id/tvPeopleParticipating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tvTimeDate"
-                    android:layout_toEndOf="@+id/ivPicture"
-                    android:text="@string/number_of_people"
-                    android:layout_marginBottom="10dp"/>
-                <TextView
-                    android:id="@+id/tvPeople"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/tvPeopleParticipating"
-                    android:layout_toEndOf="@+id/tvPeopleParticipating"
-                    android:text="@string/people_attending"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginStart="5dp"/>
+            <TextView
+                android:id="@+id/tvHost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/ivPicture"
+                android:layout_marginBottom="5dp"
+                android:layout_toEndOf="@+id/ivPicture"
+                android:text="@string/host"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                android:textSize="24sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/location"
+                android:id="@+id/tvLocation"
+                android:layout_below="@+id/tvHost"
+                android:layout_toEndOf="@+id/ivPicture"
+                android:layout_marginBottom="5dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_and_date"
+                android:id="@+id/tvTimeDate"
+                android:layout_below="@+id/tvLocation"
+                android:layout_toEndOf="@+id/ivPicture"
+                android:layout_marginBottom="5dp"/>
+            <TextView
+                android:id="@+id/tvEventDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/event_description"
+                android:layout_below="@+id/ivPicture"
+                android:layout_alignStart="@+id/ivPicture" />
+            <TextView
+                android:id="@+id/tvPeopleParticipating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvTimeDate"
+                android:layout_toEndOf="@+id/ivPicture"
+                android:text="@string/number_of_people"
+                android:layout_marginBottom="10dp"/>
+            <TextView
+                android:id="@+id/tvPeople"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/tvPeopleParticipating"
+                android:layout_toEndOf="@+id/tvPeopleParticipating"
+                android:text="@string/people_attending"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="5dp"/>
             <TextView
                 android:id="@+id/tvEventName"
                 android:layout_width="wrap_content"
@@ -98,7 +99,8 @@
         android:text="@string/save"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="5dp"/>
+        android:layout_margin="5dp"
+        android:onClick="saveEvent"/>
     <Button
         android:id="@+id/btnMap"
         android:layout_width="wrap_content"

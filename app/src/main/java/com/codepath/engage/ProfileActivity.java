@@ -5,7 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.codepath.engage.models.Event;
 import com.codepath.engage.models.UpdateAdapter;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -23,5 +26,7 @@ public class ProfileActivity extends AppCompatActivity {
         rvUpdates = (RecyclerView) findViewById(R.id.rvUpdates);
         rvUpdates.setLayoutManager(new LinearLayoutManager(this));
         rvUpdates.setAdapter(adapter);
+
+        Event event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
     }
 }

@@ -146,6 +146,14 @@ public class Event {
         return organizerName;
     }
 
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
     public void setOrganizerName(String organizerName) {
         this.organizerName = organizerName;
     }
