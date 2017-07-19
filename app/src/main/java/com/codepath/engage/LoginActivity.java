@@ -1,5 +1,6 @@
 package com.codepath.engage;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -17,26 +19,36 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static com.loopj.android.http.AsyncHttpClient.log;
 
@@ -45,11 +57,14 @@ public class LoginActivity extends AppCompatActivity {
     private String TAG = "TOKEN_ACCESS";
 
     public static CallbackManager mCallbackManager;
-
     private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
-    String uid;
+    public User user;
+
     LoginButton loginButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,99 +76,96 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
+
+        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if (accessToken != null){
+            Intent i = new Intent(this, HomePage.class);
+            startActivity(i);
+            finish();
+        }
+
         // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference users = database.getReference("users");
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference("users");
+//        final DatabaseReference users = database.getReference("users");
 
         loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
 
+        //LoginManager.getInstance()
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-
-                FirebaseUser user = null;
-
-                
-                while (user == null){
-                    handleFacebookAccessToken(loginResult.getAccessToken());
-                    user = FirebaseAuth.getInstance().getCurrentUser();
-
-                }
-
-                if (user != null) {
-                    uid = user.getUid();
-                    final DatabaseReference userInfo = users.child(uid);
-                    final Map<String, Object> userInfoUpdates = new HashMap<String, Object>();
-
-                    GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-
-                        @Override
-                        public void onCompleted(JSONObject object, GraphResponse response) {
-                            Log.i("LoginActivity", response.toString());
-                            // Get facebook data from login
-                            Bundle bFacebookData = getFacebookData(object);
-                            User user = new User();
-                            try {
-                                String first_name = object.getString("first_name");
-                                userInfoUpdates.put("first_name", first_name);
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            try {
-                                String last_name = object.getString("last_name");
-                                userInfoUpdates.put("last_name", last_name);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            try {
-                                String email = object.getString("email");
-                                userInfoUpdates.put("email", email);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            try {
-                                String id = object.getString("id");
-                                try {
-                                    URL profile_picture = new URL("https://graph.facebook.com/" + id + "/picture?width=200&height=200");
-                                    String profilePicture = profile_picture.toString();
-                                    userInfoUpdates.put("profile_pic", profilePicture);
-                                } catch (MalformedURLException e) {
-                                    e.printStackTrace();
-                                }
-                            } catch (JSONException e) {
-                                Log.d("Facebook ID", "Failed to get user's id");
-                                e.printStackTrace();
-                            }
-
-                            userInfo.updateChildren(userInfoUpdates);
-
-                            Intent intent = new Intent(LoginActivity.this, HomePage.class);
-                            intent.putExtras(bFacebookData);
-                            startActivity(intent);
+                Log.d(TAG, "facebook:onSuccess:" + loginResult);
+                handleFacebookAccessToken(loginResult.getAccessToken());
+                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback(){
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+//                        final Map<String, Object> userInfoUpdates = new HashMap<String, Object>();
+                        final User user = new User();
+                        Bundle bFacebookData = getFacebookData(object);
+                        Log.d(TAG, "facebook:onCompleted");
+                        try {
+                            String id = object.getString("id");
+                            user.setUid(id);
+                            Log.d(TAG, "facebook id");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    });
+                        try {
+                            String first_name = object.getString("first_name");
+                            user.setFirstName(first_name);
+                            Log.d(TAG, "facebook first_name");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            String last_name = object.getString("last_name");
+                            user.setLastName(last_name);
+                            Log.d(TAG, "facebook last_name");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            String email = object.getString("email");
+                            user.setEmail(email);
+                            Log.d(TAG, "facebook email");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            URL profile_picture = new URL("https://graph.facebook.com/" + user.getUid() + "/picture?width=200&height=200");
+                            String profilePicture = profile_picture.toString();
+                            user.setProfilePicture(profilePicture);
+                            Log.d(TAG, "facebook profilePicture");
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
 
-                    Bundle parameters = new Bundle();
-                    parameters.putString("fields", "id, first_name, last_name, email,gender, birthday, location");
-                    request.setParameters(parameters);
-                    request.executeAsync();
+                        writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture());
 
-                } else {
-                    FirebaseAuth.getInstance().signOut();
-                    Toast.makeText(LoginActivity.this, "Data retrieval failed, please try again", Toast.LENGTH_SHORT).show();
-                    Log.d("Get user info", "user is null");
-                }
+                    }
+                });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id, first_name, last_name, email");
+                request.setParameters(parameters);
+                request.executeAsync();
             }
 
             @Override
-            public void onCancel() { }
+            public void onCancel() {
+                Log.d(TAG, "facebook:onCancel");
+
+            }
 
             @Override
-            public void onError(FacebookException error) { }
+            public void onError(FacebookException error) {
+                Log.d(TAG, "facebook:onError", error);
+
+            }
 
             private Bundle getFacebookData(JSONObject object) {
 
@@ -177,12 +189,6 @@ public class LoginActivity extends AppCompatActivity {
                         bundle.putString("last_name", object.getString("last_name"));
                     if (object.has("email"))
                         bundle.putString("email", object.getString("email"));
-                    if (object.has("gender"))
-                        bundle.putString("gender", object.getString("gender"));
-                    if (object.has("birthday"))
-                        bundle.putString("birthday", object.getString("birthday"));
-                    if (object.has("location"))
-                        bundle.putString("location", object.getJSONObject("location").getString("name"));
                     return bundle;
                 }
                 catch(JSONException e) {
@@ -196,18 +202,27 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        // Pass the activity result back to the Facebook SDK
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void onStart(){
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        if (mAuth.getCurrentUser() != null) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // User is signed in
             Intent in = new Intent(LoginActivity.this, HomePage.class);
+            String uid = mAuth.getCurrentUser().getUid();
+            in.putExtra("uid", uid);
             startActivity(in);
+        } else {
+            // No user is signed in
+            Log.d(TAG, "User is not signed in or is null");
         }
+        super.onStart();
     }
+
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
 
@@ -229,4 +244,25 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture) {
+        final User user = new User(firstName, lastName, email, profilePicture);
+        mDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild(uid)) {
+                } else {
+                    mDatabase.child(uid).setValue(user);
+                    Intent intent = new Intent(LoginActivity.this, HomePage.class);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 }
