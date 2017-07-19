@@ -18,6 +18,7 @@ public class Organizer {
     public String website;
     public String facebookUsername;
     public String twitter;
+    public String name;
 
     public Organizer() {
     }
@@ -60,7 +61,25 @@ public class Organizer {
             organizer.facebookUsername = "NA";
             e.printStackTrace();
         }
+        try {
+            organizer.name = jsonObject.getString("name");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            organizer.twitter = jsonObject.getString("twitter");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return organizer;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getTwitter() {

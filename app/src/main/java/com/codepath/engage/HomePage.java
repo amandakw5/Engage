@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -43,6 +44,8 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -59,12 +62,17 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     private ListView mDrawerList;
 
     //Variable that will refrence the Search view/ Search bar icon
+
+    //Variable that will reference the Search view/ Search bar icon
+
     private SearchView searchView;
+
     //Will hold teh text that the user inputs to the serach view
     private String valueOfQuery;
 
     private ArrayAdapter<String> mAdapter;
-    //Foloowing variabels are for maps
+
+    //Following variables are for maps
     final String TAG = "GPS";
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
@@ -78,6 +86,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+
         //Getting the location for the user.
         //Setting up the location google maps
         isGooglePlayServicesAvailable();
@@ -118,6 +127,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         rvIssues.setAdapter(adapter);
 
     }
+
     private void configureNavigationDrawer() {
 
         NavigationView navView = (NavigationView) findViewById(R.id.nvView);

@@ -20,6 +20,7 @@ public class Event {
     public String tvEventInfo;
     public String tvDescription;
     public String ivEventImage;
+    public String organizerName;
     public String eventId;
     public String veneuId;
     public String organizerId;
@@ -27,7 +28,7 @@ public class Event {
     public Organizer organizer;
 
 
-    public Event(String tvEventName, String tvEventInfo, String tvDescription, String ivEventImage, String eventId, String veneuId,Venue venue) {
+    public Event(String tvEventName, String tvEventInfo, String tvDescription, String ivEventImage, String eventId, String veneuId,Venue venue,Organizer organizer) {
         this.tvEventName = tvEventName;
         this.tvEventInfo = tvEventInfo;
         this.tvDescription = tvDescription;
@@ -139,5 +140,21 @@ public class Event {
 
     public void setVeneuId(String veneuId) {
         this.veneuId = veneuId;
+    }
+
+    public String getOrganizerName() {
+        return organizerName;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
+    public void setOrganizerName(String organizerName) {
+        this.organizerName = organizerName;
     }
 }

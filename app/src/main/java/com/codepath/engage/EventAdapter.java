@@ -3,6 +3,7 @@ package com.codepath.engage;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import com.codepath.engage.models.Event;
 import org.parceler.Parcels;
 
 import java.util.List;
+
+import static com.codepath.engage.R.id.profileImage;
 
 /**
  * Created by calderond on 7/12/17.
@@ -41,6 +44,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Event event = mEvents.get(position);
+        holder.tvHost.setText(event.organizerName);
         holder.tvEventName.setText(event.tvEventName);
         holder.tvEventInfo.setText(event.tvEventInfo);
         holder.tvDescription.setText(event.tvDescription);
@@ -57,8 +61,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         public TextView tvEventName;
         public TextView tvEventInfo;
         public TextView tvDescription;
+        public TextView tvHost;
         public ViewHolder(View itemView){
             super(itemView);
+            tvHost = (TextView) itemView.findViewById(R.id.tvHost);
             ivProfileImage = (ImageView) itemView.findViewById(R.id.ivProfileImage);
             tvEventName = (TextView) itemView.findViewById(R.id.tvEventName);
             tvEventInfo = (TextView) itemView.findViewById(R.id.tvLocationInfo);

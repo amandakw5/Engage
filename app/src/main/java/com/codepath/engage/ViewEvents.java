@@ -230,6 +230,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                                     Organizer organizer = Organizer.fromJson(response);
                                     events.get(counterToSetOrganizer).setOrganizer(organizer);
+                                    events.get(counterToSetOrganizer).setOrganizerName(organizer.getName());
+                                    eventAdapter.notifyDataSetChanged();
                                     counterToSetOrganizer++;
                                 }
                             });
@@ -256,6 +258,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                                         if(!venue.getCountry().equals("null"))
                                             address += ", "+ venue.getCountry();
                                         events.get(counterToGetPositionOfEvent).setTvEventInfo(events.get(counterToGetPositionOfEvent).getTvEventInfo() +"\n"+ address);
+
                                         counterToGetPositionOfEvent++;
                                         eventAdapter.notifyDataSetChanged();
                                     } catch (JSONException e) {
@@ -285,6 +288,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         });
 
     }
+    //START FUNCTIONS TO GET THE USER LOCATION WITH GOOGLE MAPS API
     //Functions that deal with user location
     @Override
     protected void onStart() {
@@ -411,4 +415,5 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 });
         dialog.show();
     }
+    //END FUNCTIONS TO GET USER LOCATION WITH GOOGLE MAPS API
 }
