@@ -1,13 +1,6 @@
 package com.codepath.engage;
 
 import android.content.Intent;
-<<<<<<< HEAD
-=======
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.net.Uri;
->>>>>>> f573b93df2b03659fe5462e187188ec0e83135c8
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -39,13 +32,10 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
->>>>>>> f573b93df2b03659fe5462e187188ec0e83135c8
 public class LoginActivity extends AppCompatActivity {
 
     public static CallbackManager mCallbackManager;
