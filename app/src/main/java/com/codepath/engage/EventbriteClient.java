@@ -30,7 +30,7 @@ public class EventbriteClient {
     public void getInfoByQuery(String query,String latitude,String longitude, AsyncHttpResponseHandler asyncHttpResponseHandler){
         RequestParams requestParams= new RequestParams();
         requestParams.put("location.longitude",longitude);
-
+        requestParams.put("categories","101,113,102,111,115,112");
         requestParams.put("location.latitude",latitude);
         requestParams.put("sort_by","distance");
         requestParams.put("location.within","15mi");
