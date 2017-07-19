@@ -178,6 +178,8 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
                                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                                     Organizer organizer = Organizer.fromJson(response);
                                     events.get(counterToSetOrganizer).setOrganizer(organizer);
+                                    events.get(counterToSetOrganizer).setOrganizerName(organizer.getName());
+                                    eventAdapter.notifyDataSetChanged();
                                     counterToSetOrganizer++;
                                 }
                             });
