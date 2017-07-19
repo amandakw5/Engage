@@ -82,6 +82,14 @@
                 android:text="@string/event_name"
                 android:textSize="30sp"
                 android:textStyle="bold" />
+            <fragment
+                android:id="@+id/youtubeFragment"
+                android:layout_below="@+id/tvEventDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:name="com.google.android.youtube.player.YouTubePlayerFragment">
+            </fragment>
         </RelativeLayout>
     </ScrollView>
     <Button
