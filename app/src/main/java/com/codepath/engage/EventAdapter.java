@@ -3,6 +3,7 @@ package com.codepath.engage;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import com.codepath.engage.models.Event;
 import org.parceler.Parcels;
 
 import java.util.List;
+
+import static com.codepath.engage.R.id.profileImage;
 
 /**
  * Created by calderond on 7/12/17.

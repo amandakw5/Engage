@@ -1,17 +1,14 @@
 package com.codepath.engage;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
+import com.codepath.engage.models.User;
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -19,18 +16,15 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,18 +33,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.parceler.Parcels;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import static com.loopj.android.http.AsyncHttpClient.log;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -59,9 +45,6 @@ public class LoginActivity extends AppCompatActivity {
     public static CallbackManager mCallbackManager;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-
-    public User user;
 
     LoginButton loginButton;
 
@@ -88,9 +71,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Write a message to the database
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
-//        final DatabaseReference users = database.getReference("users");
 
         loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
@@ -104,7 +85,6 @@ public class LoginActivity extends AppCompatActivity {
                 GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback(){
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-//                        final Map<String, Object> userInfoUpdates = new HashMap<String, Object>();
                         final User user = new User();
                         Bundle bFacebookData = getFacebookData(object);
                         Log.d(TAG, "facebook:onCompleted");
@@ -145,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
-                        writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture());
+                        writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), bFacebookData);
 
                     }
                 });
@@ -245,7 +225,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture) {
+    public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture, final Bundle facebookData) {
         final User user = new User(firstName, lastName, email, profilePicture);
         mDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -254,10 +234,10 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     mDatabase.child(uid).setValue(user);
                     Intent intent = new Intent(LoginActivity.this, HomePage.class);
+                    intent.putExtras(facebookData);
                     startActivity(intent);
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 

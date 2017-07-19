@@ -58,15 +58,18 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
-    //Variable that will refrence the Search view/ Search bar icon
+
+    //Variable that will reference the Search view/ Search bar icon
     private SearchView searchView;
+
     //Will hold teh text that the user inputs to the serach view
     private String valueOfQuery;
     private Toolbar toolbar;
     private ImageView profileImage;
     private ListView mDrawerList;
     private ArrayAdapter<String> mAdapter;
-    //Foloowing variabels are for maps
+
+    //Following variables are for maps
     final String TAG = "GPS";
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
@@ -127,6 +130,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
 //        searchView = toolbar.findViewById(search);
         setUpSearchView();
     }
+
     private void configureNavigationDrawer() {
 
         NavigationView navView = (NavigationView) findViewById(R.id.nvView);
