@@ -19,14 +19,16 @@ import org.parceler.Parcels;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.codepath.engage.R.id.tvEventInfo;
+import static com.codepath.engage.R.id.tvEventName;
+
 
 public class EventDetailsActivity extends AppCompatActivity{
 
     @Nullable
     @BindView(R.id.ivPicture) ImageView ivPicture;
     @BindView(R.id.tvHost) TextView tvHost;
-    @BindView(R.id.tvLocation) TextView tvLocation;
-    @BindView(R.id.tvTimeDate) TextView tvTimeDate;
+    @BindView(R.id.tvEventInfo) TextView tvEventInfo;
     @BindView(R.id.tvEventDescription) TextView tvEventDescription;
     @BindView(R.id.tvPeopleParticipating) TextView tvPeopleParticipating;
     @BindView(R.id.btnSave) Button btnSave;
@@ -56,8 +58,8 @@ public class EventDetailsActivity extends AppCompatActivity{
         }
         tvEventName.setText(event.tvEventName);
         tvEventDescription.setText(event.tvDescription);
-        tvTimeDate.setText(event.tvEventInfo);
-        tvLocation.setText(event.venue.address);
+        tvEventInfo.setText(event.tvEventInfo);
+        tvHost.setText(event.organizer.name);
     }
 
     public void openMap(View view){
@@ -67,6 +69,8 @@ public class EventDetailsActivity extends AppCompatActivity{
         startActivity(intent);
     }
     public void saveEvent(View view){
-
+        Intent intent = new Intent(this, ProfileActivity.class);
+        intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
+        startActivity(intent);
     }
 }

@@ -121,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             userInfo.updateChildren(userInfoUpdates);
 
-                            Intent intent = new Intent(LoginActivity.this, ViewEvents.class);
+                            Intent intent = new Intent(LoginActivity.this, HomePage.class);
                             intent.putExtras(bFacebookData);
                             startActivity(intent);
                         }
@@ -191,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-            Intent i = new Intent(LoginActivity.this, ViewEvents.class);
+            Intent i = new Intent(LoginActivity.this, HomePage.class);
             startActivity(i);
         }
     }

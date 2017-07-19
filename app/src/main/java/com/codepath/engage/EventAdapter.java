@@ -45,6 +45,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         holder.tvEventInfo.setText(event.tvEventInfo);
         holder.tvDescription.setText(event.tvDescription);
         Glide.with(context).load(event.ivEventImage).centerCrop().into(holder.ivProfileImage);
+//        holder.tvHost.setText(event.organizer.name);
     }
 
     @Override
@@ -57,12 +58,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         public TextView tvEventName;
         public TextView tvEventInfo;
         public TextView tvDescription;
+        public TextView tvHost;
         public ViewHolder(View itemView){
             super(itemView);
             ivProfileImage = (ImageView) itemView.findViewById(R.id.ivProfileImage);
             tvEventName = (TextView) itemView.findViewById(R.id.tvEventName);
             tvEventInfo = (TextView) itemView.findViewById(R.id.tvLocationInfo);
             tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
+            tvHost = (TextView) itemView.findViewById(R.id.tvHost);
             itemView.setOnClickListener(this);
         }
 

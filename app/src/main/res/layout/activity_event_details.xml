@@ -30,20 +30,13 @@
                     android:layout_toEndOf="@+id/ivPicture"
                     android:text="@string/host"
                     android:textAppearance="@android:style/TextAppearance.Large" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/location"
-                    android:id="@+id/tvLocation"
+                    android:text="@string/event_info"
+                    android:id="@+id/tvEventInfo"
                     android:layout_below="@+id/tvHost"
-                    android:layout_toEndOf="@+id/ivPicture"
-                    android:layout_marginBottom="5dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/time_and_date"
-                    android:id="@+id/tvTimeDate"
-                    android:layout_below="@+id/tvLocation"
                     android:layout_toEndOf="@+id/ivPicture"
                     android:layout_marginBottom="5dp"/>
                 <TextView
@@ -57,7 +50,7 @@
                     android:id="@+id/tvPeopleParticipating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tvTimeDate"
+                    android:layout_below="@+id/tvEventInfo"
                     android:layout_toEndOf="@+id/ivPicture"
                     android:text="@string/number_of_people"
                     android:layout_marginBottom="10dp"/>
@@ -90,7 +83,8 @@
         android:text="@string/save"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="5dp"/>
+        android:layout_margin="5dp"
+        android:onClick="saveEvent"/>
     <Button
         android:id="@+id/btnMap"
         android:layout_width="wrap_content"
