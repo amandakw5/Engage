@@ -45,7 +45,6 @@ import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class HomePage extends AppCompatActivity implements View.OnClickListener,LocationListener,GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -55,13 +54,15 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
+    private Toolbar toolbar;
+    private ImageView profileImage;
+    private ListView mDrawerList;
+
     //Variable that will refrence the Search view/ Search bar icon
     private SearchView searchView;
     //Will hold teh text that the user inputs to the serach view
     private String valueOfQuery;
-    private Toolbar toolbar;
-    private ImageView profileImage;
-    private ListView mDrawerList;
+
     private ArrayAdapter<String> mAdapter;
     //Foloowing variabels are for maps
     final String TAG = "GPS";
@@ -72,7 +73,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     GoogleApiClient gac;
     LocationRequest locationRequest;
     String tvLatitude, tvLongitude, tvTime;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,38 +90,33 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         profileImage = (ImageView) findViewById(R.id.profileImage);
         searchView = (SearchView) findViewById(R.id.search);
         ActionBar actionbar = getSupportActionBar();
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         setSupportActionBar(toolbar);
-
         configureNavigationDrawer();
-
-        String[] strs = {"Women", "Food", "Climate Change", "Human Rights", "Poverty"};
-        issues = new ArrayList<>();
-        adapter = new IssueAdapter(issues);
-        issues.addAll(Arrays.asList(strs));
-        rvIssues = (RecyclerView) findViewById(R.id.rvIssues);
-        rvIssues.setLayoutManager(new LinearLayoutManager(this));
-        rvIssues.setAdapter(adapter);
-        List<String> sideItems = new ArrayList<String>();
-        sideItems.add("foo");
-        sideItems.add("bar");
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                sideItems );
-
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mDrawer.openDrawer(Gravity.RIGHT);
             }
         });
-//        searchView = toolbar.findViewById(search);
+
+        String[] strs = {"Women", "Food", "Climate Change", "Human Rights", "Poverty"};
+        issues = new ArrayList<>();
+
+        issues.addAll(Arrays.asList(strs));
+        rvIssues = (RecyclerView) findViewById(R.id.rvIssues);
+        rvIssues.setLayoutManager(new LinearLayoutManager(this));
+
+
         setUpSearchView();
+        adapter = new IssueAdapter(issues, tvLatitude, tvLongitude);
+        rvIssues.setAdapter(adapter);
+
     }
     private void configureNavigationDrawer() {
 
@@ -132,7 +127,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
 
                 Fragment f = null;
                 int itemId = menuItem.getItemId();
-
 
                 if (f != null) {
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -198,6 +192,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 i.putExtra("Latitude",tvLatitude);
                 i.putExtra("Longitude",tvLongitude);
                 startActivity(i);
+                overridePendingTransition(0, 0);
                 return true;
             }
 

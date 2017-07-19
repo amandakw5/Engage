@@ -11,13 +11,24 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v13.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.codepath.engage.models.Event;
@@ -39,7 +50,7 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class  ViewEvents extends AppCompatActivity   implements LocationListener,GoogleApiClient.ConnectionCallbacks,
+public class  ViewEvents extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener  {
     static int counterToGetPositionOfEvent;
     static int counterToSetOrganizer;
@@ -68,6 +79,12 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
     GoogleApiClient gac;
     LocationRequest locationRequest;
     String tvLatitude, tvLongitude, tvTime;
+
+    private DrawerLayout mDrawer;
+    private NavigationView nvDrawer;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private Toolbar toolbar;
+    private ImageView profileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +128,41 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
         if(intentQuery != null){
             callSearchFromIntent(intentQuery);
         }
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        profileImage = (ImageView) findViewById(R.id.profileImage);
+        searchView = (SearchView) findViewById(R.id.search);
+        ActionBar actionbar = getSupportActionBar();
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        setSupportActionBar(toolbar);
+        configureNavigationDrawer();
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawer.openDrawer(Gravity.RIGHT);
+            }
+        });
+    }
+    private void configureNavigationDrawer() {
+
+        NavigationView navView = (NavigationView) findViewById(R.id.nvView);
+        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                Fragment f = null;
+                int itemId = menuItem.getItemId();
+
+                if (f != null) {
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.rvIssues, f);
+                    transaction.commit();
+                    mDrawer.closeDrawers();
+                    return true;
+                }
+
+                return false;
+            }
+        });
     }
     private void callSearchFromIntent(Intent intent){
         query = intent.getStringExtra("Query");

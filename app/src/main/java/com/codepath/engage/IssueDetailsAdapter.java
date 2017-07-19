@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,7 +24,7 @@ public class IssueDetailsAdapter extends RecyclerView.Adapter<IssueDetailsAdapte
     ArrayList<String> issueSubsectionTitles;
     String[] specificIssues;
     String[] organizations;
-    ArrayList<String> upcomingEvents;
+    List<String> upEvents;
     ArrayList<String> pastEvents;
     private ArrayAdapter<String> listAdapter ;
     String issue;
@@ -37,13 +38,14 @@ public class IssueDetailsAdapter extends RecyclerView.Adapter<IssueDetailsAdapte
         // create the view using the item_movie layout
         View issueView = inflater.inflate(R.layout.item_issue_subsection, parent, false);
         ViewHolder viewHolder = new ViewHolder(issueView);
+
         return viewHolder;
     }
-    public IssueDetailsAdapter(String issue, ArrayList<String> issueSubsectionTitles, String[] specificIssues, String[] organizations, ArrayList<String> upcomingEvents, ArrayList<String> pastEvents) {
+    public IssueDetailsAdapter(String issue, ArrayList<String> issueSubsectionTitles, String[] specificIssues, String[] organizations, List<String> upEvents, ArrayList<String> pastEvents) {
         this.issueSubsectionTitles = issueSubsectionTitles;
         this.specificIssues = specificIssues;
         this.organizations = organizations;
-        this.upcomingEvents = upcomingEvents;
+        this.upEvents = upEvents;
         this.pastEvents = pastEvents;
         this.issue = issue;
     }
@@ -56,12 +58,17 @@ public class IssueDetailsAdapter extends RecyclerView.Adapter<IssueDetailsAdapte
         specificIssueList.addAll( Arrays.asList(specificIssues) );
         ArrayList<String> organizationList = new ArrayList<String>();
         organizationList.addAll( Arrays.asList(organizations) );
+//       List<String> upcomingEventsList = new ArrayList<String>();
+//        upcomingEventsList.addAll( Arrays.asList(upcomingEvents));
         // Create ArrayAdapter using the planet list.
         if (position == 0 ) {
             listAdapter = new ArrayAdapter<String>(context, R.layout.simplerow, specificIssueList);
         }
-        else{
+        else if (position == 1){
             listAdapter = new ArrayAdapter<String>(context, R.layout.simplerow, organizationList);
+        }
+        else{
+            listAdapter = new ArrayAdapter<String>(context, R.layout.simplerow, upEvents);
         }
         // Add more planets. If you passed a String[] instead of a List<String>
         // into the ArrayAdapter constructor, you must not add more items.
