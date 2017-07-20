@@ -40,13 +40,16 @@ import java.util.Properties;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.codepath.engage.R.id.tvEventInfo;
+import static com.codepath.engage.R.id.tvEventName;
+
 
 public class EventDetailsActivity extends AppCompatActivity{
 
     @Nullable
     @BindView(R.id.ivPicture) ImageView ivPicture;
     @BindView(R.id.tvHost) TextView tvHost;
-    @BindView(R.id.tvTimeDate) TextView tvTimeDate;
+    @BindView(R.id.tvEventInfo) TextView tvEventInfo;
     @BindView(R.id.tvEventDescription) TextView tvEventDescription;
     @BindView(R.id.tvPeopleParticipating) TextView tvPeopleParticipating;
     @BindView(R.id.btnSave) Button btnSave;
@@ -92,7 +95,8 @@ public class EventDetailsActivity extends AppCompatActivity{
         }
         tvEventName.setText(event.tvEventName);
         tvEventDescription.setText(event.tvDescription);
-        tvTimeDate.setText(event.tvEventInfo);
+        tvEventInfo.setText(event.tvEventInfo);
+        tvHost.setText(event.organizer.name);
         Properties properties = new Properties();
 
         try {
@@ -162,7 +166,6 @@ public class EventDetailsActivity extends AppCompatActivity{
             t.printStackTrace();
         }
         eventInfo = event.tvEventInfo;
-        tvTimeDate.setText(eventInfo);
     }
 
 

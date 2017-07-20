@@ -13,7 +13,7 @@ import org.parceler.Parcel;
 public class Organizer {
     public String description;
     public String organizerId;
-    public String numePastEvents;
+    public String numPastEvents;
     public String numFutureEvents;
     public String website;
     public String facebookUsername;
@@ -37,9 +37,9 @@ public class Organizer {
             e.printStackTrace();
         }
         try {
-            organizer.numePastEvents =  jsonObject.getString("num_past_events");
+            organizer.numPastEvents =  jsonObject.getString("num_past_events");
         } catch (JSONException e) {
-            organizer.numePastEvents = "Na";
+            organizer.numPastEvents = "Na";
             e.printStackTrace();
         }
         try {
@@ -106,12 +106,12 @@ public class Organizer {
         this.organizerId = organizerId;
     }
 
-    public String getNumePastEvents() {
-        return numePastEvents;
+    public String getNumPastEvents() {
+        return numPastEvents;
     }
 
-    public void setNumePastEvents(String numePastEvents) {
-        this.numePastEvents = numePastEvents;
+    public void setNumPastEvents(String numPastEvents) {
+        this.numPastEvents = numPastEvents;
     }
 
     public String getNumFutureEvents() {

@@ -189,6 +189,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onStart(){
+        super.onStart();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             // User is signed in
