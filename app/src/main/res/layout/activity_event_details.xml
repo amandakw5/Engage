@@ -21,6 +21,7 @@
                 android:layout_below="@+id/tvEventName"
                 android:layout_margin="10dp"
                 app:srcCompat="@android:color/black" />
+
             <TextView
                 android:id="@+id/tvHost"
                 android:layout_width="wrap_content"
@@ -29,7 +30,8 @@
                 android:layout_marginBottom="5dp"
                 android:layout_toEndOf="@+id/ivPicture"
                 android:text="@string/host"
-                android:textAppearance="@android:style/TextAppearance.Large" />
+                android:textAppearance="@android:style/TextAppearance.Large"
+                android:textSize="16sp" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -79,6 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp"
+                android:layout_marginTop="10dp"
                 android:name="com.google.android.youtube.player.YouTubePlayerFragment">
             </fragment>
         </RelativeLayout>
