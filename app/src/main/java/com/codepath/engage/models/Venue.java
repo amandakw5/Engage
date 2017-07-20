@@ -11,7 +11,9 @@ import org.json.JSONObject;
  * Created by calderond on 7/17/17.
  */
 
+
 public class Venue implements Parcelable {
+
     public String address;
     public String city;
     public String region;
