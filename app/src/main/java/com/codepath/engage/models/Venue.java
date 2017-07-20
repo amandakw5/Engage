@@ -9,6 +9,7 @@ import org.parceler.Parcel;
 /**
  * Created by calderond on 7/17/17.
  */
+
 @Parcel
 public class Venue {
     public String address;

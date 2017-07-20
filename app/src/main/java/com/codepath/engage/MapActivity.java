@@ -10,6 +10,7 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.test.suitebuilder.annotation.LargeTest;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +41,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -57,6 +59,7 @@ import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
+import static junit.runner.Version.id;
 
 /**
  * Created by emilyz on 7/17/17.
@@ -74,7 +77,6 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
 
     private long UPDATE_INTERVAL = 60000;  /* 60 secs */
     private long FASTEST_INTERVAL = 5000; /* 5 secs */
-    private Toast toast = null;
 
     private List<Marker> originMarkers = new ArrayList<>();
     private List<Marker> destinationMarkers = new ArrayList<>();
@@ -87,7 +89,6 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
      * Define a request code to send to Google Play services This code is
      * returned in Activity.onActivityResult
      */
-
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
     @Override
@@ -112,7 +113,6 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
                 @Override
                 public void onMapReady(GoogleMap map) {
                     loadMap(map);
-
                 }
             });
         } else {
@@ -123,6 +123,7 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
 
     protected void loadMap(GoogleMap googleMap) {
         map = googleMap;
+
         if (map != null) {
             // Map is ready
             MapActivityPermissionsDispatcher.getMyLocationWithCheck(this);
@@ -131,9 +132,9 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
             if (event.venue.getLatitude() != null && event.venue.getLongitude() != null){
                 double destLat = Double.parseDouble(event.venue.getLatitude());
                 double destLng = Double.parseDouble(event.venue.getLongitude());
+                
                 LatLng destination = new LatLng(destLat, destLng);
-
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 9);
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
                 map.animateCamera(cameraUpdate);
 
                 if (mCurrentLocation!= null){
@@ -176,6 +177,10 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
                                 double destLat = Double.parseDouble(event.venue.getLatitude());
                                 double destLng = Double.parseDouble(event.venue.getLongitude());
 
+                                LatLng destination = new LatLng(destLat, destLng);
+                                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
+                                map.animateCamera(cameraUpdate);
+
                                 sendRequest(originLat, originLong, destLat, destLng);
                             }
                             onLocationChanged(location);
@@ -191,17 +196,6 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
                 });
     }
 
-    //Called when the Activity becomes visible.
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    //Called when the Activity is no longer visible.
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
 
     private boolean isGooglePlayServicesAvailable() {
 
@@ -229,33 +223,6 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
 
             return false;
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Display the connection status
-        if (event.venue.getLatitude() != null && event.venue.getLongitude() != null) {
-//            LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            double destLat = Double.parseDouble(event.venue.getLatitude());
-            double destLng = Double.parseDouble(event.venue.getLongitude());
-            LatLng destination = new LatLng(destLat, destLng);
-
-            if (mCurrentLocation!= null){
-                double originLat = mCurrentLocation.getLatitude();
-                double originLong = mCurrentLocation.getLongitude();
-
-                sendRequest(originLat, originLong, destLat, destLng);;
-
-            }
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 9);
-            map.animateCamera(cameraUpdate);
-
-        } else {
-            Toast.makeText(this, "Current location was null, enable GPS!", Toast.LENGTH_SHORT).show();
-        }
-        MapActivityPermissionsDispatcher.startLocationUpdatesWithCheck(this);
     }
 
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
@@ -291,7 +258,6 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
         mCurrentLocation = location;
 
         if (mCurrentLocation != null) {
-//            LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
             double originLat = mCurrentLocation.getLatitude();
             double originLong = mCurrentLocation.getLongitude();
@@ -299,8 +265,11 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
             double destLat = Double.parseDouble(event.venue.getLatitude());
             double destLng = Double.parseDouble(event.venue.getLongitude());
 
+            LatLng destination = new LatLng(destLat, destLng);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
+            map.animateCamera(cameraUpdate);
+
             sendRequest(originLat, originLong, destLat, destLng);
-//            LatLng destination = new LatLng(destLat, destLng);
         }
 
     }
@@ -374,7 +343,6 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
         destinationMarkers = new ArrayList<>();
 
         for (Route route : routes) {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
             ((TextView) findViewById(R.id.tvDuration)).setText(route.duration.text);
             ((TextView) findViewById(R.id.tvDistance)).setText(route.distance.text);
 
@@ -400,9 +368,11 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
 
             double destLat = Double.parseDouble(event.venue.getLatitude());
             double destLng = Double.parseDouble(event.venue.getLongitude());
+
             LatLng destination = new LatLng(destLat, destLng);
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 9);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
             map.animateCamera(cameraUpdate);
+
         }
     }
 

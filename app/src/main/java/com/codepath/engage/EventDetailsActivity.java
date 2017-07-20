@@ -169,8 +169,6 @@ public class EventDetailsActivity extends AppCompatActivity{
     public void openMap(View view){
         Intent intent = new Intent(EventDetailsActivity.this, MapActivity.class);
         intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
-        intent.putExtra("latitude", 34.8098080980);
-        intent.putExtra("longitude", 67.09098898);
         startActivity(intent);
     }
     public void saveEvent(View view){
