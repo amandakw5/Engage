@@ -26,7 +26,7 @@ public class Organizer implements Parcelable{
     protected Organizer(Parcel in) {
         description = in.readString();
         organizerId = in.readString();
-        numePastEvents = in.readString();
+        numPastEvents = in.readString();
         numFutureEvents = in.readString();
         website = in.readString();
         facebookUsername = in.readString();
@@ -171,7 +171,7 @@ public class Organizer implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(description);
         dest.writeString(organizerId);
-        dest.writeString(numePastEvents);
+        dest.writeString(numPastEvents);
         dest.writeString(numFutureEvents);
         dest.writeString(website);
         dest.writeString(facebookUsername);
