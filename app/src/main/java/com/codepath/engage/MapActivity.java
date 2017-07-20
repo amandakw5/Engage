@@ -132,7 +132,7 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
             if (event.venue.getLatitude() != null && event.venue.getLongitude() != null){
                 double destLat = Double.parseDouble(event.venue.getLatitude());
                 double destLng = Double.parseDouble(event.venue.getLongitude());
-                
+
                 LatLng destination = new LatLng(destLat, destLng);
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
                 map.animateCamera(cameraUpdate);
