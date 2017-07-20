@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.codepath.engage.models.Event;
 import com.codepath.engage.models.UserEvents;
+import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -39,14 +40,16 @@ import java.util.Properties;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.codepath.engage.R.id.tvEventInfo;
+import static com.codepath.engage.R.id.tvEventName;
+
 
 public class EventDetailsActivity extends AppCompatActivity{
 
     @Nullable
     @BindView(R.id.ivPicture) ImageView ivPicture;
     @BindView(R.id.tvHost) TextView tvHost;
-    @BindView(R.id.tvLocation) TextView tvLocation;
-    @BindView(R.id.tvTimeDate) TextView tvTimeDate;
+    @BindView(R.id.tvEventInfo) TextView tvEventInfo;
     @BindView(R.id.tvEventDescription) TextView tvEventDescription;
     @BindView(R.id.tvPeopleParticipating) TextView tvPeopleParticipating;
     @BindView(R.id.btnSave) Button btnSave;
@@ -55,6 +58,7 @@ public class EventDetailsActivity extends AppCompatActivity{
 
     Event event;
     String uid;
+    String eventInfo;
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference users;
@@ -77,6 +81,7 @@ public class EventDetailsActivity extends AppCompatActivity{
         ButterKnife.bind(this);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+        
         firebaseDatabase = FirebaseDatabase.getInstance();
         users = firebaseDatabase.getReference("users");
         uid = Profile.getCurrentProfile().getId();
@@ -90,10 +95,10 @@ public class EventDetailsActivity extends AppCompatActivity{
         }
         tvEventName.setText(event.tvEventName);
         tvEventDescription.setText(event.tvDescription);
-        tvTimeDate.setText(event.tvEventInfo);
-        tvLocation.setText(event.venue.address);
-
+        tvEventInfo.setText(event.tvEventInfo);
+        tvHost.setText(event.organizer.name);
         Properties properties = new Properties();
+
         try {
             // This object is used to make YouTube Data API requests. The last
             // argument is required, but since we don't need anything
@@ -160,17 +165,17 @@ public class EventDetailsActivity extends AppCompatActivity{
         } catch (Throwable t) {
             t.printStackTrace();
         }
+        eventInfo = event.tvEventInfo;
     }
 
 
     public void openMap(View view){
         Intent intent = new Intent(EventDetailsActivity.this, MapActivity.class);
-        intent.putExtra("latitude", 34.8098080980);
-        intent.putExtra("longitude", 67.09098898);
+        intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
         startActivity(intent);
     }
     public void saveEvent(View view){
-        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.tvEventInfo);
+        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), eventInfo);
     }
 
     public void saveNewEvent(String uid, String eventId, String eventName, String eventHost, String eventInformation){

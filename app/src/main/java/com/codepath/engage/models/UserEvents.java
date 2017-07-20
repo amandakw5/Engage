@@ -7,46 +7,25 @@ package com.codepath.engage.models;
 public class UserEvents {
     public String eventName;
     public String eventHost;
-    public String eventInformation;
-    public String eventVenue;
+    public String eventInfo;
 
     public UserEvents(){ }
 
-    public UserEvents(String eventName, String eventHost, String eventInformation){
+    public UserEvents(String eventName, String eventHost, String eventInfo){
         this.eventName = eventName;
         this.eventHost = eventHost;
-        this.eventInformation = eventHost;
+        this.eventInfo = eventInfo;
     }
 
-    public String getEventName() {
-        return eventName;
-    }
+    public String getEventName() { return eventName; }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
-    }
+    public void setEventName(String eventName) { this.eventName = eventName; }
 
-    public String getEventHost() {
-        return eventHost;
-    }
+    public String getEventHost() { return eventHost; }
 
-    public void setEventHost(String eventHost) {
-        this.eventHost = eventHost;
-    }
+    public void setEventHost(String eventHost) { this.eventHost = eventHost; }
 
-    public String getEventInformation() {
-        return eventInformation;
-    }
+    public String getEventInfo() { return eventInfo; }
 
-    public void setEventInformation(String eventInformation) {
-        this.eventInformation = eventInformation;
-    }
-
-    public String getEventVenue() {
-        return eventVenue;
-    }
-
-    public void setEventVenue(String eventVenue) {
-        this.eventVenue = eventVenue;
-    }
+    public void setEventInfo(String eventInfo) { this.eventInfo = eventInfo; }
 }

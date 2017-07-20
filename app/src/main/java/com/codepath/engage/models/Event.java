@@ -90,7 +90,7 @@ public class Event implements Parcelable {
         //Getting the description of the event
         JSONObject eventDescription = jsonObject.getJSONObject("description");
         event.tvDescription = eventDescription.getString("text");
-        //Getting a thumbnail of the image for futer use.
+        //Getting a thumbnail of the image for future use.
         try{
             jsonObject.getJSONObject("logo");
             JSONObject logo = jsonObject.getJSONObject("logo");
