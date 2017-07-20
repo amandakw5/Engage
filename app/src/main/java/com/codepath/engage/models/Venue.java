@@ -1,17 +1,17 @@
 package com.codepath.engage.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.parceler.Parcel;
 
 /**
  * Created by calderond on 7/17/17.
  */
 
-@Parcel
-public class Venue {
+public class Venue implements Parcelable {
     public String address;
     public String city;
     public String region;
@@ -34,6 +34,30 @@ public class Venue {
         this.longitude = longitude;
         this.simpleAddress = simpleAddress;
     }
+
+    protected Venue(Parcel in) {
+        address = in.readString();
+        city = in.readString();
+        region = in.readString();
+        postalCode = in.readString();
+        country = in.readString();
+        latitude = in.readString();
+        longitude = in.readString();
+        simpleAddress = in.readString();
+    }
+
+    public static final Creator<Venue> CREATOR = new Creator<Venue>() {
+        @Override
+        public Venue createFromParcel(Parcel in) {
+            return new Venue(in);
+        }
+
+        @Override
+        public Venue[] newArray(int size) {
+            return new Venue[size];
+        }
+    };
+
     public static Venue fromJSON(JSONObject jsonObject)throws JSONException {
         Venue venue = new Venue();
         if(jsonObject.getString("address_1") == null){
@@ -116,5 +140,22 @@ public class Venue {
 
     public void setSimpleAddress(String simpleAddress) {
         this.simpleAddress = simpleAddress;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(address);
+        dest.writeString(city);
+        dest.writeString(region);
+        dest.writeString(postalCode);
+        dest.writeString(country);
+        dest.writeString(latitude);
+        dest.writeString(longitude);
+        dest.writeString(simpleAddress);
     }
 }
