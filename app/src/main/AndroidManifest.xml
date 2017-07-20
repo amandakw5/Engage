@@ -76,10 +76,6 @@
 
         </activity>
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 1063bfb0aebc84ac9f37ad490fe74e3b9802a90c
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_api_key" />
