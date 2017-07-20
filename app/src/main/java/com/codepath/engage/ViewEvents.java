@@ -49,7 +49,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
-
 public class  ViewEvents extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
     //Following counters are used to be abel to access the position of the events arraylist in functions where the position of the event is not passed.
     static int counterToGetPositionOfEvent;
@@ -160,7 +159,12 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     mDrawer.closeDrawers();
                     return true;
                 }
-
+                switch (itemId){
+                    case R.id.nav_first_fragment:
+                        Intent i = new Intent(ViewEvents.this, UserFeed.class);
+                        i.putParcelableArrayListExtra("events",events);
+                        startActivity(i);
+                }
                 return false;
             }
         });
@@ -417,5 +421,5 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 });
         dialog.show();
     }
-    //END FUNCTIONS TO GET USER LOCATION WITH GOOGLE MAPS API
+
 }
