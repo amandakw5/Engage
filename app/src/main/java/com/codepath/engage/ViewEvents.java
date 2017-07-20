@@ -173,7 +173,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
         onStart();
         Log.i("Latitude",""+tvLatitude);
-        Log.i("Longitute",""+tvLongitude);
+        Log.i("Longitude",""+tvLongitude);
         events.clear();
         populateEvents(query);
     }
@@ -181,7 +181,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     private void closeSearchView(SearchView searchView){
         searchView.setIconified(true);
     }
-    //Initilalizes all necessary values that will hold all the searchview values.
+    //Initializes all necessary values that will hold all the searchview values.
     private void setUpSearchView(){
         searchView = (SearchView) findViewById(R.id.search);
         // Sets searchable configuration defined in searchable.xml for this SearchView
@@ -191,7 +191,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                //ON a successfull query submission the query is passed and api request call is made
+                //ON a successful query submission the query is passed and api request call is made
                 events.clear();
                 populateEvents(query);
                 return true;
