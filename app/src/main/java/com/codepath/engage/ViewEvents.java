@@ -11,13 +11,24 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v13.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.codepath.engage.models.Event;
@@ -39,35 +50,40 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class  ViewEvents extends AppCompatActivity   implements LocationListener,GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener  {
+public class  ViewEvents extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
+    //Following counters are used to be abel to access the position of the events arraylist in functions where the position of the event is not passed.
     static int counterToGetPositionOfEvent;
     static int counterToSetOrganizer;
-    //Variable that will refrence the Search view/ Search bar icon
+    //Variable that will reference the Search view/ Search bar icon
     private SearchView searchView;
-    //Will hold teh text that the user inputs to the serach view
+    //Will hold the text that the user inputs to the search view
     private String valueOfQuery;
 
-    //Variables used to populate the timeline
+    //Handle the storage and populating the activity to show the activites around one.
     private EventbriteClient client;
     EventAdapter eventAdapter;
     ArrayList<Event> events;
     ArrayList<Venue> venues;
     RecyclerView rvEvents;
-
+    //Holds the search term that is used to pass into the eventbrite api to look for events
     String query;
-
+    //Checks if the async call is completed to ensure that data is not being accessed before its actually popualted
     Boolean eventRequestCompleted = false;
 
-    //Foloowing
+    //Used in aiding in retreiving hte current location of the user.
     final String TAG = "GPS";
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-
     GoogleApiClient gac;
     LocationRequest locationRequest;
     String tvLatitude, tvLongitude, tvTime;
+    //Settting the view for U.I
+    private DrawerLayout mDrawer;
+    private NavigationView nvDrawer;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private Toolbar toolbar;
+    private ImageView profileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,10 +96,10 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
         setUpSearchView();
         //find the recycler view
         rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
-        //init the arraylsit
+        //initiating the arraylsit
         events = new ArrayList<>();
         venues = new ArrayList<>();
-        //construcct the adapter from this datasoruce
+        //constructing the adapter from this datasoruce
         eventAdapter = new EventAdapter(events);
         //recycler view setup(layout manager, use adapter'
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
@@ -111,6 +127,43 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
         if(intentQuery != null){
             callSearchFromIntent(intentQuery);
         }
+        //Refrencing the variables to their respective I.Ds for the xml style sheet
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        profileImage = (ImageView) findViewById(R.id.profileImage);
+        searchView = (SearchView) findViewById(R.id.search);
+        ActionBar actionbar = getSupportActionBar();
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        setSupportActionBar(toolbar);
+        configureNavigationDrawer();
+        //Checks to see if the the image has been clicked and to display sub menu
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawer.openDrawer(Gravity.RIGHT);
+            }
+        });
+    }
+    private void configureNavigationDrawer() {
+
+        NavigationView navView = (NavigationView) findViewById(R.id.nvView);
+        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                Fragment f = null;
+                int itemId = menuItem.getItemId();
+
+                if (f != null) {
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.rvIssues, f);
+                    transaction.commit();
+                    mDrawer.closeDrawers();
+                    return true;
+                }
+
+                return false;
+            }
+        });
     }
     private void callSearchFromIntent(Intent intent){
         query = intent.getStringExtra("Query");
@@ -124,10 +177,7 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
         events.clear();
         populateEvents(query);
     }
-    //Perfoms The Searching Of Desired Event Category
-    //TODO finish this function
-    private void searchFor(String query){
-    }
+    //Closes the input search view after user has submitted the query
     private void closeSearchView(SearchView searchView){
         searchView.setIconified(true);
     }
@@ -141,6 +191,7 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                //ON a successfull query submission the query is passed and api request call is made
                 events.clear();
                 populateEvents(query);
                 return true;
@@ -156,12 +207,12 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
     private void populateEvents(String query){
         valueOfQuery = query;
         counterToGetPositionOfEvent=0;
-        searchFor(valueOfQuery);
         closeSearchView(searchView);
         client.getInfoByQuery(valueOfQuery,tvLatitude,tvLongitude,new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
+                    //Retrieving all the events that are related to the search query
                     JSONArray eventsObject = response.getJSONArray("events");
                     for (int i = 0 ; i < eventsObject.length();i++){
                         Event event = Event.fromJSON(eventsObject.getJSONObject(i));
@@ -170,6 +221,7 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
                         if(i == eventsObject.length() -1)
                             eventRequestCompleted = true;
                     }
+                    //makes suere that the previous call is completed before moving onto assigning the rest of the values to the event object.
                     if(eventRequestCompleted) {
                         counterToSetOrganizer =0;
                         for (int i = 0; i < events.size(); i++) {
@@ -189,6 +241,8 @@ public class  ViewEvents extends AppCompatActivity   implements LocationListener
                     e.printStackTrace();
                 }
                 finally {
+                    //Once the event object has been populated with the organizer and event information another call is made to
+                    //Retrieve the veneu for the event
                     for (int i = 0; i < events.size(); i++) {
                         if (eventRequestCompleted) {
                             client.getVenue(events.get(i).getVeneuId(), new JsonHttpResponseHandler() {
