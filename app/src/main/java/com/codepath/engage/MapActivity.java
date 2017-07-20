@@ -236,7 +236,7 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
         super.onResume();
 
         // Display the connection status
-        if (mCurrentLocation != null) {
+        if (event.venue.getLatitude() != null && event.venue.getLongitude() != null) {
 //            LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
             double destLat = Double.parseDouble(event.venue.getLatitude());
             double destLng = Double.parseDouble(event.venue.getLongitude());
@@ -251,6 +251,7 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
             }
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 9);
             map.animateCamera(cameraUpdate);
+
         } else {
             Toast.makeText(this, "Current location was null, enable GPS!", Toast.LENGTH_SHORT).show();
         }

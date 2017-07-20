@@ -13,14 +13,14 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@+id/ivPicture"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_below="@+id/tvEventName"
-                    android:layout_margin="10dp"
-                    app:srcCompat="@android:color/black" />
+            <ImageView
+                android:id="@+id/ivPicture"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/tvEventName"
+                android:layout_margin="10dp"
+                app:srcCompat="@android:color/black" />
             <TextView
                 android:id="@+id/tvHost"
                 android:layout_width="wrap_content"
@@ -31,20 +31,13 @@
                 android:text="@string/host"
                 android:textAppearance="@android:style/TextAppearance.Large"
                 android:textSize="24sp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/location"
-                android:id="@+id/tvLocation"
-                android:layout_below="@+id/tvHost"
-                android:layout_toEndOf="@+id/ivPicture"
-                android:layout_marginBottom="5dp"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/time_and_date"
                 android:id="@+id/tvTimeDate"
-                android:layout_below="@+id/tvLocation"
+                android:layout_below="@+id/tvHost"
                 android:layout_toEndOf="@+id/ivPicture"
                 android:layout_marginBottom="5dp"/>
             <TextView
