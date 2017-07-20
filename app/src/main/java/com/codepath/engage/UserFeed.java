@@ -34,6 +34,6 @@ public class UserFeed extends AppCompatActivity {
     }
 
     public void setUserEvents() {
-        
+
     }
 }
