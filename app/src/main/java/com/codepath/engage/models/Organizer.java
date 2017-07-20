@@ -74,6 +74,14 @@ public class Organizer {
         return organizer;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getTwitter() {
         return twitter;
     }

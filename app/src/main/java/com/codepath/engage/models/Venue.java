@@ -1,5 +1,7 @@
 package com.codepath.engage.models;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
@@ -7,6 +9,7 @@ import org.parceler.Parcel;
 /**
  * Created by calderond on 7/17/17.
  */
+
 @Parcel
 public class Venue {
     public String address;
@@ -47,8 +50,8 @@ public class Venue {
         venue.country = jsonObject.getString("country");
         venue.latitude = jsonObject.getString("latitude");
         venue.longitude = jsonObject.getString("longitude");
-
-        venue.simpleAddress =jsonObject.getString("localized_multi_line_address_display");
+        venue.simpleAddress =venue.address +","+ venue.city +","+ venue.country;
+        Log.i("SIMPLE", venue.simpleAddress);
         return venue;
     }
     public String getAddress() {
