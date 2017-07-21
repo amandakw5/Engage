@@ -40,6 +40,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -49,7 +50,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
-public class  ViewEvents extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
+public class  ViewEvents extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
     //Following counters are used to be abel to access the position of the events arraylist in functions where the position of the event is not passed.
     static int counterToGetPositionOfEvent;
     static int counterToSetOrganizer;
@@ -69,7 +70,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     //Checks if the async call is completed to ensure that data is not being accessed before its actually popualted
     Boolean eventRequestCompleted = false;
 
-    //Used in aiding in retreiving hte current location of the user.
+    //Used in aiding in retrieving the current location of the user.
     final String TAG = "GPS";
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
@@ -77,7 +78,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     GoogleApiClient gac;
     LocationRequest locationRequest;
     String tvLatitude, tvLongitude, tvTime;
-    //Settting the view for U.I
+    //Setting the view for U.I
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -95,10 +96,10 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         setUpSearchView();
         //find the recycler view
         rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
-        //initiating the arraylsit
+        //initiating the array list
         events = new ArrayList<>();
         venues = new ArrayList<>();
-        //constructing the adapter from this datasoruce
+        //constructing the adapter from this data source
         eventAdapter = new EventAdapter(events);
         //recycler view setup(layout manager, use adapter'
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
@@ -138,7 +139,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDrawer.openDrawer(Gravity.RIGHT);
+                mDrawer.openDrawer(Gravity.END);
             }
         });
     }
@@ -184,7 +185,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     private void closeSearchView(SearchView searchView){
         searchView.setIconified(true);
     }
-    //Initializes all necessary values that will hold all the searchview values.
+    //Initializes all necessary values that will hold all the search view values.
     private void setUpSearchView(){
         searchView = (SearchView) findViewById(R.id.search);
         // Sets searchable configuration defined in searchable.xml for this SearchView
@@ -194,7 +195,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                //ON a successful query submission the query is passed and api request call is made
+                //on a successful query submission the query is passed and api request call is made
                 events.clear();
                 populateEvents(query);
                 return true;
@@ -224,7 +225,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                         if(i == eventsObject.length() -1)
                             eventRequestCompleted = true;
                     }
-                    //makes suere that the previous call is completed before moving onto assigning the rest of the values to the event object.
+                    //makes sure that the previous call is completed before moving onto assigning the rest of the values to the event object.
                     if(eventRequestCompleted) {
                         counterToSetOrganizer =0;
                         for (int i = 0; i < events.size(); i++) {
@@ -245,7 +246,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 }
                 finally {
                     //Once the event object has been populated with the organizer and event information another call is made to
-                    //Retrieve the veneu for the event
+                    //Retrieve the venue for the event
                     for (int i = 0; i < events.size(); i++) {
                         if (eventRequestCompleted) {
                             client.getVenue(events.get(i).getVeneuId(), new JsonHttpResponseHandler() {
@@ -347,7 +348,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 } else {
                     Toast.makeText(ViewEvents.this, "Permission denied!", Toast.LENGTH_LONG).show();
                 }
-                return;
             }
         }
     }
@@ -410,5 +410,4 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 });
         dialog.show();
     }
-
 }

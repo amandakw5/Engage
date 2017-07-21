@@ -20,5 +20,8 @@
     <string name="cancel">Cancel</string>
     <string name="event_info">Event Info</string>
     <string name="issues">Issues</string>
+    <string name="launch_google_maps">Launch Google Maps</string>
+    <string name="_0_min">0 min</string>
+    <string name="_0_km">0 km</string>
 </resources>
 

@@ -1,8 +1,10 @@
 package com.codepath.engage.models;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.api.client.json.Json;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,9 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +23,8 @@ import java.util.List;
 import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.client.utils.URLEncodedUtils;
 import cz.msebera.android.httpclient.message.BasicNameValuePair;
+
+import static com.codepath.engage.R.string.location;
 
 /**
  * Created by emilyz on 7/19/17.
@@ -60,8 +62,6 @@ public class DirectionFinder {
         String paramString = URLEncodedUtils.format(params, "utf-8");
 
         return DIRECTION_URL_API + paramString + "&key=" + GOOGLE_API_KEY;
-
-//        return DIRECTION_URL_API + "origin=" + urlOrigin + "&destination=" + urlDestination + "&key=" + GOOGLE_API_KEY;
     }
 
     private class DownloadRawData extends AsyncTask<String, Void, String> {
@@ -91,20 +91,22 @@ public class DirectionFinder {
         @Override
         protected void onPostExecute(String res) {
             try {
-                parseJSon(res);
+                parseJSON(res);
             } catch (JSONException e) {
                 e.printStackTrace();
+                Log.i("error", e.toString());
             }
         }
     }
 
-    private void parseJSon(String data) throws JSONException {
+    private void parseJSON(String data) throws JSONException {
         if (data == null)
             return;
 
         List<Route> routes = new ArrayList<Route>();
         JSONObject jsonData = new JSONObject(data);
         JSONArray jsonRoutes = jsonData.getJSONArray("routes");
+
         for (int i = 0; i < jsonRoutes.length(); i++) {
             JSONObject jsonRoute = jsonRoutes.getJSONObject(i);
             Route route = new Route();

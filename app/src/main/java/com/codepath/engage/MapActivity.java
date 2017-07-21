@@ -3,8 +3,10 @@ package com.codepath.engage;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -58,6 +60,7 @@ import java.util.List;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.codepath.engage.R.string.location;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 import static junit.runner.Version.id;
 
@@ -75,25 +78,28 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
     Location mCurrentLocation;
     Event event;
 
-    private long UPDATE_INTERVAL = 60000;  /* 60 secs */
-    private long FASTEST_INTERVAL = 5000; /* 5 secs */
-
     private List<Marker> originMarkers = new ArrayList<>();
     private List<Marker> destinationMarkers = new ArrayList<>();
     private List<Polyline> polylinePaths = new ArrayList<>();
-    private ProgressDialog progressDialog;
-
 
     private final static String KEY_LOCATION = "location";
-    /*
-     * Define a request code to send to Google Play services This code is
-     * returned in Activity.onActivityResult
-     */
+
+    //Define a request code to send to Google Play services This code is returned in Activity.onActivityResult
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+
+    private double destLat;
+    private double destLng;
+    private LatLng destination;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
+
+        destLat = Double.parseDouble(event.venue.getLatitude());
+        destLng = Double.parseDouble(event.venue.getLongitude());
+
+        destination = new LatLng(destLat, destLng);
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_map);
@@ -130,10 +136,7 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
             MapActivityPermissionsDispatcher.startLocationUpdatesWithCheck(this);
 
             if (event.venue.getLatitude() != null && event.venue.getLongitude() != null){
-                double destLat = Double.parseDouble(event.venue.getLatitude());
-                double destLng = Double.parseDouble(event.venue.getLongitude());
 
-                LatLng destination = new LatLng(destLat, destLng);
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
                 map.animateCamera(cameraUpdate);
 
@@ -173,9 +176,6 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
                             if (mCurrentLocation!= null){
                                 double originLat = mCurrentLocation.getLatitude();
                                 double originLong = mCurrentLocation.getLongitude();
-
-                                double destLat = Double.parseDouble(event.venue.getLatitude());
-                                double destLng = Double.parseDouble(event.venue.getLongitude());
 
                                 LatLng destination = new LatLng(destLat, destLng);
                                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
@@ -229,8 +229,7 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
     protected void startLocationUpdates() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-//        mLocationRequest.setInterval(UPDATE_INTERVAL);
-//        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+
 
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
@@ -262,13 +261,10 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
             double originLat = mCurrentLocation.getLatitude();
             double originLong = mCurrentLocation.getLongitude();
 
-            double destLat = Double.parseDouble(event.venue.getLatitude());
-            double destLng = Double.parseDouble(event.venue.getLongitude());
-
-            LatLng destination = new LatLng(destLat, destLng);
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
             map.animateCamera(cameraUpdate);
 
+            //send origin and destination to google maps
             sendRequest(originLat, originLong, destLat, destLng);
         }
 
@@ -313,9 +309,6 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
 
     @Override
     public void onDirectionFinderStart() {
-//        progressDialog = ProgressDialog.show(this, "Please wait.",
-//                "Finding direction..!", true);
-
         if (originMarkers != null) {
             for (Marker marker : originMarkers) {
                 marker.remove();
@@ -337,7 +330,6 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
 
     @Override
     public void onDirectionFinderSuccess(List<Route> routes) {
-//        progressDialog.dismiss();
         polylinePaths = new ArrayList<>();
         originMarkers = new ArrayList<>();
         destinationMarkers = new ArrayList<>();
@@ -360,19 +352,24 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
                     color(Color.BLUE).
                     width(10);
 
+
             for (int i = 0; i < route.points.size(); i++)
                 polylineOptions.add(route.points.get(i));
 
             polylinePaths.add(map.addPolyline(polylineOptions));
 
-
-            double destLat = Double.parseDouble(event.venue.getLatitude());
-            double destLng = Double.parseDouble(event.venue.getLongitude());
-
-            LatLng destination = new LatLng(destLat, destLng);
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
             map.animateCamera(cameraUpdate);
 
+        }
+    }
+
+    public void openGoogleMaps (View view){
+        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + event.venue.getSimpleAddress());
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapIntent);
         }
     }
 
