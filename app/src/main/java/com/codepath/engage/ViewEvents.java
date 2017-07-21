@@ -143,7 +143,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         });
     }
     private void configureNavigationDrawer() {
-
         NavigationView navView = (NavigationView) findViewById(R.id.nvView);
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -200,7 +199,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 populateEvents(query);
                 return true;
             }
-
             @Override
             public boolean onQueryTextChange(String query) {
                 //filterSearchFor(query);
@@ -210,6 +208,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     }
     private void populateEvents(String query){
         valueOfQuery = query;
+        events.clear();
         counterToGetPositionOfEvent=0;
         closeSearchView(searchView);
         client.getInfoByQuery(valueOfQuery,tvLatitude,tvLongitude,new JsonHttpResponseHandler(){
@@ -281,7 +280,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     }
                 }
             }
-
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Log.i("info",client.finalUrl+responseString);
@@ -292,7 +290,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 Log.i("info",client.finalUrl+errorResponse);
             }
         });
-
     }
     //START FUNCTIONS TO GET THE USER LOCATION WITH GOOGLE MAPS API
     //Functions that deal with user location
@@ -301,20 +298,17 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         gac.connect();
         super.onStart();
     }
-
     @Override
     protected void onStop() {
         gac.disconnect();
         super.onStop();
     }
-
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
             updateUI(location);
         }
     }
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -334,7 +328,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
         LocationServices.FusedLocationApi.requestLocationUpdates(gac, locationRequest, this);
     }
-
     @Override
     public void onRequestPermissionsResult(
             int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -358,7 +351,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             }
         }
     }
-
     @Override
     public void onConnectionSuspended(int i) {}
 
@@ -368,20 +360,17 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 Toast.LENGTH_LONG).show();
         Log.d("DDD", connectionResult.toString());
     }
-
     private void updateUI(Location loc) {
         Log.d(TAG, "updateUI");
         tvLatitude = Double.toString(loc.getLatitude());
         tvLongitude = Double.toString(loc.getLongitude());
 
     }
-
     private boolean isLocationEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
-
     private boolean isGooglePlayServicesAvailable() {
         final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
