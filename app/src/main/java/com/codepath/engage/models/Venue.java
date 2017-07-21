@@ -2,7 +2,6 @@ package com.codepath.engage.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +21,7 @@ public class Venue implements Parcelable {
     public String latitude;
     public String longitude;
     public String simpleAddress;
-
+    public String id;
     public Venue() {
     }
 
@@ -46,6 +45,16 @@ public class Venue implements Parcelable {
         latitude = in.readString();
         longitude = in.readString();
         simpleAddress = in.readString();
+        id = in.readString();
+    }
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public static final Creator<Venue> CREATOR = new Creator<Venue>() {
@@ -62,22 +71,23 @@ public class Venue implements Parcelable {
 
     public static Venue fromJSON(JSONObject jsonObject)throws JSONException {
         Venue venue = new Venue();
-        if(jsonObject.getString("address_1") == null){
-            if(jsonObject.getString("address_2") == null)
+        JSONObject address = jsonObject.getJSONObject("address");
+        if(address.getString("address_1") == null){
+            if(address.getString("address_2") == null)
                 venue.address = "No Location Available";
             else
-                venue.address = jsonObject.getString("address_2");
+                venue.address = address.getString("address_2");
         }
         else
-            venue.address = jsonObject.getString("address_1");
-        venue.city = jsonObject.getString("city");
-        venue.region = jsonObject.getString("region");
-        venue.postalCode = jsonObject.getString("postal_code");
-        venue.country = jsonObject.getString("country");
-        venue.latitude = jsonObject.getString("latitude");
-        venue.longitude = jsonObject.getString("longitude");
+            venue.address = address.getString("address_1");
+        venue.city = address.getString("city");
+        venue.region = address.getString("region");
+        venue.postalCode = address.getString("postal_code");
+        venue.country = address.getString("country");
+        venue.latitude = address.getString("latitude");
+        venue.longitude = address.getString("longitude");
         venue.simpleAddress =venue.address +","+ venue.city +","+ venue.country;
-        Log.i("SIMPLE", venue.simpleAddress);
+        venue.id = jsonObject.getString("id");
         return venue;
     }
     public String getAddress() {
@@ -159,5 +169,6 @@ public class Venue implements Parcelable {
         dest.writeString(latitude);
         dest.writeString(longitude);
         dest.writeString(simpleAddress);
+        dest.writeString(id);
     }
 }

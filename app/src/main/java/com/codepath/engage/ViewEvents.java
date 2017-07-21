@@ -105,8 +105,10 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         // set the adapter
         rvEvents.setAdapter(eventAdapter);
         Intent intent = getIntent();
-        query = intent.getStringExtra("Query");
-        populateEvents(query);
+        if(intent != null) {
+            query = intent.getStringExtra("Query");
+            populateEvents(query);
+        }
 
         //Getting the location for the user.
         //Setting up the location google maps
@@ -161,7 +163,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 switch (itemId){
                     case R.id.nav_first_fragment:
                         Intent i = new Intent(ViewEvents.this, UserFeed.class);
-                        i.putParcelableArrayListExtra("events",events);
                         startActivity(i);
                 }
                 return false;
@@ -195,7 +196,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //ON a successful query submission the query is passed and api request call is made
-                events.clear();
                 populateEvents(query);
                 return true;
             }
@@ -207,9 +207,12 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         });
     }
     private void populateEvents(String query){
-        valueOfQuery = query;
+        eventAdapter.clear();
         events.clear();
+        venues.clear();
+        valueOfQuery = query;
         counterToGetPositionOfEvent=0;
+        eventRequestCompleted = false;
         closeSearchView(searchView);
         client.getInfoByQuery(valueOfQuery,tvLatitude,tvLongitude,new JsonHttpResponseHandler(){
             @Override
@@ -219,53 +222,65 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     JSONArray eventsObject = response.getJSONArray("events");
                     for (int i = 0 ; i < eventsObject.length();i++){
                         Event event = Event.fromJSON(eventsObject.getJSONObject(i));
+                        Log.i("Info"+i,"GET EVENTS: EVENT ID: " + event.getEventId() +" EVENTS NAME: "+event.getTvEventName() + " ORGANIZER ID: " + event.getOrganizerId());
+
                         events.add(event);
                         eventAdapter.notifyItemInserted(events.size() -1);
                         if(i == eventsObject.length() -1)
                             eventRequestCompleted = true;
                     }
-                    //makes suere that the previous call is completed before moving onto assigning the rest of the values to the event object.
-                    if(eventRequestCompleted) {
-                        counterToSetOrganizer =0;
-                        for (int i = 0; i < events.size(); i++) {
-                            client.getOrganizerInfo(events.get(i).getOrganizerId(), new JsonHttpResponseHandler() {
-                                @Override
-                                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                    Organizer organizer = Organizer.fromJson(response);
-                                    events.get(counterToSetOrganizer).setOrganizer(organizer);
-                                    events.get(counterToSetOrganizer).setOrganizerName(organizer.getName());
-                                    eventAdapter.notifyDataSetChanged();
-                                    counterToSetOrganizer++;
-                                }
-                            });
-                        }
-                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 finally {
+                    //makes suere that the previous call is completed before moving onto assigning the rest of the values to the event object.
+                    if(eventRequestCompleted) {
+                        counterToSetOrganizer =0;
+                        for (int i = 0; i < events.size(); i++) {
+                            Log.i("Info ","SECOND REQUEST ORGANIZER ID: " + events.get(i).getOrganizerId() +" EVENT NAME: "+events.get(i).getTvEventName());
+                            client.getOrganizerInfo(events.get(i).getOrganizerId(), new JsonHttpResponseHandler() {
+                                @Override
+                                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                    Organizer organizer = Organizer.fromJson(response);
+
+                                    for(int i = 0; i < events.size();i++){
+                                        if(events.get(i).getOrganizerId().equals(organizer.getOrganizerId())){
+                                            Log.i("Info"+i,"LAST CALL ORGANIZER NAME: " + organizer.getName());
+                                            events.get(i).setOrganizer(organizer);
+                                            events.get(i).setOrganizerName(organizer.getName());
+                                            Log.i("Info" +i, events.get(i).getOrganizerId()+ " " + events.get(i).getOrganizerName());
+                                            eventAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                }
+                            });
+
+                        }
+                    }
                     //Once the event object has been populated with the organizer and event information another call is made to
                     //Retrieve the veneu for the event
-                    for (int i = 0; i < events.size(); i++) {
-                        if (eventRequestCompleted) {
+                    if (eventRequestCompleted) {
+                        for (int i = 0; i < events.size(); i++) {
                             client.getVenue(events.get(i).getVeneuId(), new JsonHttpResponseHandler() {
                                 @Override
                                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                                     try {
-                                        Venue venue = Venue.fromJSON(response.getJSONObject("address"));
-                                        venues.add(venue);
-                                        events.get(counterToGetPositionOfEvent).setVenue(venue);
-                                        String address ="";
-                                        if(!venue.getAddress().equals("null"))
-                                            address += venue.getAddress();
-                                        if(!venue.getCity().equals("null"))
-                                            address += ", "+venue.getCity();
-                                        if(!venue.getCountry().equals("null"))
-                                            address += ", "+ venue.getCountry();
-                                        events.get(counterToGetPositionOfEvent).setTvEventInfo(events.get(counterToGetPositionOfEvent).getTvEventInfo() +"\n"+ address);
-
-                                        counterToGetPositionOfEvent++;
-                                        eventAdapter.notifyDataSetChanged();
+                                        Venue venue = Venue.fromJSON(response);
+                                        for(int i =0; i  < events.size();i++) {
+                                            if(events.get(i).getVeneuId().equals(venue.getId())) {
+                                                venues.add(venue);
+                                                events.get(i).setVenue(venue);
+                                                String address = "";
+                                                if (!venue.getAddress().equals("null"))
+                                                    address += venue.getAddress();
+                                                if (!venue.getCity().equals("null"))
+                                                    address += ", " + venue.getCity();
+                                                if (!venue.getCountry().equals("null"))
+                                                    address += ", " + venue.getCountry();
+                                                events.get(i).setTvEventInfo(events.get(i).getTvEventInfo() + "\n" + address);
+                                                eventAdapter.notifyDataSetChanged();
+                                            }
+                                        }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }

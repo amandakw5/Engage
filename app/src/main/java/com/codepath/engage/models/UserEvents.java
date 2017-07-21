@@ -8,13 +8,23 @@ public class UserEvents {
     public String eventName;
     public String eventHost;
     public String eventInfo;
+    public String eventId;
 
     public UserEvents(){ }
 
-    public UserEvents(String eventName, String eventHost, String eventInfo){
+    public UserEvents(String eventName, String eventHost, String eventInfo,String eventId){
         this.eventName = eventName;
         this.eventHost = eventHost;
         this.eventInfo = eventInfo;
+        this.eventId = eventId;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 
     public String getEventName() { return eventName; }
