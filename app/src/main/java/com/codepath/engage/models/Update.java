@@ -1,6 +1,4 @@
-package com.codepath.engage;
-
-import com.codepath.engage.models.User;
+package com.codepath.engage.models;
 
 /**
  * Created by awestort on 7/18/17.

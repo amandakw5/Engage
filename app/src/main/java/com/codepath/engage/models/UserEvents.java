@@ -9,13 +9,15 @@ public class UserEvents {
     public String eventHost;
     public String eventInformation;
     public String eventVenue;
+    public String eventId;
 
     public UserEvents(){ }
 
-    public UserEvents(String eventName, String eventHost, String eventInformation){
+    public UserEvents(String eventId, String eventName, String eventHost, String eventInformation){
+        this.eventId = eventId;
         this.eventName = eventName;
         this.eventHost = eventHost;
-        this.eventInformation = eventHost;
+        this.eventInformation = eventInformation;
     }
 
     public String getEventName() {

@@ -174,7 +174,7 @@ public class EventDetailsActivity extends AppCompatActivity{
     }
 
     public void saveNewEvent(String uid, String eventId, String eventName, String eventHost, String eventInformation){
-        UserEvents info = new UserEvents(eventName, eventHost, eventInformation);
+        UserEvents info = new UserEvents(eventId, eventName, eventHost, eventInformation);
         users.child(uid).child("events").child(eventId).setValue(info, new DatabaseReference.CompletionListener(){
 
             @Override

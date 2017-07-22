@@ -1,15 +1,6 @@
 package com.codepath.engage.models;
 
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
-import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by awestort on 7/18/17.
@@ -22,17 +13,20 @@ public class User {
     public String lastName;
     public String email;
     public String profilePicture;
-    public String followers;
-    public String following;
+    public int followers;
+    public int following;
+
 
     public User(){
     }
 
-    public User(String firstName, String lastName, String email, String profilePicture) {
+    public User(String firstName, String lastName, String email, String profilePicture, int followers, int following) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.profilePicture = profilePicture;
+        this.followers = followers;
+        this.following = following;
     }
 
     public String getUid() { return uid; }
@@ -71,11 +65,11 @@ public class User {
         this.profilePicture = profilePicture;
     }
 
-    public String getFollowers() { return followers; }
+    public int getFollowers() { return followers; }
 
-    public void setFollowers(String followers) { this.followers = followers; }
+    public void setFollowers(int followers) { this.followers = followers; }
 
-    public String getFollowing() { return following; }
+    public int getFollowing() { return following; }
 
-    public void setFollowing(String following) { this.following = following; }
+    public void setFollowing(int following) { this.following = following; }
 }
