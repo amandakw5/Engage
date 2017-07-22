@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.codepath.engage.models.Event;
 import com.codepath.engage.models.UserEvents;
-import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -39,9 +38,6 @@ import java.util.Properties;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.codepath.engage.R.id.tvEventInfo;
-import static com.codepath.engage.R.id.tvEventName;
 
 
 public class EventDetailsActivity extends AppCompatActivity{
@@ -179,7 +175,7 @@ public class EventDetailsActivity extends AppCompatActivity{
     }
 
     public void saveNewEvent(String uid, String eventId, String eventName, String eventHost, String eventInformation){
-        UserEvents info = new UserEvents(eventName, eventHost, eventInformation);
+        UserEvents info = new UserEvents(eventName, eventHost, eventInformation,eventId);
         users.child(uid).child("events").child(eventId).setValue(info, new DatabaseReference.CompletionListener(){
 
             @Override
