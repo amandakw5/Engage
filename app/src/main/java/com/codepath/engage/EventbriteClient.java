@@ -39,7 +39,7 @@ public class EventbriteClient {
 
     }
     public void getOrganizerInfo(String id, AsyncHttpResponseHandler asyncHttpResponseHandler){
-        finalUrl = baseApiUrl +organizerUrl+id+endOrganizerUrl;
+        finalUrl = baseApiUrl + organizerUrl + id + endOrganizerUrl;
         client.get(finalUrl,asyncHttpResponseHandler);
     }
 

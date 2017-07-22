@@ -1,19 +1,19 @@
 package com.codepath.engage.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.parceler.Parcel;
 
 /**
  * Created by calderond on 7/18/17.
  */
-@Parcel
-public class Organizer {
+public class Organizer implements Parcelable{
     public String description;
     public String organizerId;
-    public String numePastEvents;
+    public String numPastEvents;
     public String numFutureEvents;
     public String website;
     public String facebookUsername;
@@ -22,6 +22,30 @@ public class Organizer {
 
     public Organizer() {
     }
+
+    protected Organizer(Parcel in) {
+        description = in.readString();
+        organizerId = in.readString();
+        numPastEvents = in.readString();
+        numFutureEvents = in.readString();
+        website = in.readString();
+        facebookUsername = in.readString();
+        twitter = in.readString();
+        name = in.readString();
+    }
+
+    public static final Creator<Organizer> CREATOR = new Creator<Organizer>() {
+        @Override
+        public Organizer createFromParcel(Parcel in) {
+            return new Organizer(in);
+        }
+
+        @Override
+        public Organizer[] newArray(int size) {
+            return new Organizer[size];
+        }
+    };
+
     public static Organizer fromJson(JSONObject jsonObject){
         Organizer organizer = new Organizer();
         try {
@@ -37,9 +61,9 @@ public class Organizer {
             e.printStackTrace();
         }
         try {
-            organizer.numePastEvents =  jsonObject.getString("num_past_events");
+            organizer.numPastEvents =  jsonObject.getString("num_past_events");
         } catch (JSONException e) {
-            organizer.numePastEvents = "Na";
+            organizer.numPastEvents = "Na";
             e.printStackTrace();
         }
         try {
@@ -106,12 +130,12 @@ public class Organizer {
         this.organizerId = organizerId;
     }
 
-    public String getNumePastEvents() {
-        return numePastEvents;
+    public String getNumPastEvents() {
+        return numPastEvents;
     }
 
-    public void setNumePastEvents(String numePastEvents) {
-        this.numePastEvents = numePastEvents;
+    public void setNumPastEvents(String numPastEvents) {
+        this.numPastEvents = numPastEvents;
     }
 
     public String getNumFutureEvents() {
@@ -136,5 +160,22 @@ public class Organizer {
 
     public void setFacebookUsername(String facebookUsername) {
         this.facebookUsername = facebookUsername;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(description);
+        dest.writeString(organizerId);
+        dest.writeString(numPastEvents);
+        dest.writeString(numFutureEvents);
+        dest.writeString(website);
+        dest.writeString(facebookUsername);
+        dest.writeString(twitter);
+        dest.writeString(name);
     }
 }

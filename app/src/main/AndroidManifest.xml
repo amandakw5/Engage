@@ -57,6 +57,7 @@
         <activity
             android:name=".EventDetailsActivity"
             android:theme="@style/AppTheme" />
+
         <activity
             android:name=".HomePage"
             android:theme="@style/AppTheme" />
@@ -72,14 +73,19 @@
         <!-- android:name="com.google.android.geo.API_KEY" -->
         <!-- android:value="AIzaSyAb-qL9S_hAeFtES2zaQzcqsFpB4a_xAbA" -->
         <!-- /> -->
+
+
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_api_key" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        >
+
         <activity android:name=".CreateEventActivity"></activity>
+
+        <activity android:name=".UserFeed"></activity>
+
     </application>
 
 </manifest>

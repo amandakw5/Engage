@@ -9,46 +9,35 @@ public class UserEvents {
     public String eventHost;
     public String eventInformation;
     public String eventVenue;
+    public String eventInfo;
     public String eventId;
 
     public UserEvents(){ }
 
-    public UserEvents(String eventId, String eventName, String eventHost, String eventInformation){
+    public UserEvents(String eventName, String eventHost, String eventInfo,String eventId){
+        this.eventName = eventName;
+        this.eventHost = eventHost;
+        this.eventInfo = eventInfo;
         this.eventId = eventId;
-        this.eventName = eventName;
-        this.eventHost = eventHost;
-        this.eventInformation = eventInformation;
     }
 
-    public String getEventName() {
-        return eventName;
+    public String getEventId() {
+        return eventId;
     }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 
-    public String getEventHost() {
-        return eventHost;
-    }
+    public String getEventName() { return eventName; }
 
-    public void setEventHost(String eventHost) {
-        this.eventHost = eventHost;
-    }
+    public void setEventName(String eventName) { this.eventName = eventName; }
 
-    public String getEventInformation() {
-        return eventInformation;
-    }
+    public String getEventHost() { return eventHost; }
 
-    public void setEventInformation(String eventInformation) {
-        this.eventInformation = eventInformation;
-    }
+    public void setEventHost(String eventHost) { this.eventHost = eventHost; }
 
-    public String getEventVenue() {
-        return eventVenue;
-    }
+    public String getEventInfo() { return eventInfo; }
 
-    public void setEventVenue(String eventVenue) {
-        this.eventVenue = eventVenue;
-    }
+    public void setEventInfo(String eventInfo) { this.eventInfo = eventInfo; }
 }

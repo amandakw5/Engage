@@ -46,8 +46,8 @@ import com.google.android.gms.location.LocationServices;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class HomePage extends AppCompatActivity implements View.OnClickListener,LocationListener,GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+public class HomePage extends AppCompatActivity implements View.OnClickListener, LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
     RecyclerView rvIssues;
     IssueAdapter adapter;
     ArrayList<String> issues;

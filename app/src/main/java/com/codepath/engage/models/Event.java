@@ -1,10 +1,13 @@
 package com.codepath.engage.models;
 
+import android.os.Build;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.parceler.Parcel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,8 +17,7 @@ import java.util.Date;
  * Created by calderond on 7/11/17.
  */
 
-@Parcel
-public class Event {
+public class Event implements Parcelable {
     public String tvEventName;
     public String tvEventInfo;
     public String tvDescription;
@@ -40,6 +42,32 @@ public class Event {
     public Event() {
     }
 
+    protected Event(Parcel in) {
+        tvEventName = in.readString();
+        tvEventInfo = in.readString();
+        tvDescription = in.readString();
+        ivEventImage = in.readString();
+        organizerName = in.readString();
+        eventId = in.readString();
+        veneuId = in.readString();
+        organizerId = in.readString();
+        venue = in.readParcelable(Venue.class.getClassLoader());
+        organizer = in.readParcelable(Organizer.class.getClassLoader());
+    }
+
+
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
+
     public static Event fromJSON(JSONObject jsonObject)throws JSONException {
         Event event = new Event();
         //Getting the name of the event
@@ -62,7 +90,7 @@ public class Event {
         //Getting the description of the event
         JSONObject eventDescription = jsonObject.getJSONObject("description");
         event.tvDescription = eventDescription.getString("text");
-        //Getting a thumbnail of the image for futer use.
+        //Getting a thumbnail of the image for future use.
         try{
             jsonObject.getJSONObject("logo");
             JSONObject logo = jsonObject.getJSONObject("logo");
@@ -157,4 +185,24 @@ public class Event {
     public void setOrganizerName(String organizerName) {
         this.organizerName = organizerName;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(tvEventName);
+        dest.writeString(tvEventInfo);
+        dest.writeString(tvDescription);
+        dest.writeString(ivEventImage);
+        dest.writeString(organizerName);
+        dest.writeString(eventId);
+        dest.writeString(veneuId);
+        dest.writeString(organizerId);
+        dest.writeParcelable( this.venue,flags);
+        dest.writeParcelable(this.organizer,flags);
+    }
 }
+

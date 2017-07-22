@@ -2,18 +2,28 @@ package com.codepath.engage;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.test.suitebuilder.annotation.LargeTest;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.codepath.engage.models.DirectionFinder;
+import com.codepath.engage.models.DirectionFinderListener;
+import com.codepath.engage.models.Event;
+import com.codepath.engage.models.Route;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -31,33 +41,50 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import org.parceler.Parcels;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
+import static junit.runner.Version.id;
 
 /**
  * Created by emilyz on 7/17/17.
  */
 
 @RuntimePermissions
-public class MapActivity extends AppCompatActivity {
+public class MapActivity extends AppCompatActivity implements DirectionFinderListener {
 
     private SupportMapFragment mapFragment;
     private GoogleMap map;
     private LocationRequest mLocationRequest;
+
     Location mCurrentLocation;
+    Event event;
+
     private long UPDATE_INTERVAL = 60000;  /* 60 secs */
     private long FASTEST_INTERVAL = 5000; /* 5 secs */
-    private Toast toast = null;
+
+    private List<Marker> originMarkers = new ArrayList<>();
+    private List<Marker> destinationMarkers = new ArrayList<>();
+    private List<Polyline> polylinePaths = new ArrayList<>();
+    private ProgressDialog progressDialog;
+
 
     private final static String KEY_LOCATION = "location";
-
     /*
      * Define a request code to send to Google Play services This code is
      * returned in Activity.onActivityResult
@@ -66,6 +93,7 @@ public class MapActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_map);
@@ -75,8 +103,7 @@ public class MapActivity extends AppCompatActivity {
         }
 
         if (savedInstanceState != null && savedInstanceState.keySet().contains(KEY_LOCATION)) {
-            // Since KEY_LOCATION was found in the Bundle, we can be sure that mCurrentLocation
-            // is not null.
+            // Since KEY_LOCATION was found in the Bundle, we can be sure that mCurrentLocation is not null.
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
 
@@ -96,11 +123,29 @@ public class MapActivity extends AppCompatActivity {
 
     protected void loadMap(GoogleMap googleMap) {
         map = googleMap;
+
         if (map != null) {
             // Map is ready
-//            Toast.makeText(this, "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
             MapActivityPermissionsDispatcher.getMyLocationWithCheck(this);
             MapActivityPermissionsDispatcher.startLocationUpdatesWithCheck(this);
+
+            if (event.venue.getLatitude() != null && event.venue.getLongitude() != null){
+                double destLat = Double.parseDouble(event.venue.getLatitude());
+                double destLng = Double.parseDouble(event.venue.getLongitude());
+
+                LatLng destination = new LatLng(destLat, destLng);
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
+                map.animateCamera(cameraUpdate);
+
+                if (mCurrentLocation!= null){
+
+                    double originLat = mCurrentLocation.getLatitude();
+                    double originLong = mCurrentLocation.getLongitude();
+
+                    sendRequest(originLat, originLong, destLat, destLng);
+                }
+
+            }
 
         } else {
             Toast.makeText(this, "Error - Map was null!!", Toast.LENGTH_SHORT).show();
@@ -125,8 +170,19 @@ public class MapActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Location location) {
                         if (location != null) {
-                            LatLng place = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-                            map.addMarker(new MarkerOptions().position(place));
+                            if (mCurrentLocation!= null){
+                                double originLat = mCurrentLocation.getLatitude();
+                                double originLong = mCurrentLocation.getLongitude();
+
+                                double destLat = Double.parseDouble(event.venue.getLatitude());
+                                double destLng = Double.parseDouble(event.venue.getLongitude());
+
+                                LatLng destination = new LatLng(destLat, destLng);
+                                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
+                                map.animateCamera(cameraUpdate);
+
+                                sendRequest(originLat, originLong, destLat, destLng);
+                            }
                             onLocationChanged(location);
                         }
                     }
@@ -140,30 +196,18 @@ public class MapActivity extends AppCompatActivity {
                 });
     }
 
-    /*
-     * Called when the Activity becomes visible.
-    */
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    /*
-     * Called when the Activity is no longer visible.
-	 */
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
 
     private boolean isGooglePlayServicesAvailable() {
+
         // Check that Google Play services is available
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+
         // If Google Play services is available
         if (ConnectionResult.SUCCESS == resultCode) {
             // In debug mode, log the status
             Log.d("Location Updates", "Google Play services is available.");
             return true;
+
         } else {
             // Get the error dialog from Google Play services
             Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, this,
@@ -181,28 +225,12 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Display the connection status
-
-        if (mCurrentLocation != null) {
-            LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-            map.animateCamera(cameraUpdate);
-        } else {
-            Toast.makeText(this, "Current location was null, enable GPS!", Toast.LENGTH_SHORT).show();
-        }
-        MapActivityPermissionsDispatcher.startLocationUpdatesWithCheck(this);
-    }
-
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     protected void startLocationUpdates() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        mLocationRequest.setInterval(UPDATE_INTERVAL);
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+//        mLocationRequest.setInterval(UPDATE_INTERVAL);
+//        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
 
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
@@ -227,19 +255,21 @@ public class MapActivity extends AppCompatActivity {
         }
 
         // Report to the UI that the location was updated
-
         mCurrentLocation = location;
-//        String msg = "Updated Location: " +
-//                Double.toString(location.getLatitude()) + "," +
-//                Double.toString(location.getLongitude());
-//        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
 
         if (mCurrentLocation != null) {
-//            toast = Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT);
-//            toast.show();
-            LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+
+            double originLat = mCurrentLocation.getLatitude();
+            double originLong = mCurrentLocation.getLongitude();
+
+            double destLat = Double.parseDouble(event.venue.getLatitude());
+            double destLng = Double.parseDouble(event.venue.getLongitude());
+
+            LatLng destination = new LatLng(destLat, destLng);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
             map.animateCamera(cameraUpdate);
+
+            sendRequest(originLat, originLong, destLat, destLng);
         }
 
     }
@@ -273,52 +303,77 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
-    private void dropPinEffect(final Marker marker) {
-        // Handler allows us to repeat a code block after a specified delay
-        final android.os.Handler handler = new android.os.Handler();
-        final long start = SystemClock.uptimeMillis();
-        final long duration = 1500;
-
-        // Use the bounce interpolator
-        final android.view.animation.Interpolator interpolator =
-                new BounceInterpolator();
-
-        // Animate marker with a bounce updating its position every 15ms
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                long elapsed = SystemClock.uptimeMillis() - start;
-                // Calculate t for bounce based on elapsed time
-                float t = Math.max(
-                        1 - interpolator.getInterpolation((float) elapsed
-                                / duration), 0);
-                // Set the anchor
-                marker.setAnchor(0.5f, 1.0f + 14 * t);
-
-                if (t > 0.0) {
-                    // Post this event again 15ms from now.
-                    handler.postDelayed(this, 15);
-                } else { // done elapsing, show window
-                    marker.showInfoWindow();
-                }
-            }
-        });
+    private void sendRequest(double originLat, double originLong, double destLat, double destLong) {
+        try {
+            new DirectionFinder(this, originLat, originLong, destLat, destLong).execute();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void setUpMarkerListener(View v){
-        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                BitmapDescriptor defaultMarker =
-                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
-//                selectedMarkers.add(marker);
-//                rectOptions.add(marker.getPosition());
-//                BitmapDescriptor customMarker1 =
-//                        BitmapDescriptorFactory.fromResource();
-                marker.setIcon(defaultMarker);
-                return true;
+    @Override
+    public void onDirectionFinderStart() {
+//        progressDialog = ProgressDialog.show(this, "Please wait.",
+//                "Finding direction..!", true);
+
+        if (originMarkers != null) {
+            for (Marker marker : originMarkers) {
+                marker.remove();
             }
-        });
+        }
+
+        if (destinationMarkers != null) {
+            for (Marker marker : destinationMarkers) {
+                marker.remove();
+            }
+        }
+
+        if (polylinePaths != null) {
+            for (Polyline polyline:polylinePaths ) {
+                polyline.remove();
+            }
+        }
+    }
+
+    @Override
+    public void onDirectionFinderSuccess(List<Route> routes) {
+//        progressDialog.dismiss();
+        polylinePaths = new ArrayList<>();
+        originMarkers = new ArrayList<>();
+        destinationMarkers = new ArrayList<>();
+
+        for (Route route : routes) {
+            ((TextView) findViewById(R.id.tvDuration)).setText(route.duration.text);
+            ((TextView) findViewById(R.id.tvDistance)).setText(route.distance.text);
+
+            originMarkers.add(map.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
+                    .title(route.startAddress)
+                    .position(route.startLocation)));
+            destinationMarkers.add(map.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
+                    .title(route.endAddress)
+                    .position(route.endLocation)));
+
+            PolylineOptions polylineOptions = new PolylineOptions().
+                    geodesic(true).
+                    color(Color.BLUE).
+                    width(10);
+
+            for (int i = 0; i < route.points.size(); i++)
+                polylineOptions.add(route.points.get(i));
+
+            polylinePaths.add(map.addPolyline(polylineOptions));
+
+
+            double destLat = Double.parseDouble(event.venue.getLatitude());
+            double destLng = Double.parseDouble(event.venue.getLongitude());
+
+            LatLng destination = new LatLng(destLat, destLng);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
+            map.animateCamera(cameraUpdate);
+
+        }
     }
 
     @Override
