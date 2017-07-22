@@ -56,17 +56,23 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".EventDetailsActivity"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+
         <activity
             android:name=".HomePage"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".IssueDetailsActivity"
-            android:theme="@style/AppTheme"></activity>
-        <activity android:name=".ProfileActivity"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".ProfileActivity" />
         <activity
             android:name=".MapActivity"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+
+        <!-- <meta-data -->
+        <!-- android:name="com.google.android.geo.API_KEY" -->
+        <!-- android:value="AIzaSyAb-qL9S_hAeFtES2zaQzcqsFpB4a_xAbA" -->
+        <!-- /> -->
 
 
         <meta-data
@@ -75,8 +81,11 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        >
+
+        <activity android:name=".CreateEventActivity"></activity>
+
         <activity android:name=".UserFeed"></activity>
+
     </application>
 
 </manifest>

@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -43,8 +42,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,6 +125,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
 
     }
 
+
     private void configureNavigationDrawer() {
 
         NavigationView navView = (NavigationView) findViewById(R.id.nvView);
@@ -137,6 +135,16 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
 
                 Fragment f = null;
                 int itemId = menuItem.getItemId();
+                switch(itemId){
+                    case R.id.profileTab:
+                        Intent i = new Intent(HomePage.this, ProfileActivity.class);
+                        startActivity(i);
+                        break;
+                    case R.id.createTab:
+                        Intent in = new Intent(HomePage.this, CreateEventActivity.class);
+                        startActivity(in);
+                        break;
+                }
 
                 if (f != null) {
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -366,4 +374,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 });
         dialog.show();
     }
+
+
 }

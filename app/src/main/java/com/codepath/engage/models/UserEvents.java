@@ -7,6 +7,8 @@ package com.codepath.engage.models;
 public class UserEvents {
     public String eventName;
     public String eventHost;
+    public String eventInformation;
+    public String eventVenue;
     public String eventInfo;
     public String eventId;
 

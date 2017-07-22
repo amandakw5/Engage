@@ -161,7 +161,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     return true;
                 }
                 switch (itemId){
-                    case R.id.nav_first_fragment:
+                    case R.id.feedTab:
                         Intent i = new Intent(ViewEvents.this, UserFeed.class);
                         startActivity(i);
                 }
