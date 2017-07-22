@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.codepath.engage.models.Event;
 import com.codepath.engage.models.UserEvents;
@@ -46,7 +45,6 @@ public class UserFeed extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 DataSnapshot children = dataSnapshot.child("events");
                 UserEvents e = children.getValue(UserEvents.class);
-                Log.i("INFOID",e.getEventId());
             }
 
             @Override
