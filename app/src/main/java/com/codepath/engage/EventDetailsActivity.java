@@ -107,7 +107,8 @@ public class EventDetailsActivity extends AppCompatActivity{
             }).setApplicationName("youtube-cmdline-search-sample").build();
 
             // Prompt the user to enter a query term.
-            String queryTerm = event.tvEventName;
+            String queryTerm = event.getOrganizerName()
+                    ;
             // Define the API request for retrieving search results.
             YouTube.Search.List search = youtube.search().list("id,snippet");
 
