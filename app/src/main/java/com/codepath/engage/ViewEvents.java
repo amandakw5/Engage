@@ -91,6 +91,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_events);
+        progress  = new ProgressDialog(ViewEvents.this);
         counterToSetOrganizer = 0;
         counterToGetPositionOfEvent = 0;
         client = new EventbriteClient();
@@ -211,7 +212,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         });
     }
     private void populateEvents(String query){
-        progress  = new ProgressDialog(this);
         progress.setMessage("Retrieving Events");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIndeterminate(true);
@@ -296,6 +296,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                                     super.onFailure(statusCode, headers, throwable, errorResponse);
                                 }
                             });
+                            progress.dismiss();
 
                         }
                     }
