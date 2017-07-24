@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.codepath.engage.models.Event;
 import com.codepath.engage.models.Organizer;
 import com.codepath.engage.models.Venue;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -170,6 +171,9 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                         startActivity(i);
                     case R.id.logOut:
                         FirebaseAuth.getInstance().signOut();
+                        LoginManager.getInstance().logOut();
+                        Intent intent = new Intent(ViewEvents.this, LoginActivity.class);
+                        startActivity(intent);
                 }
                 return false;
             }
