@@ -147,7 +147,8 @@ public class EventDetailsActivity extends AppCompatActivity{
             }).setApplicationName("youtube-cmdline-search-sample").build();
 
             // Prompt the user to enter a query term.
-            String queryTerm = event.tvEventName;
+            String queryTerm = event.getOrganizerName()
+                    ;
             // Define the API request for retrieving search results.
             YouTube.Search.List search = youtube.search().list("id,snippet");
 
@@ -204,13 +205,13 @@ public class EventDetailsActivity extends AppCompatActivity{
 
 
     public void saveEvent(View view){
-        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTvEventInfo(), event.ivEventImage, event.tvDescription);
+        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(),event.getVenue().getAddress()+" "+event.getVenue().getCity() +" " +event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
     }
 
-    public void saveNewEvent(String uid, String eventId, String eventName, String eventHost, String eventInformation, String eventImage, String eventDescription){
+    public void saveNewEvent(String uid, String eventId, String eventName, String eventHost,String eventTime, String eventAddress, String eventImage, String eventDescription){
 
 
-        UserEvents info = new UserEvents(eventName, eventHost, eventInformation,eventId, eventImage, eventDescription );
+        UserEvents info = new UserEvents(eventName, eventHost,eventTime,eventAddress, eventId, eventImage, eventDescription );
 
         users.child(uid).child("events").child(eventId).setValue(info, new DatabaseReference.CompletionListener(){
 
