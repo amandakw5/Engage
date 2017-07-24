@@ -47,7 +47,6 @@ public class UserEvents {
         this.time = time;
         this.address = address;
         this.eventHost = eventHost;
-
         this.eventId = eventId;
         this.eventImage = eventImage;
         this.eventDescription = eventDescription;
