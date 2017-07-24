@@ -93,7 +93,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         counterToSetOrganizer = 0;
         counterToGetPositionOfEvent = 0;
         client = new EventbriteClient();
-        //Sets up the listners needed for the input text of search view.
+        //Sets up the listeners needed for the input text of search view.
         setUpSearchView();
         //find the recycler view
         rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
@@ -130,7 +130,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         if(intentQuery != null){
             callSearchFromIntent(intentQuery);
         }
-        //Refrencing the variables to their respective I.Ds for the xml style sheet
+        //Referencing the variables to their respective I.Ds for the xml style sheet
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         profileImage = (ImageView) findViewById(R.id.profileImage);
         searchView = (SearchView) findViewById(R.id.search);
@@ -185,10 +185,12 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         events.clear();
         populateEvents(query);
     }
+
     //Closes the input search view after user has submitted the query
     private void closeSearchView(SearchView searchView){
         searchView.setIconified(true);
     }
+
     //Initializes all necessary values that will hold all the search view values.
     private void setUpSearchView(){
         searchView = (SearchView) findViewById(R.id.search);
@@ -217,7 +219,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         valueOfQuery = query;
         counterToGetPositionOfEvent=0;
         eventRequestCompleted = false;
-        closeSearchView(searchView);
+//        closeSearchView(searchView);
         client.getInfoByQuery(valueOfQuery,tvLatitude,tvLongitude,new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
