@@ -45,6 +45,9 @@ public class LoginActivity extends AppCompatActivity {
     public static CallbackManager mCallbackManager;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private AccessToken accessToken;
 
     LoginButton loginButton;
 
@@ -59,11 +62,10 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
-
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken != null){
             Intent i = new Intent(this, HomePage.class);
             startActivity(i);
@@ -192,7 +194,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            // User is signed in
+            // User is signed into fire base
             Intent in = new Intent(LoginActivity.this, HomePage.class);
             String uid = mAuth.getCurrentUser().getUid();
             in.putExtra("uid", uid);

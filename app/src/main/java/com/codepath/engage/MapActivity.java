@@ -90,6 +90,7 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
     private double destLat;
     private double destLng;
     private LatLng destination;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,21 +136,6 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
             MapActivityPermissionsDispatcher.getMyLocationWithCheck(this);
             MapActivityPermissionsDispatcher.startLocationUpdatesWithCheck(this);
 
-            if (event.venue.getLatitude() != null && event.venue.getLongitude() != null){
-
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
-                map.animateCamera(cameraUpdate);
-
-                if (mCurrentLocation!= null){
-
-                    double originLat = mCurrentLocation.getLatitude();
-                    double originLong = mCurrentLocation.getLongitude();
-
-                    sendRequest(originLat, originLong, destLat, destLng);
-                }
-
-            }
-
         } else {
             Toast.makeText(this, "Error - Map was null!!", Toast.LENGTH_SHORT).show();
         }
@@ -173,16 +159,6 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
                     @Override
                     public void onSuccess(Location location) {
                         if (location != null) {
-                            if (mCurrentLocation!= null){
-                                double originLat = mCurrentLocation.getLatitude();
-                                double originLong = mCurrentLocation.getLongitude();
-
-                                LatLng destination = new LatLng(destLat, destLng);
-                                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
-                                map.animateCamera(cameraUpdate);
-
-                                sendRequest(originLat, originLong, destLat, destLng);
-                            }
                             onLocationChanged(location);
                         }
                     }
@@ -330,6 +306,7 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
 
     @Override
     public void onDirectionFinderSuccess(List<Route> routes) {
+
         polylinePaths = new ArrayList<>();
         originMarkers = new ArrayList<>();
         destinationMarkers = new ArrayList<>();
@@ -357,10 +334,6 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
                 polylineOptions.add(route.points.get(i));
 
             polylinePaths.add(map.addPolyline(polylineOptions));
-
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
-            map.animateCamera(cameraUpdate);
-
         }
     }
 

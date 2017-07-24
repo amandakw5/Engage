@@ -1,8 +1,10 @@
 package com.codepath.engage.models;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.codepath.engage.MapActivity;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.api.client.json.Json;
 
@@ -19,6 +21,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import cz.msebera.android.httpclient.NameValuePair;
 import cz.msebera.android.httpclient.client.utils.URLEncodedUtils;

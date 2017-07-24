@@ -43,6 +43,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.parceler.Parcels;
 
@@ -144,6 +145,14 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                     transaction.commit();
                     mDrawer.closeDrawers();
                     return true;
+                }
+
+                switch (itemId){
+                    case R.id.nav_first_fragment:
+                        Intent i = new Intent(HomePage.this, UserFeed.class);
+                        startActivity(i);
+                    case R.id.nav_fifth_fragment:
+                        FirebaseAuth.getInstance().signOut();
                 }
 
                 return false;

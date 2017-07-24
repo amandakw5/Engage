@@ -41,6 +41,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -165,6 +166,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     case R.id.nav_first_fragment:
                         Intent i = new Intent(ViewEvents.this, UserFeed.class);
                         startActivity(i);
+                    case R.id.nav_fifth_fragment:
+                        FirebaseAuth.getInstance().signOut();
                 }
                 return false;
             }

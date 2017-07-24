@@ -27,32 +27,32 @@ public class UserFeed extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_feed);
-        //find the recycler view
-        rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
-        //constructing the adapter from this datasoruce
-        //eventAdapter = new EventAdapter(events);
-        //recycler view setup(layout manager, use adapter'
-        rvEvents.setLayoutManager(new LinearLayoutManager(this));
-        // set the adapter
-        //rvEvents.setAdapter(eventAdapter);
-        //Linking Firebase Database to variable
-        mDataBase = FirebaseDatabase.getInstance().getReference();
-        setUserEvents();
+//        //find the recycler view
+//        rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
+//        //constructing the adapter from this datasoruce
+//        //eventAdapter = new EventAdapter(events);
+//        //recycler view setup(layout manager, use adapter'
+//        rvEvents.setLayoutManager(new LinearLayoutManager(this));
+//        // set the adapter
+//        //rvEvents.setAdapter(eventAdapter);
+//        //Linking Firebase Database to variable
+//        mDataBase = FirebaseDatabase.getInstance().getReference();
+//        setUserEvents();
     }
 
-    public void setUserEvents() {
-        ValueEventListener postListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                DataSnapshot children = dataSnapshot.child("events");
-                UserEvents e = children.getValue(UserEvents.class);
-                Log.i("INFOID",e.getEventId());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };mDataBase.addValueEventListener(postListener);
-    }
+//    public void setUserEvents() {
+//        ValueEventListener postListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                DataSnapshot children = dataSnapshot.child("events");
+//                UserEvents e = children.getValue(UserEvents.class);
+//                Log.i("INFOID",e.getEventId());
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        };mDataBase.addValueEventListener(postListener);
+//    }
 }
