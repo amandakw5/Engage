@@ -35,15 +35,16 @@
             android:theme="@style/SearchViewTheme"
             app:iconifiedByDefault="false"
             app:queryHint="Search Events"
-            android:layout_alignBottom="@+id/profileImage" />
+            android:layout_alignBottom="@+id/profileImage"
+            android:layout_toEndOf="@+id/btnFilter"/>
 
         <ImageView
             android:id="@+id/btnFilter"
             android:layout_width="20dp"
             android:layout_height="51dp"
-            android:layout_toEndOf="@+id/search"
             android:visibility="visible"
-            app:srcCompat="@color/colorPrimaryDark" />
+            app:srcCompat="@color/colorPrimaryDark"
+            android:layout_marginStart="5dp"/>
 
         <ImageView
             android:id="@+id/profileImage"
@@ -52,7 +53,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_gravity="end"
-            android:layout_toEndOf="@+id/btnFilter"
+            android:layout_toEndOf="@+id/search"
             app:srcCompat="@drawable/com_facebook_profile_picture_blank_square" />
     </RelativeLayout>
 </RelativeLayout>
