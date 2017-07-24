@@ -40,7 +40,7 @@ import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private String TAG = "TOKEN_ACCESS";
+    private String TAG = "LOGIN_ACTIVITY";
 
     public static CallbackManager mCallbackManager;
     private FirebaseAuth mAuth;

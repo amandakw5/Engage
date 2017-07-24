@@ -97,6 +97,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     private ImageView profileImage;
     private DatabaseReference mDatabase;
 
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -174,11 +176,18 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 switch(itemId){
                     case R.id.profileTab:
                         Intent i = new Intent(ViewEvents.this, ProfileActivity.class);
+                        i.putExtra("whichProfile", "You are ");
                         startActivity(i);
                         break;
                     case R.id.createTab:
                         Intent in = new Intent(ViewEvents.this, CreateEventActivity.class);
                         startActivity(in);
+                        break;
+                    case R.id.logOut:
+                        mAuth.signOut();
+                        LoginManager.getInstance().logOut();
+                        Intent intent = new Intent(ViewEvents.this, LoginActivity.class);
+                        startActivity(intent);
                         break;
                 }
 

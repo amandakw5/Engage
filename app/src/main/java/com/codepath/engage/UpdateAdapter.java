@@ -1,4 +1,4 @@
-package com.codepath.engage.models;
+package com.codepath.engage;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,8 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.codepath.engage.IssueDetailsActivity;
-import com.codepath.engage.R;
+import com.codepath.engage.models.UserEvents;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -61,8 +62,8 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
                     if (position != RecyclerView.NO_POSITION) {
                         UserEvents currentUpdate = mevents.get(position);
                         // create intent for the new activity
-                        Intent intent = new Intent(context, IssueDetailsActivity.class);
-                        intent.putExtra("current", (Parcelable) currentUpdate);
+                        Intent intent = new Intent(context, EventDetailsActivity.class);
+                        intent.putExtra("current", Parcels.wrap(currentUpdate));
                         // serialize the movie using parceler, use its short name as a key
                         // show the activity
                         context.startActivity(intent);

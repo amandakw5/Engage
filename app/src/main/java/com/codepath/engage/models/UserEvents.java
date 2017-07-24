@@ -1,24 +1,54 @@
 package com.codepath.engage.models;
 
+import org.parceler.Parcel;
+
 /**
  * Created by emilyz on 7/19/17.
  */
-
+@Parcel
 public class UserEvents {
     public String eventName;
     public String eventHost;
-    public String eventInformation;
+    public String eventDescription;
     public String eventVenue;
     public String eventInfo;
     public String eventId;
+    public String eventImage;
 
     public UserEvents(){ }
 
-    public UserEvents(String eventName, String eventHost, String eventInfo,String eventId){
+    public String getEventDescription() {
+        return eventDescription;
+    }
+
+    public void setEventDescription(String eventDescription) {
+        this.eventDescription = eventDescription;
+    }
+
+    public String getEventVenue() {
+        return eventVenue;
+    }
+
+    public void setEventVenue(String eventVenue) {
+        this.eventVenue = eventVenue;
+    }
+
+    public String getEventImage() {
+        return eventImage;
+    }
+
+    public void setEventImage(String eventImage) {
+        this.eventImage = eventImage;
+    }
+
+    public UserEvents(String eventName, String eventHost, String eventInfo, String eventId, String eventImage, String eventDescription){
         this.eventName = eventName;
         this.eventHost = eventHost;
         this.eventInfo = eventInfo;
         this.eventId = eventId;
+        this.eventImage = eventImage;
+        this.eventDescription = eventDescription;
+
     }
 
     public String getEventId() {

@@ -10,9 +10,13 @@
         android:id="@+id/login_button"
         android:layout_width="300dp"
         android:layout_height="150dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginBottom="33dp"
+        android:paddingBottom="15sp"
+        android:paddingTop="15sp"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/textView"

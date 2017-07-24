@@ -1,6 +1,7 @@
 package com.codepath.engage;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
@@ -52,8 +53,8 @@ public class EventDetailsActivity extends AppCompatActivity{
     @BindView(R.id.btnMap) Button btnMap;
 
     Event event;
+    UserEvents currentUpdate;
     String uid;
-    String eventInfo;
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference users;
@@ -81,17 +82,55 @@ public class EventDetailsActivity extends AppCompatActivity{
         users = firebaseDatabase.getReference("users");
         uid = Profile.getCurrentProfile().getId();
 
-        event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
+        currentUpdate = Parcels.unwrap(getIntent().getParcelableExtra("current"));
 
-        if (ivPicture != null) {
-            Glide.with(this)
-                    .load(event.ivEventImage)
-                    .into(ivPicture);
+        if (currentUpdate == null) {
+            event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
+            if (ivPicture != null) {
+                Glide.with(this)
+                        .load(event.ivEventImage)
+                        .centerCrop()
+                        .into(ivPicture);
+            }
+            tvEventName.setText(event.tvEventName);
+            tvEventDescription.setText(event.tvDescription);
+            tvEventInfo.setText(event.tvEventInfo);
+            tvHost.setText(event.organizer.name);
+            btnMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(EventDetailsActivity.this, MapActivity.class);
+                    intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
+                    intent.putExtra("whichProfile", "You are ");
+                    startActivity(intent);
+                }
+            });
+        }else {
+            if (ivPicture != null) {
+                Glide.with(this)
+                        .load(currentUpdate.eventImage)
+                        .centerCrop()
+                        .into(ivPicture);
+            }
+            tvEventName.setText(currentUpdate.eventName);
+            tvEventDescription.setText(currentUpdate.eventDescription);
+            tvEventInfo.setText(currentUpdate.eventInfo);
+            tvHost.setText(currentUpdate.eventHost);
+            btnSave.setVisibility(View.GONE);
+            btnMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + event.venue.getSimpleAddress());
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(mapIntent);
+                    }
+                }
+            });
+
         }
-        tvEventName.setText(event.tvEventName);
-        tvEventDescription.setText(event.tvDescription);
-        tvEventInfo.setText(event.tvEventInfo);
-        tvHost.setText(event.organizer.name);
+
         Properties properties = new Properties();
 
         try {
@@ -160,23 +199,17 @@ public class EventDetailsActivity extends AppCompatActivity{
         } catch (Throwable t) {
             t.printStackTrace();
         }
-        eventInfo = event.tvEventInfo;
     }
 
 
-    public void openMap(View view){
-        Intent intent = new Intent(EventDetailsActivity.this, MapActivity.class);
-        intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
-        startActivity(intent);
-    }
     public void saveEvent(View view){
-        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), eventInfo);
+        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTvEventInfo(), event.ivEventImage, event.tvDescription);
     }
 
-    public void saveNewEvent(String uid, String eventId, String eventName, String eventHost, String eventInformation){
+    public void saveNewEvent(String uid, String eventId, String eventName, String eventHost, String eventInformation, String eventImage, String eventDescription){
 
 
-        UserEvents info = new UserEvents(eventName, eventHost, eventInformation,eventId);
+        UserEvents info = new UserEvents(eventName, eventHost, eventInformation,eventId, eventImage, eventDescription );
 
         users.child(uid).child("events").child(eventId).setValue(info, new DatabaseReference.CompletionListener(){
 
