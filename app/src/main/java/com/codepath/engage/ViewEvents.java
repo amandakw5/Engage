@@ -40,6 +40,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -49,6 +54,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
+
 public class  ViewEvents extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
     //Following counters are used to be abel to access the position of the events arraylist in functions where the position of the event is not passed.
     static int counterToGetPositionOfEvent;
@@ -68,6 +74,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     String query;
     //Checks if the async call is completed to ensure that data is not being accessed before its actually popualted
     Boolean eventRequestCompleted = false;
+    ArrayList<User> allUsers;
 
     //Used in aiding in retreiving hte current location of the user.
     final String TAG = "GPS";
@@ -83,6 +90,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
     private ImageView profileImage;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,12 +106,15 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         //initiating the arraylsit
         events = new ArrayList<>();
         venues = new ArrayList<>();
+        allUsers = new ArrayList<>();
         //constructing the adapter from this datasoruce
         eventAdapter = new EventAdapter(events);
         //recycler view setup(layout manager, use adapter'
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
         // set the adapter
         rvEvents.setAdapter(eventAdapter);
+        mDatabase = FirebaseDatabase.getInstance().getReference("users");
+
         Intent intent = getIntent();
         if(intent != null) {
             query = intent.getStringExtra("Query");
@@ -145,6 +156,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         });
     }
     private void configureNavigationDrawer() {
+
         NavigationView navView = (NavigationView) findViewById(R.id.nvView);
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -152,6 +164,16 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
                 Fragment f = null;
                 int itemId = menuItem.getItemId();
+                switch(itemId){
+                    case R.id.profileTab:
+                        Intent i = new Intent(ViewEvents.this, ProfileActivity.class);
+                        startActivity(i);
+                        break;
+                    case R.id.createTab:
+                        Intent in = new Intent(ViewEvents.this, CreateEventActivity.class);
+                        startActivity(in);
+                        break;
+                }
 
                 if (f != null) {
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -160,11 +182,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     mDrawer.closeDrawers();
                     return true;
                 }
-                switch (itemId){
-                    case R.id.feedTab:
-                        Intent i = new Intent(ViewEvents.this, UserFeed.class);
-                        startActivity(i);
-                }
+
                 return false;
             }
         });
@@ -303,6 +321,24 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 Log.i("info",client.finalUrl+errorResponse);
+            }
+        });
+    }
+    private void populateUsers(){
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean isInside = false;
+                long x = dataSnapshot.getChildrenCount();
+                for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
+                    User u = evSnapshot.getValue(User.class);
+                    allUsers.add(u);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }

@@ -24,10 +24,12 @@ import butterknife.ButterKnife;
 public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder> {
     public ArrayList<UserEvents> mevents;
     Context context;
+    String profilePage;
 
 
-    public UpdateAdapter(ArrayList<UserEvents> events) {
+    public UpdateAdapter(ArrayList<UserEvents> events, String who) {
         mevents = events;
+        profilePage = who;
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -42,7 +44,7 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         UserEvents e = mevents.get(position);
-        holder.update.setText("You are interested in " + e.eventName);
+        holder.update.setText(profilePage + "interested in " + e.eventName);
     }
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.notification) TextView update;
