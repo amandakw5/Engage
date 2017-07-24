@@ -163,10 +163,10 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     return true;
                 }
                 switch (itemId){
-                    case R.id.nav_first_fragment:
+                    case R.id.feedTab:
                         Intent i = new Intent(ViewEvents.this, UserFeed.class);
                         startActivity(i);
-                    case R.id.nav_fifth_fragment:
+                    case R.id.logOut:
                         FirebaseAuth.getInstance().signOut();
                 }
                 return false;
@@ -177,11 +177,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         query = intent.getStringExtra("Query");
         tvLongitude = intent.getStringExtra("Longitude");
         tvLatitude = intent.getStringExtra("Latitude");
-        Log.i("Query"," " + query);
 
         onStart();
-        Log.i("Latitude",""+tvLatitude);
-        Log.i("Longitude",""+tvLongitude);
         events.clear();
         populateEvents(query);
     }
@@ -228,7 +225,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     JSONArray eventsObject = response.getJSONArray("events");
                     for (int i = 0 ; i < eventsObject.length();i++){
                         Event event = Event.fromJSON(eventsObject.getJSONObject(i));
-                        Log.i("Info"+i,"GET EVENTS: EVENT ID: " + event.getEventId() +" EVENTS NAME: "+event.getTvEventName() + " ORGANIZER ID: " + event.getOrganizerId());
 
                         events.add(event);
                         eventAdapter.notifyItemInserted(events.size() -1);
@@ -243,7 +239,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     if(eventRequestCompleted) {
                         counterToSetOrganizer =0;
                         for (int i = 0; i < events.size(); i++) {
-                            Log.i("Info ","SECOND REQUEST ORGANIZER ID: " + events.get(i).getOrganizerId() +" EVENT NAME: "+events.get(i).getTvEventName());
                             client.getOrganizerInfo(events.get(i).getOrganizerId(), new JsonHttpResponseHandler() {
                                 @Override
                                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -251,10 +246,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
                                     for(int i = 0; i < events.size();i++){
                                         if(events.get(i).getOrganizerId().equals(organizer.getOrganizerId())){
-                                            Log.i("Info"+i,"LAST CALL ORGANIZER NAME: " + organizer.getName());
                                             events.get(i).setOrganizer(organizer);
                                             events.get(i).setOrganizerName(organizer.getName());
-                                            Log.i("Info" +i, events.get(i).getOrganizerId()+ " " + events.get(i).getOrganizerName());
                                             eventAdapter.notifyDataSetChanged();
                                         }
                                     }
@@ -342,10 +335,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
             return;
         }
-        Log.d(TAG, "onConnected");
 
         Location ll = LocationServices.FusedLocationApi.getLastLocation(gac);
-        Log.d(TAG, "LastLocation: " + (ll == null ? "NO LastLocation" : ll.toString()));
 
         LocationServices.FusedLocationApi.requestLocationUpdates(gac, locationRequest, this);
     }

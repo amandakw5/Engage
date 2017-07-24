@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.codepath.engage.models.Event;
 import com.codepath.engage.models.UserEvents;
@@ -55,4 +54,5 @@ public class UserFeed extends AppCompatActivity {
 //            }
 //        };mDataBase.addValueEventListener(postListener);
 //    }
+
 }

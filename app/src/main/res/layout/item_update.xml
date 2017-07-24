@@ -13,11 +13,11 @@
         android:layout_alignParentEnd="true"
         android:layout_weight="0.05" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="300dp"
-        android:layout_height="200dp"
-        android:layout_below="@+id/notification"
-        android:layout_centerHorizontal="true"
-        app:srcCompat="@color/colorAccent" />
+    <!--<ImageView-->
+        <!--android:id="@+id/imageView"-->
+        <!--android:layout_width="300dp"-->
+        <!--android:layout_height="200dp"-->
+        <!--android:layout_below="@+id/notification"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--app:srcCompat="@color/colorAccent" />-->
 </RelativeLayout>

@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-        xmlns:app="http://schemas.android.com/apk/res-auto">
         <group android:id="@+id/drawerSectionOne" android:checkableBehavior="none">
             <item
-                android:id="@+id/nav_fourth_fragment"
+                android:id="@+id/profileTab"
                 android:title="My Profile" />
             <item
-                android:id="@+id/nav_first_fragment"
+                android:id="@+id/feedTab"
                 android:title="My Feed" />
             <item
-                android:id="@+id/nav_second_fragment"
+                android:id="@+id/interestedTab"
                 android:title="Interested Events" />
             <item
-                android:id="@+id/nav_third_fragment"
+                android:id="@+id/pastTabs"
                 android:title="Past Events" />
             <item
-                android:id="@+id/nav_fifth_fragment"
+                android:id="@+id/createTab"
+                android:title="Create an Event" />
+            <item
+                android:id="@+id/logOut"
                 android:title="Log Out"
                 />
 

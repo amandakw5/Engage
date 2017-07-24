@@ -7,36 +7,49 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.codepath.engage.IssueDetailsActivity;
 import com.codepath.engage.R;
-import com.codepath.engage.Update;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by awestort on 7/18/17.
  */
 
 public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder> {
-    public ArrayList<Update> updates;
+    public ArrayList<UserEvents> mevents;
     Context context;
-    public UpdateAdapter(ArrayList<Update> updates) {
-        this.updates = updates;
+
+
+    public UpdateAdapter(ArrayList<UserEvents> events) {
+        mevents = events;
     }
     @Override
-    public UpdateAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         // create the view using the item_movie layout
         View updateView = inflater.inflate(R.layout.item_update, parent, false);
         ViewHolder viewHolder = new ViewHolder(updateView);
+
         return viewHolder;
     }
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        UserEvents e = mevents.get(position);
+        holder.update.setText("You are interested in " + e.eventName);
+    }
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        @BindView(R.id.notification) TextView update;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -44,7 +57,7 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
                     int position = getAdapterPosition();
                     // fire the listener callback
                     if (position != RecyclerView.NO_POSITION) {
-                        Update currentUpdate = updates.get(position);
+                        UserEvents currentUpdate = mevents.get(position);
                         // create intent for the new activity
                         Intent intent = new Intent(context, IssueDetailsActivity.class);
                         intent.putExtra("current", (Parcelable) currentUpdate);
@@ -61,14 +74,10 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
 
         }
     }
-    @Override
-    public void onBindViewHolder(UpdateAdapter.ViewHolder holder, int position) {
-
-    }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mevents.size();
     }
 
 }

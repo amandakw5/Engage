@@ -45,9 +45,6 @@ public class LoginActivity extends AppCompatActivity {
     public static CallbackManager mCallbackManager;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-
-    private AccessToken accessToken;
 
     LoginButton loginButton;
 
@@ -64,13 +61,6 @@ public class LoginActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-
-        accessToken = AccessToken.getCurrentAccessToken();
-        if (accessToken != null){
-            Intent i = new Intent(this, HomePage.class);
-            startActivity(i);
-            finish();
-        }
 
         // Write a message to the database
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
@@ -90,6 +80,8 @@ public class LoginActivity extends AppCompatActivity {
                         final User user = new User();
                         Bundle bFacebookData = getFacebookData(object);
                         Log.d(TAG, "facebook:onCompleted");
+                        user.setFollowing(0);
+                        user.setFollowers(0);
                         try {
                             String id = object.getString("id");
                             user.setUid(id);
@@ -127,10 +119,11 @@ public class LoginActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
-                        writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), bFacebookData);
+                        writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), 0, 0, bFacebookData);
 
                     }
                 });
+
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id, first_name, last_name, email");
                 request.setParameters(parameters);
@@ -193,7 +186,9 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+
+        if (user != null && accessToken != null) {
             // User is signed into fire base
             Intent in = new Intent(LoginActivity.this, HomePage.class);
             String uid = mAuth.getCurrentUser().getUid();
@@ -228,8 +223,8 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture, final Bundle facebookData) {
-        final User user = new User(firstName, lastName, email, profilePicture);
+    public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture, int followers, int following, final Bundle facebookData) {
+        final User user = new User(firstName, lastName, email, profilePicture, followers, following);
         mDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

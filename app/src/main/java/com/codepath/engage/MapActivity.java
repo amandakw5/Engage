@@ -134,7 +134,6 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
         if (map != null) {
             // Map is ready
             MapActivityPermissionsDispatcher.getMyLocationWithCheck(this);
-            MapActivityPermissionsDispatcher.startLocationUpdatesWithCheck(this);
 
         } else {
             Toast.makeText(this, "Error - Map was null!!", Toast.LENGTH_SHORT).show();
@@ -201,28 +200,6 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
         }
     }
 
-    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
-    protected void startLocationUpdates() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        builder.addLocationRequest(mLocationRequest);
-        LocationSettingsRequest locationSettingsRequest = builder.build();
-
-        SettingsClient settingsClient = LocationServices.getSettingsClient(this);
-        settingsClient.checkLocationSettings(locationSettingsRequest);
-        //noinspection MissingPermission
-        getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
-                    @Override
-                    public void onLocationResult(LocationResult locationResult) {
-                        onLocationChanged(locationResult.getLastLocation());
-                    }
-                },
-                Looper.myLooper());
-    }
-
     public void onLocationChanged(Location location) {
         // GPS may be turned off
         if (location == null) {
@@ -285,6 +262,8 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
 
     @Override
     public void onDirectionFinderStart() {
+        progressDialog = ProgressDialog.show(this, "Please wait.",
+                "Finding direction!", true);
         if (originMarkers != null) {
             for (Marker marker : originMarkers) {
                 marker.remove();
@@ -306,6 +285,8 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
 
     @Override
     public void onDirectionFinderSuccess(List<Route> routes) {
+
+        progressDialog.dismiss();
 
         polylinePaths = new ArrayList<>();
         originMarkers = new ArrayList<>();
