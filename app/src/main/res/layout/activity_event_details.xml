@@ -47,23 +47,7 @@
                 android:text="@string/event_description"
                 android:layout_below="@+id/ivPicture"
                 android:layout_alignStart="@+id/ivPicture" />
-            <TextView
-                android:id="@+id/tvPeopleParticipating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tvEventInfo"
-                android:layout_toEndOf="@+id/ivPicture"
-                android:text="@string/number_of_people"
-                android:layout_marginBottom="10dp"/>
-            <TextView
-                android:id="@+id/tvPeople"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/tvPeopleParticipating"
-                android:layout_toEndOf="@+id/tvPeopleParticipating"
-                android:text="@string/people_attending"
-                android:layout_marginBottom="10dp"
-                android:layout_marginStart="5dp"/>
+
             <TextView
                 android:id="@+id/tvEventName"
                 android:layout_width="wrap_content"

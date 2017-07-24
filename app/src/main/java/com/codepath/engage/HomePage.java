@@ -36,12 +36,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,13 +60,10 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     private ImageView profileImage;
     private ListView mDrawerList;
 
-    //Variable that will refrence the Search view/ Search bar icon
-
     //Variable that will reference the Search view/ Search bar icon
-
     private SearchView searchView;
 
-    //Will hold teh text that the user inputs to the serach view
+    //Will hold the text that the user inputs to the serach view
     private String valueOfQuery;
 
     private ArrayAdapter<String> mAdapter;
@@ -74,6 +73,8 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+
+    private FirebaseAuth mAuth;
 
     GoogleApiClient gac;
     LocationRequest locationRequest;
@@ -123,6 +124,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         adapter = new IssueAdapter(issues, tvLatitude, tvLongitude);
         rvIssues.setAdapter(adapter);
 
+        mAuth = FirebaseAuth.getInstance();
     }
 
 
@@ -145,6 +147,12 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                         Intent in = new Intent(HomePage.this, CreateEventActivity.class);
                         startActivity(in);
                         break;
+                    case R.id.logOut:
+                        mAuth.signOut();
+                        LoginManager.getInstance().logOut();
+                        Intent intent = new Intent(HomePage.this, LoginActivity.class);
+                        startActivity(intent);
+                        break;
                 }
 
                 if (f != null) {
@@ -154,16 +162,16 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                     mDrawer.closeDrawers();
                     return true;
                 }
-
                 return false;
             }
         });
     }
 
-    //Perfoms The Searching Of Desired Event Category
+    //Performs the Searching Of Desired Event Category
     //TODO finish this function
     private void searchFor(String query){
     }
+
     private void addDrawerItems() {
         String[] osArray = { "Android", "iOS", "Windows", "OS X", "Linux" };
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
@@ -196,8 +204,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         return true;
     }
 
-
-    //Initilalizes all necessary values that will hold all the searchview values.
+    //Initializes all necessary values that will hold all the searchview values.
     private void setUpSearchView(){
         // Sets searchable configuration defined in searchable.xml for this SearchView
         SearchManager searchManager =

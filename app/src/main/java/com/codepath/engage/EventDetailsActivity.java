@@ -47,7 +47,6 @@ public class EventDetailsActivity extends AppCompatActivity{
     @BindView(R.id.tvHost) TextView tvHost;
     @BindView(R.id.tvEventInfo) TextView tvEventInfo;
     @BindView(R.id.tvEventDescription) TextView tvEventDescription;
-    @BindView(R.id.tvPeopleParticipating) TextView tvPeopleParticipating;
     @BindView(R.id.btnSave) Button btnSave;
     @BindView(R.id.tvEventName) TextView tvEventName;
     @BindView(R.id.btnMap) Button btnMap;

@@ -1,5 +1,6 @@
 package com.codepath.engage;
 
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 import com.codepath.engage.models.Event;
 import com.codepath.engage.models.Organizer;
 import com.codepath.engage.models.Venue;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -45,6 +47,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -56,6 +60,7 @@ import java.util.ArrayList;
 import cz.msebera.android.httpclient.Header;
 
 public class  ViewEvents extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
+
     //Following counters are used to be abel to access the position of the events arraylist in functions where the position of the event is not passed.
     static int counterToGetPositionOfEvent;
     static int counterToSetOrganizer;
@@ -63,7 +68,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     private SearchView searchView;
     //Will hold the text that the user inputs to the search view
     private String valueOfQuery;
-
+    ProgressDialog progress;
     //Handle the storage and populating the activity to show the activites around one.
     private EventbriteClient client;
     EventAdapter eventAdapter;
@@ -76,7 +81,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     Boolean eventRequestCompleted = false;
     ArrayList<User> allUsers;
 
-    //Used in aiding in retreiving hte current location of the user.
+    //Used in aiding in retrieving the current location of the user.
     final String TAG = "GPS";
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
@@ -84,7 +89,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     GoogleApiClient gac;
     LocationRequest locationRequest;
     String tvLatitude, tvLongitude, tvTime;
-    //Settting the view for U.I
+    //Setting the view for U.I
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -96,18 +101,20 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_events);
+        progress  = new ProgressDialog(ViewEvents.this);
         counterToSetOrganizer = 0;
         counterToGetPositionOfEvent = 0;
         client = new EventbriteClient();
-        //Sets up the listners needed for the input text of search view.
+        //Sets up the listeners needed for the input text of search view.
         setUpSearchView();
         //find the recycler view
         rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
-        //initiating the arraylsit
+        //initiating the array list
         events = new ArrayList<>();
         venues = new ArrayList<>();
         allUsers = new ArrayList<>();
         //constructing the adapter from this datasoruce
+        //constructing the adapter from this data source
         eventAdapter = new EventAdapter(events);
         //recycler view setup(layout manager, use adapter'
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
@@ -139,7 +146,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         if(intentQuery != null){
             callSearchFromIntent(intentQuery);
         }
-        //Refrencing the variables to their respective I.Ds for the xml style sheet
+        //Referencing the variables to their respective I.Ds for the xml style sheet
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         profileImage = (ImageView) findViewById(R.id.profileImage);
         searchView = (SearchView) findViewById(R.id.search);
@@ -151,7 +158,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDrawer.openDrawer(Gravity.RIGHT);
+                mDrawer.openDrawer(Gravity.END);
             }
         });
     }
@@ -183,6 +190,16 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     return true;
                 }
 
+                switch (itemId){
+                    case R.id.feedTab:
+                        Intent i = new Intent(ViewEvents.this, UserFeed.class);
+                        startActivity(i);
+                    case R.id.logOut:
+                        FirebaseAuth.getInstance().signOut();
+                        LoginManager.getInstance().logOut();
+                        Intent intent = new Intent(ViewEvents.this, LoginActivity.class);
+                        startActivity(intent);
+                }
                 return false;
             }
         });
@@ -191,19 +208,18 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         query = intent.getStringExtra("Query");
         tvLongitude = intent.getStringExtra("Longitude");
         tvLatitude = intent.getStringExtra("Latitude");
-        Log.i("Query"," " + query);
 
         onStart();
-        Log.i("Latitude",""+tvLatitude);
-        Log.i("Longitude",""+tvLongitude);
         events.clear();
         populateEvents(query);
     }
+
     //Closes the input search view after user has submitted the query
     private void closeSearchView(SearchView searchView){
         searchView.setIconified(true);
     }
-    //Initializes all necessary values that will hold all the searchview values.
+
+    //Initializes all necessary values that will hold all the search view values.
     private void setUpSearchView(){
         searchView = (SearchView) findViewById(R.id.search);
         // Sets searchable configuration defined in searchable.xml for this SearchView
@@ -225,13 +241,17 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         });
     }
     private void populateEvents(String query){
+        progress.setMessage("Retrieving Events");
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
+        progress.show();
         eventAdapter.clear();
         events.clear();
         venues.clear();
         valueOfQuery = query;
         counterToGetPositionOfEvent=0;
         eventRequestCompleted = false;
-        closeSearchView(searchView);
+//        closeSearchView(searchView);
         client.getInfoByQuery(valueOfQuery,tvLatitude,tvLongitude,new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -240,7 +260,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     JSONArray eventsObject = response.getJSONArray("events");
                     for (int i = 0 ; i < eventsObject.length();i++){
                         Event event = Event.fromJSON(eventsObject.getJSONObject(i));
-                        Log.i("Info"+i,"GET EVENTS: EVENT ID: " + event.getEventId() +" EVENTS NAME: "+event.getTvEventName() + " ORGANIZER ID: " + event.getOrganizerId());
 
                         events.add(event);
                         eventAdapter.notifyItemInserted(events.size() -1);
@@ -251,11 +270,10 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     e.printStackTrace();
                 }
                 finally {
-                    //makes suere that the previous call is completed before moving onto assigning the rest of the values to the event object.
+                    //makes sure that the previous call is completed before moving onto assigning the rest of the values to the event object.
                     if(eventRequestCompleted) {
                         counterToSetOrganizer =0;
                         for (int i = 0; i < events.size(); i++) {
-                            Log.i("Info ","SECOND REQUEST ORGANIZER ID: " + events.get(i).getOrganizerId() +" EVENT NAME: "+events.get(i).getTvEventName());
                             client.getOrganizerInfo(events.get(i).getOrganizerId(), new JsonHttpResponseHandler() {
                                 @Override
                                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -263,10 +281,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
                                     for(int i = 0; i < events.size();i++){
                                         if(events.get(i).getOrganizerId().equals(organizer.getOrganizerId())){
-                                            Log.i("Info"+i,"LAST CALL ORGANIZER NAME: " + organizer.getName());
                                             events.get(i).setOrganizer(organizer);
                                             events.get(i).setOrganizerName(organizer.getName());
-                                            Log.i("Info" +i, events.get(i).getOrganizerId()+ " " + events.get(i).getOrganizerName());
                                             eventAdapter.notifyDataSetChanged();
                                         }
                                     }
@@ -276,7 +292,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                         }
                     }
                     //Once the event object has been populated with the organizer and event information another call is made to
-                    //Retrieve the veneu for the event
+                    //Retrieve the venue for the event
                     if (eventRequestCompleted) {
                         for (int i = 0; i < events.size(); i++) {
                             client.getVenue(events.get(i).getVeneuId(), new JsonHttpResponseHandler() {
@@ -299,6 +315,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                                                 eventAdapter.notifyDataSetChanged();
                                             }
                                         }
+                                        progress.dismiss();
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -308,6 +325,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                                     super.onFailure(statusCode, headers, throwable, errorResponse);
                                 }
                             });
+                            progress.dismiss();
 
                         }
                     }
@@ -372,10 +390,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
             return;
         }
-        Log.d(TAG, "onConnected");
 
         Location ll = LocationServices.FusedLocationApi.getLastLocation(gac);
-        Log.d(TAG, "LastLocation: " + (ll == null ? "NO LastLocation" : ll.toString()));
 
         LocationServices.FusedLocationApi.requestLocationUpdates(gac, locationRequest, this);
     }
@@ -398,7 +414,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 } else {
                     Toast.makeText(ViewEvents.this, "Permission denied!", Toast.LENGTH_LONG).show();
                 }
-                return;
             }
         }
     }
@@ -461,5 +476,4 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 });
         dialog.show();
     }
-
 }

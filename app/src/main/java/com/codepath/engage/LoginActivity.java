@@ -59,16 +59,8 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
-
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if (accessToken != null){
-            Intent i = new Intent(this, HomePage.class);
-            startActivity(i);
-            finish();
-        }
 
         // Write a message to the database
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
@@ -151,6 +143,7 @@ public class LoginActivity extends AppCompatActivity {
                         });
                     }
                 });
+
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id, first_name, last_name, email");
                 request.setParameters(parameters);
@@ -213,8 +206,10 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // User is signed in
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+
+        if (user != null && accessToken != null) {
+            // User is signed into fire base
             Intent in = new Intent(LoginActivity.this, HomePage.class);
             String uid = mAuth.getCurrentUser().getUid();
             in.putExtra("uid", uid);
