@@ -14,7 +14,8 @@ public class UserEvents {
     public String eventInfo;
     public String eventId;
     public String eventImage;
-
+    public String time;
+    public String address;
     public UserEvents(){ }
 
     public String getEventDescription() {
@@ -41,10 +42,12 @@ public class UserEvents {
         this.eventImage = eventImage;
     }
 
-    public UserEvents(String eventName, String eventHost, String eventInfo, String eventId, String eventImage, String eventDescription){
+    public UserEvents(String eventName, String eventHost, String time, String address, String eventId, String eventImage, String eventDescription){
         this.eventName = eventName;
+        this.time = time;
+        this.address = address;
         this.eventHost = eventHost;
-        this.eventInfo = eventInfo;
+
         this.eventId = eventId;
         this.eventImage = eventImage;
         this.eventDescription = eventDescription;
