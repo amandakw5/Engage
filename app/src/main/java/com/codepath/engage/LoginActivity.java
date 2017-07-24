@@ -73,54 +73,74 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
+
                 handleFacebookAccessToken(loginResult.getAccessToken());
                 GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback(){
                     @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        final User user = new User();
-                        Bundle bFacebookData = getFacebookData(object);
-                        Log.d(TAG, "facebook:onCompleted");
-                        user.setFollowing(0);
-                        user.setFollowers(0);
-                        try {
-                            String id = object.getString("id");
-                            user.setUid(id);
-                            Log.d(TAG, "facebook id");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            String first_name = object.getString("first_name");
-                            user.setFirstName(first_name);
-                            Log.d(TAG, "facebook first_name");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            String last_name = object.getString("last_name");
-                            user.setLastName(last_name);
-                            Log.d(TAG, "facebook last_name");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            String email = object.getString("email");
-                            user.setEmail(email);
-                            Log.d(TAG, "facebook email");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            URL profile_picture = new URL("https://graph.facebook.com/" + user.getUid() + "/picture?width=200&height=200");
-                            String profilePicture = profile_picture.toString();
-                            user.setProfilePicture(profilePicture);
-                            Log.d(TAG, "facebook profilePicture");
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        }
+                    public void onCompleted(final JSONObject object, GraphResponse response) {
+                        mDatabase.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                boolean isInside = false;
+                                long x = dataSnapshot.getChildrenCount();
+                                for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
+                                    User u = evSnapshot.getValue(User.class);
+                                    try {
+                                        if (u.getUid().equals(object.getString("id"))) {
+                                            isInside = true;
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                if(!isInside){
+                                    final User user = new User();
+                                    Bundle bFacebookData = getFacebookData(object);
+                                    Log.d(TAG, "facebook:onCompleted");
+                                    user.setFollowing(0);
+                                    user.setFollowers(0);
+                                    try {
+                                        String id = object.getString("id");
+                                        user.setUid(id);
+                                        Log.d(TAG, "facebook id");
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }try {
+                                        String first_name = object.getString("first_name");
+                                        user.setFirstName(first_name);
+                                        Log.d(TAG, "facebook first_name");
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }try {
+                                        String last_name = object.getString("last_name");
+                                        user.setLastName(last_name);
+                                        Log.d(TAG, "facebook last_name");
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    try {
+                                        String email = object.getString("email");
+                                        user.setEmail(email);
+                                        Log.d(TAG, "facebook email");
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    try {
+                                        URL profile_picture = new URL("https://graph.facebook.com/" + user.getUid() + "/picture?width=200&height=200");
+                                        String profilePicture = profile_picture.toString();
+                                        user.setProfilePicture(profilePicture);
+                                        Log.d(TAG, "facebook profilePicture");
+                                    } catch (MalformedURLException e) {
+                                        e.printStackTrace();
+                                    }
+                                    writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), 0, 0, bFacebookData);
+                                }
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
 
-                        writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), 0, 0, bFacebookData);
-
+                            }
+                        });
                     }
                 });
 
@@ -242,5 +262,4 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
 }

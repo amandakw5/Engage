@@ -25,6 +25,7 @@ public class ProfileActivity extends AppCompatActivity {
     public ArrayList<UserEvents> events;
     private DatabaseReference mDatabase;
     String uid;
+    String whichprofile;
 
 // ...
 
@@ -32,21 +33,21 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        whichprofile = getIntent().getStringExtra("whichProfile");
         events = new ArrayList<>();
-        adapter = new UpdateAdapter(events);
+        adapter = new UpdateAdapter(events, whichprofile);
 
         rvUpdates = (RecyclerView) findViewById(R.id.rvUpdates);
         rvUpdates.setLayoutManager(new LinearLayoutManager(this));
         rvUpdates.setAdapter(adapter);
         uid = Profile.getCurrentProfile().getId();
+        Event event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
-        Event event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
         mDatabase.child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 DataSnapshot contactChildren = dataSnapshot.child("events");
-                String x;
                for (DataSnapshot evSnapshot: contactChildren.getChildren()){
                    UserEvents e = evSnapshot.getValue(UserEvents.class);
                    events.add(e);

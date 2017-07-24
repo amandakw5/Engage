@@ -140,6 +140,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 switch(itemId){
                     case R.id.profileTab:
                         Intent i = new Intent(HomePage.this, ProfileActivity.class);
+                        i.putExtra("whichProfile", "You are");
                         startActivity(i);
                         break;
                     case R.id.createTab:
