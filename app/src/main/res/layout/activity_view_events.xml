@@ -52,5 +52,6 @@
         app:itemTextColor="@android:color/black"
         app:menu="@menu/profilebar"
         android:layout_alignParentTop="true" />
+
 </android.support.v4.widget.DrawerLayout>
 

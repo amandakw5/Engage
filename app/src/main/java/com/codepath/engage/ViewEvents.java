@@ -1,5 +1,6 @@
 package com.codepath.engage;
 
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -57,7 +58,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     private SearchView searchView;
     //Will hold the text that the user inputs to the search view
     private String valueOfQuery;
-
+    ProgressDialog progress;
     //Handle the storage and populating the activity to show the activites around one.
     private EventbriteClient client;
     EventAdapter eventAdapter;
@@ -204,6 +205,11 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         });
     }
     private void populateEvents(String query){
+        progress  = new ProgressDialog(ViewEvents.this);
+        progress.setMessage("Retrieving Events");
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.show();
+        progress.setIndeterminate(true);
         eventAdapter.clear();
         events.clear();
         venues.clear();
@@ -273,6 +279,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                                                 events.get(i).setTvEventInfo(events.get(i).getTvEventInfo() + "\n" + address);
                                                 eventAdapter.notifyDataSetChanged();
                                             }
+                                            
+                                                progress.dismiss();
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
