@@ -1,12 +1,13 @@
 package com.codepath.engage;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.codepath.engage.models.Event;
-import com.codepath.engage.models.UpdateAdapter;
 import com.codepath.engage.models.UserEvents;
 import com.facebook.Profile;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +37,7 @@ public class ProfileActivity extends AppCompatActivity {
         whichprofile = getIntent().getStringExtra("whichProfile");
         events = new ArrayList<>();
         adapter = new UpdateAdapter(events, whichprofile);
+        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
 
         rvUpdates = (RecyclerView) findViewById(R.id.rvUpdates);
         rvUpdates.setLayoutManager(new LinearLayoutManager(this));
@@ -58,9 +60,16 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-int i =0;
+int i=0;
             }
         });
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
     }
 
 }

@@ -22,14 +22,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/tvLocationInfo"
-        android:layout_alignTop="@+id/ivProfileImage"
         android:text="@string/event_name"
         android:textSize="22sp"
         android:maxLines="3"
         android:minLines="1"
         android:ellipsize="end"
         android:textStyle="bold"
-        android:layout_marginEnd="20dp"/>
+        android:layout_marginEnd="20dp"
+        android:layout_alignTop="@+id/ivProfileImage"
+        />
 
     <TextView
         android:id="@+id/tvLocationInfo"
@@ -37,7 +38,10 @@
         android:layout_height="wrap_content"
         android:text="@string/location"
         android:layout_below="@+id/tvHost"
-        android:layout_toEndOf="@+id/ivProfileImage" />
+        android:layout_toEndOf="@+id/ivProfileImage"
+        android:maxLines="3"
+        android:minLines="1"
+        android:ellipsize="end"/>
 
     <TextView
         android:id="@+id/tvDescription"
