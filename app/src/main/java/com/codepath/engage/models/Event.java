@@ -103,7 +103,7 @@ public class Event implements Parcelable {
             Log.i("Ingo",event.ivEventImage);
         }
         catch (Exception exception){
-            event.ivEventImage ="@drawable/tree";
+            event.ivEventImage = "null";
         }
         event.veneuId = jsonObject.getString("venue_id");
         event.organizerId = jsonObject.getString("organizer_id");

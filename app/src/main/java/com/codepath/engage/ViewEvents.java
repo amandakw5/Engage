@@ -125,10 +125,10 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
         Intent intent = getIntent();
-        if(intent != null) {
-            query = intent.getStringExtra("Query");
-            populateEvents(query);
-        }
+//        if(intent != null) {
+//            query = intent.getStringExtra("Query");
+//            populateEvents(query);
+//        }
 
         //Getting the location for the user.
         //Setting up the location google maps
@@ -197,17 +197,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     transaction.commit();
                     mDrawer.closeDrawers();
                     return true;
-                }
-
-                switch (itemId){
-                    case R.id.feedTab:
-                        Intent i = new Intent(ViewEvents.this, UserFeed.class);
-                        startActivity(i);
-                    case R.id.logOut:
-                        FirebaseAuth.getInstance().signOut();
-                        LoginManager.getInstance().logOut();
-                        Intent intent = new Intent(ViewEvents.this, LoginActivity.class);
-                        startActivity(intent);
                 }
                 return false;
             }

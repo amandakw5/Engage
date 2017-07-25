@@ -40,11 +40,11 @@
 
         <ImageView
             android:id="@+id/btnFilter"
-            android:layout_width="20dp"
+            android:layout_width="25dp"
             android:layout_height="51dp"
             android:visibility="visible"
             app:srcCompat="@color/colorPrimaryDark"
-            android:layout_marginStart="5dp"/>
+            />
 
         <ImageView
             android:id="@+id/profileImage"
