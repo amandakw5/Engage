@@ -1,5 +1,6 @@
 package com.codepath.engage;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -55,7 +56,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
     String[] organizations;
     String[] upcomingEvents;
     ArrayList<Venue> venues;
-    ArrayList<String> pastEvents;
+    //ArrayList<String> pastEvents;
     List<String> upEvents;
     @BindView(R.id.issueTitle) TextView issueTitle;
     ArrayList<Event> events;
@@ -65,7 +66,8 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
     private EventbriteClient client;
     Boolean eventRequestCompleted = false;
     int yes = 0;
-    //Foloowing
+    ProgressDialog progress;
+    //Following
     final String TAG = "GPS";
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
@@ -77,7 +79,8 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue_details);
-        String[] strs = {"Specific Issues", "Organizations", "Popular Upcoming Events", "Past events"};
+        progress  = new ProgressDialog(IssueDetailsActivity.this);
+        String[] strs = {"Specific Issues", "Organizations", "Popular Upcoming Events"}; //, "Past events"
         String[] womenSpecificIssues = new String[] {"Sexual and Reproductive Rights","Freedom from violence", "Economic and Political Empowerment"};
         String[] womenOrganizations = new String[] {"National Organization for Women","Planned Parenthood", "Association of Women's Rights in Development", "American Association of University Women"};
         String[] foodSpecificIssues = new String[] {"World Hunger", "Malnutrition"};
@@ -130,20 +133,24 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
         issueTitle.setText(issue);
         issueSubsectionTitles = new ArrayList<>();
         upcomingEvents = new String[3];
-        pastEvents = new ArrayList<>();
+        //pastEvents = new ArrayList<>();
         issueSubsectionTitles.addAll(Arrays.asList(strs));
         upEvents = new ArrayList<String>();
         venues = new ArrayList<>();
         events = new ArrayList<>();
         eventAdapter = new EventAdapter(events);
-        adapter = new IssueDetailsAdapter(issue, issueSubsectionTitles, specificIssues, organizations, upEvents, pastEvents);
+        adapter = new IssueDetailsAdapter(issue, issueSubsectionTitles, specificIssues, organizations, upEvents); //, pastEvents
         rvIssueSubsections = (RecyclerView) findViewById(R.id.rvIssueSubsections);
         rvIssueSubsections.setLayoutManager(new LinearLayoutManager(this));
         rvIssueSubsections.setAdapter(adapter);
-        //construcct the adapter from this datasoruce
+        //construct the adapter from this data source
 
     }
     private void getEventsInfo(String issue){
+        progress.setMessage("Updating6");
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
+        progress.show();
         counterToGetPositionOfEvent=0;
         client.getInfoByQuery(issue,tvLatitude,tvLongitude,distance,new JsonHttpResponseHandler(){
             @Override
@@ -209,6 +216,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
 
                         }
                     }
+                    progress.dismiss();
                 }
             }
 
