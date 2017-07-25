@@ -33,7 +33,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.codepath.engage.models.Event;
+import com.codepath.engage.models.EventAdapter;
 import com.codepath.engage.models.Organizer;
+import com.codepath.engage.models.User;
 import com.codepath.engage.models.Venue;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
@@ -42,13 +44,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -79,7 +80,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     String query;
     //Checks if the async call is completed to ensure that data is not being accessed before its actually popualted
     Boolean eventRequestCompleted = false;
-    ArrayList<User> allUsers;
+    ArrayList<User> users;
 
     //Used in aiding in retrieving the current location of the user.
     final String TAG = "GPS";
@@ -112,21 +113,29 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         //initiating the array list
         events = new ArrayList<>();
         venues = new ArrayList<>();
-        allUsers = new ArrayList<>();
+        users = new ArrayList<>();
         //constructing the adapter from this datasoruce
         //constructing the adapter from this data source
-        eventAdapter = new EventAdapter(events);
         //recycler view setup(layout manager, use adapter'
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
         // set the adapter
-        rvEvents.setAdapter(eventAdapter);
+
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
         Intent intent = getIntent();
-        if(intent != null) {
-            query = intent.getStringExtra("Query");
-            populateEvents(query);
-        }
+//        if(intent != null) {
+//            query = intent.getStringExtra("Query");
+//            if (query.startsWith("~")){
+//                eventAdapter = new EventAdapter(events, allUsers, 0);
+//                rvEvents.setAdapter(eventAdapter);
+//                populateUsers(query);
+//            }
+//            else{
+//                eventAdapter = new EventAdapter(events,allUsers, 1);
+//                rvEvents.setAdapter(eventAdapter);
+//                populateEvents(query);
+//            }
+//        }
 
         //Getting the location for the user.
         //Setting up the location google maps
@@ -211,7 +220,16 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
         onStart();
         events.clear();
-        populateEvents(query);
+        if (query.startsWith("~")){
+            eventAdapter = new EventAdapter(events, users, 0);
+            rvEvents.setAdapter(eventAdapter);
+            populateUsers(query);
+        }
+        else{
+            eventAdapter = new EventAdapter(events, users, 1);
+            rvEvents.setAdapter(eventAdapter);
+            populateEvents(query);
+        }
     }
 
     //Closes the input search view after user has submitted the query
@@ -230,7 +248,17 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //ON a successful query submission the query is passed and api request call is made
-                populateEvents(query);
+
+                if (query.startsWith("~")){
+                    eventAdapter = new EventAdapter(events, users, 0);
+                    rvEvents.setAdapter(eventAdapter);
+                    populateUsers(query);
+                }
+                else{
+                    eventAdapter = new EventAdapter(events, users, 1);
+                    rvEvents.setAdapter(eventAdapter);
+                    populateEvents(query);
+                }
                 return true;
             }
             @Override
@@ -342,16 +370,35 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             }
         });
     }
-    private void populateUsers(){
+    private void populateUsers(final String query){
+        progress.setMessage("Retrieving Events");
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
+        progress.show();
+        users.clear();
+        eventAdapter.clear();
+        counterToGetPositionOfEvent=0;
+        eventRequestCompleted = false;
         mDatabase.addValueEventListener(new ValueEventListener() {
+            String q = query.substring(1);
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean isInside = false;
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                int i = q.indexOf(' ');
+                String first = q.substring(0, i);
+                String last = q.substring(i+1);
                 long x = dataSnapshot.getChildrenCount();
                 for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
-                    User u = evSnapshot.getValue(User.class);
-                    allUsers.add(u);
+                    String f = (String) evSnapshot.child("firstName").getValue();
+                    String l = (String) evSnapshot.child("lastName").getValue();
+                   // User u = evSnapshot.getValue(User.class);
+                    if (f.equals(first) && l.equals(last)){
+                        User u = evSnapshot.getValue(User.class);
+                        users.add(u);
+                        eventAdapter.notifyDataSetChanged();
+                    }
                 }
+                progress.dismiss();
             }
 
             @Override
