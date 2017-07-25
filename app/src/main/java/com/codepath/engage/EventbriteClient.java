@@ -27,13 +27,13 @@ public class EventbriteClient {
     private static AsyncHttpClient client = new AsyncHttpClient();
     //Searches for events based on the query passed into the function. Will return a list of objects that fall under the search query
 
-    public void getInfoByQuery(String query,String latitude,String longitude, AsyncHttpResponseHandler asyncHttpResponseHandler){
+    public void getInfoByQuery(String query,String latitude,String longitude,String distance, AsyncHttpResponseHandler asyncHttpResponseHandler){
         RequestParams requestParams= new RequestParams();
         requestParams.put("location.longitude",longitude);
         requestParams.put("categories","101,113,102,111,115,112");
         requestParams.put("location.latitude",latitude);
         requestParams.put("sort_by","distance");
-        requestParams.put("location.within","15mi");
+        requestParams.put("location.within",distance);
         finalUrl = baseApiUrl + searchBaseUrl + query + endBaseUrl;
         client.get(finalUrl,requestParams,asyncHttpResponseHandler);
 

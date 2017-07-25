@@ -38,11 +38,12 @@
             android:layout_alignBottom="@+id/profileImage"
             android:layout_toEndOf="@+id/btnFilter"/>
 
-        <ImageView
+        <ImageButton
             android:id="@+id/btnFilter"
             android:layout_width="20dp"
             android:layout_height="51dp"
             android:visibility="visible"
+            android:background="@android:color/transparent"
             app:srcCompat="@color/colorPrimaryDark"
             android:layout_marginStart="5dp"/>
 
