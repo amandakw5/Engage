@@ -10,10 +10,9 @@
         android:id="@+id/myProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
         android:text="My Profile"
         android:textSize="30sp"
-        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/profileImage"
         android:layout_centerHorizontal="true" />
 
     <ImageView
@@ -30,7 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/myProfile"
         android:layout_alignParentStart="true"
-        app:srcCompat="@android:drawable/sym_def_app_icon" />
+        app:srcCompat="@android:drawable/sym_def_app_icon"
+        android:layout_alignParentTop="true" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvUpdates"
@@ -39,7 +39,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/following" />
+        android:layout_below="@+id/following"
+        android:layout_margin="5dp"/>
 
     <TextView
         android:id="@+id/followers"
@@ -48,7 +49,9 @@
         android:text="Followers"
         android:layout_marginTop="33dp"
         android:layout_below="@+id/Home"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginStart="21dp"/>
 
     <TextView
         android:id="@+id/following"
@@ -58,14 +61,32 @@
         android:layout_alignBaseline="@+id/followers"
         android:layout_alignBottom="@+id/followers"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="21dp" />
+        android:layout_marginEnd="21dp"
+        android:layout_marginBottom="5dp"/>
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:text="Follow"
-        android:layout_above="@+id/rvUpdates"
-        android:layout_centerHorizontal="true" />
+    <!--<Button-->
+        <!--android:id="@+id/button2"-->
+        <!--android:layout_width="80dp"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:text="Follow"-->
+        <!--android:layout_above="@+id/rvUpdates"-->
+        <!--android:layout_centerHorizontal="true" />-->
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="561dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="21dp"
+            app:backgroundTint="@color/colorPrimaryDark" />
+
+    </android.support.design.widget.CoordinatorLayout>
 
 </RelativeLayout>

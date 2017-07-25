@@ -28,15 +28,17 @@ public class Event implements Parcelable {
     public String organizerId;
     public Venue venue;
     public Organizer organizer;
+    public String timeStart;
 
 
-    public Event(String tvEventName, String tvEventInfo, String tvDescription, String ivEventImage, String eventId, String veneuId,Venue venue,Organizer organizer) {
+    public Event(String tvEventName, String tvEventInfo, String tvDescription, String ivEventImage, String eventId, String veneuId,Venue venue,Organizer organizer,String timeStart) {
         this.tvEventName = tvEventName;
         this.tvEventInfo = tvEventInfo;
         this.tvDescription = tvDescription;
         this.ivEventImage = ivEventImage;
         this.eventId = eventId;
         this.veneuId = veneuId;
+        this.timeStart = timeStart;
     }
 
     public Event() {
@@ -53,6 +55,7 @@ public class Event implements Parcelable {
         organizerId = in.readString();
         venue = in.readParcelable(Venue.class.getClassLoader());
         organizer = in.readParcelable(Organizer.class.getClassLoader());
+        timeStart = in.readString();
     }
 
 
@@ -83,6 +86,7 @@ public class Event implements Parcelable {
             Date getDate = existingUTCFormat.parse(event.tvEventInfo);
             String mydate = requiredFormat.format(getDate);
             event.tvEventInfo = mydate;
+            event.timeStart = mydate;
         }
         catch(ParseException e){
             e.printStackTrace();
@@ -186,6 +190,10 @@ public class Event implements Parcelable {
         this.organizerName = organizerName;
     }
 
+    public String getTimeStart() {
+        return timeStart;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -203,6 +211,7 @@ public class Event implements Parcelable {
         dest.writeString(organizerId);
         dest.writeParcelable( this.venue,flags);
         dest.writeParcelable(this.organizer,flags);
+        dest.writeString(timeStart);
     }
 }
 

@@ -73,6 +73,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    String distance = "15mi";
 
 
     @Override
@@ -148,7 +149,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
     }
     private void getEventsInfo(String issue){
         counterToGetPositionOfEvent=0;
-        client.getInfoByQuery(issue,tvLatitude,tvLongitude,new JsonHttpResponseHandler(){
+        client.getInfoByQuery(issue,tvLatitude,tvLongitude,distance,new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {

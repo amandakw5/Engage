@@ -23,5 +23,9 @@
     <string name="launch_google_maps">Launch Google Maps</string>
     <string name="_0_min">0 min</string>
     <string name="_0_km">0 km</string>
+    <string name ="miles_5">5mi</string>
+    <string name ="miles_10">10mi</string>
+    <string name = "miles_15">15mi</string>
+    <string name = "custom_miles">Custom</string>
 </resources>
 
