@@ -44,8 +44,9 @@
             android:layout_height="51dp"
             android:visibility="visible"
             android:background="@android:color/transparent"
-            app:srcCompat="@color/colorPrimaryDark"
-            />
+            app:srcCompat="@drawable/filter_image"
+            android:scaleType="fitCenter"
+            android:layout_marginStart="5dp"/>
 
         <ImageView
             android:id="@+id/profileImage"
