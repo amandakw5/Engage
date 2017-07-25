@@ -93,7 +93,7 @@ public class EventDetailsActivity extends AppCompatActivity{
             } else {
                 setContentView(R.layout.activity_event_details);
             }
-        }git 
+        }
 
         ButterKnife.bind(this);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
