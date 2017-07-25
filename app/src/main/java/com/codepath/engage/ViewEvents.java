@@ -22,6 +22,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -29,6 +30,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -59,6 +61,8 @@ import java.util.ArrayList;
 import cz.msebera.android.httpclient.Header;
 
 public class  ViewEvents extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
+
+    ImageButton button1;
 
     //Following counters are used to be abel to access the position of the events arraylist in functions where the position of the event is not passed.
     static int counterToGetPositionOfEvent;
@@ -97,6 +101,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     private DatabaseReference mDatabase;
 
     private FirebaseAuth mAuth;
+    String distance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +167,28 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 mDrawer.openDrawer(Gravity.END);
             }
         });
+
+        button1 = (ImageButton) findViewById(R.id.btnFilter);
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(ViewEvents.this,button1);
+                popup.getMenuInflater().inflate(R.menu.poupup_menu, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        distance = item.getTitle().toString();
+                        if(query != null || !query.equals("null"))
+                            populateEvents(query);
+                        return true;
+                    }
+                });
+                popup.show();//showing popup menu
+
+            }
+        });
+
+
     }
     private void configureNavigationDrawer() {
 
@@ -249,7 +276,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         counterToGetPositionOfEvent=0;
         eventRequestCompleted = false;
 //        closeSearchView(searchView);
-        client.getInfoByQuery(valueOfQuery,tvLatitude,tvLongitude,new JsonHttpResponseHandler(){
+        client.getInfoByQuery(valueOfQuery,tvLatitude,tvLongitude,distance,new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
