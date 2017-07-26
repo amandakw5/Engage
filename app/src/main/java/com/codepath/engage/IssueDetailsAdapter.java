@@ -25,7 +25,7 @@ public class IssueDetailsAdapter extends RecyclerView.Adapter<IssueDetailsAdapte
     String[] specificIssues;
     String[] organizations;
     List<String> upEvents;
-    ArrayList<String> pastEvents;
+    //ArrayList<String> pastEvents;
     private ArrayAdapter<String> listAdapter ;
     String issue;
 
@@ -41,12 +41,12 @@ public class IssueDetailsAdapter extends RecyclerView.Adapter<IssueDetailsAdapte
 
         return viewHolder;
     }
-    public IssueDetailsAdapter(String issue, ArrayList<String> issueSubsectionTitles, String[] specificIssues, String[] organizations, List<String> upEvents, ArrayList<String> pastEvents) {
+    public IssueDetailsAdapter(String issue, ArrayList<String> issueSubsectionTitles, String[] specificIssues, String[] organizations, List<String> upEvents) { //, ArrayList<String> pastEvents
         this.issueSubsectionTitles = issueSubsectionTitles;
         this.specificIssues = specificIssues;
         this.organizations = organizations;
         this.upEvents = upEvents;
-        this.pastEvents = pastEvents;
+        //this.pastEvents = pastEvents;
         this.issue = issue;
     }
 

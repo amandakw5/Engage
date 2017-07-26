@@ -214,8 +214,8 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
             double originLat = mCurrentLocation.getLatitude();
             double originLong = mCurrentLocation.getLongitude();
 
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
-            map.animateCamera(cameraUpdate);
+//            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
+//            map.animateCamera(cameraUpdate);
 
             //send origin and destination to google maps
             sendRequest(originLat, originLong, destLat, destLng);
@@ -305,11 +305,10 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
                     .title(route.endAddress)
                     .position(route.endLocation)));
 
-            PolylineOptions polylineOptions = new PolylineOptions().
-                    geodesic(true).
-                    color(Color.BLUE).
-                    width(10);
+            PolylineOptions polylineOptions = new PolylineOptions().geodesic(true).color(Color.BLUE).width(10);
 
+            LatLngBounds camera = new LatLngBounds(new LatLng(route.southWestLat, route.southWestLong), new LatLng(route.northEastLat, route.northEastLong));
+            map.moveCamera(CameraUpdateFactory.newLatLngBounds(camera, 100));
 
             for (int i = 0; i < route.points.size(); i++)
                 polylineOptions.add(route.points.get(i));
