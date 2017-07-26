@@ -1,8 +1,10 @@
 package com.codepath.engage;
 
 import android.app.DialogFragment;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,8 +53,10 @@ public class CalenderFragment extends DialogFragment implements View.OnClickList
         submit = (Button) view.findViewById(R.id.submitDate);
         chooseDate = (DatePicker) view.findViewById(R.id.datePicker);
         submit.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
+
                 dismiss();
             }
         });
