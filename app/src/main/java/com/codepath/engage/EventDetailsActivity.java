@@ -230,7 +230,6 @@ public class EventDetailsActivity extends AppCompatActivity{
 
     public void saveNewEvent(String uid, String eventId, String eventName, String eventHost,String eventTime, String eventAddress, String eventImage, String eventDescription){
 
-
         UserEvents info = new UserEvents(eventName, eventHost,eventTime,eventAddress, eventId, eventImage, eventDescription );
 
         users.child(uid).child("events").child(eventId).setValue(info, new DatabaseReference.CompletionListener(){

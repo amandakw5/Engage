@@ -45,8 +45,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         holder.tvEventName.setText(event.tvEventName);
         holder.tvEventInfo.setText(event.tvEventInfo);
         holder.tvDescription.setText(event.tvDescription);
-        Glide.with(context).load(event.ivEventImage).centerCrop().into(holder.ivProfileImage);
+        if (event.ivEventImage == "null"){
+            Glide.with(context).load(R.drawable.image_not_found).centerCrop().into(holder.ivProfileImage);
+        } else {
+            Glide.with(context).load(event.ivEventImage).centerCrop().into(holder.ivProfileImage);
 //        holder.tvHost.setText(event.organizer.name);
+        }
     }
 
     @Override

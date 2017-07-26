@@ -15,10 +15,10 @@ public class Route {
     public LatLng endLocation;
     public String startAddress;
     public LatLng startLocation;
-    public int northEastLat;
-    public int northEastLong;
-    public int southWestLat;
-    public int southWestLong;
+    public double northEastLat;
+    public double northEastLong;
+    public double southWestLat;
+    public double southWestLong;
 
     public List<LatLng> points;
 }
