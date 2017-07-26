@@ -10,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.codepath.engage.EventDetailsActivity;
+import com.codepath.engage.ProfileActivity;
+import com.codepath.engage.R;
 import com.codepath.engage.models.Event;
 import com.codepath.engage.models.User;
 
@@ -109,6 +112,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             if (position != RecyclerView.NO_POSITION) {
                 if (recyclerType == 0){
                     final User u = mUsers.get(position);
+                    Intent i = new Intent(context, ProfileActivity.class);
+                    i.putExtra(User.class.getSimpleName(), Parcels.wrap(u));
+                    i.putExtra("whichProfile", u.firstName + " " + u.lastName + " is ");
+                    context.startActivity(i);
                 }
                 else {
                     final Event event = mEvents.get(position);

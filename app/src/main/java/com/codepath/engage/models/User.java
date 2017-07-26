@@ -2,14 +2,16 @@ package com.codepath.engage.models;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import static com.codepath.engage.R.id.followers;
-import static com.codepath.engage.R.id.following;
+import org.parceler.Parcel;
+
+import java.util.ArrayList;
 
 /**
  * Created by awestort on 7/18/17.
  */
 
 @IgnoreExtraProperties
+@Parcel
 public class User {
     public String uid;
     public String firstName;
@@ -18,18 +20,39 @@ public class User {
     public String profilePicture;
     public int numFollowers;
     public int numFollowing;
+    public ArrayList<User> followers;
+    public ArrayList<User>  following;
 
 
     public User(){
     }
 
-    public User(String firstName, String lastName, String email, String profilePicture, int followers, int following) {
+    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, ArrayList<User> followers, ArrayList<User> following) { //
+        this.uid = uid;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.profilePicture = profilePicture;
-        this.numFollowers = followers;
-        this.numFollowing = following;
+        this.numFollowers = numFollowers;
+        this.numFollowing = numFollowing;
+        this.following = following;
+        this.followers = followers;
+    }
+
+    public ArrayList<User> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(ArrayList<User> followers) {
+        this.followers = followers;
+    }
+
+    public ArrayList<User> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(ArrayList<User> following) {
+        this.following = following;
     }
 
     public String getUid() { return uid; }
@@ -68,19 +91,11 @@ public class User {
         this.profilePicture = profilePicture;
     }
 
-    public int getNumFollowers() {
-        return numFollowers;
-    }
+    public int getNumFollowers() { return numFollowers; }
 
-    public void setNumFollowers(int numFollowers) {
-        this.numFollowers = numFollowers;
-    }
+    public void setNumFollowers(int numFollowers) { this.numFollowers = numFollowers; }
 
-    public int getNumFollowing() {
-        return numFollowing;
-    }
+    public int getNumFollowing() { return numFollowing; }
 
-    public void setNumFollowing(int numFollowing) {
-        this.numFollowing = numFollowing;
-    }
+    public void setNumFollowing(int numFollowing) { this.numFollowing = numFollowing; }
 }

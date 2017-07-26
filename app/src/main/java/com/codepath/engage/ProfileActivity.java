@@ -7,8 +7,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
-import com.codepath.engage.models.Event;
+import com.codepath.engage.models.User;
 import com.codepath.engage.models.UserEvents;
 import com.facebook.Profile;
 import com.google.firebase.database.DataSnapshot;
@@ -34,8 +35,11 @@ public class ProfileActivity extends AppCompatActivity {
     String uid;
     String whichprofile;
     List<String> eventIDs;
-
-// ...
+    DatabaseReference mDatabase;
+    TextView profileHeader;
+    boolean following;
+    User u;
+    User currentProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +51,42 @@ public class ProfileActivity extends AppCompatActivity {
 
         adapter = new UpdateAdapter(events, whichprofile);
         FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
-
+        profileHeader = (TextView) findViewById(R.id.profileHeader);
         rvUpdates = (RecyclerView) findViewById(R.id.rvUpdates);
         rvUpdates.setLayoutManager(new LinearLayoutManager(this));
         rvUpdates.setAdapter(adapter);
+
+        following = false;
+        u = new User();
+        mDatabase = FirebaseDatabase.getInstance().getReference("users");
+
+        if ((User) Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName())) != null){
+            u = (User) Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
+            uid = u.getUid();
+            profileHeader.setText(u.firstName + " " + u.lastName + "'s Profile");
+        }
+        else {
+            uid = Profile.getCurrentProfile().getId();
+
+        }
+        mDatabase.child(Profile.getCurrentProfile().getId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                currentProfile = dataSnapshot.getValue(User.class);
+                if (uid == Profile.getCurrentProfile().getId()){
+                    u = currentProfile;
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         uid = Profile.getCurrentProfile().getId();
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
+        final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
         DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
 
         mDatabase.addValueEventListener(new ValueEventListener() {
@@ -96,7 +130,24 @@ public class ProfileActivity extends AppCompatActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (!uid.equals(currentProfile.uid)){
+                    if (following){
+                        mDatabase.child(uid).child("numFollowers").setValue((u.numFollowers - 1));
+                        mDatabase.child(currentProfile.uid).child("numFollowing").setValue(currentProfile.numFollowing - 1);
+                        DatabaseReference deleteFollow = mDatabase.child(uid).child("following").child(currentProfile.uid).push();
+                        deleteFollow.setValue(null);
+                        DatabaseReference deleteFollowing = mDatabase.child(currentProfile.uid).child("followers").child(uid).push();
+                        deleteFollowing.setValue(null);
+                    }
+                    else{
+                        mDatabase.child(uid).child("numFollowers").setValue((u.numFollowers + 1));
+                        mDatabase.child(currentProfile.uid).child("numFollowing").setValue(currentProfile.numFollowing + 1);
+                        DatabaseReference addFollow = mDatabase.child(currentProfile.uid).child("followers").push();
+                        addFollow.setValue(u);
+                        DatabaseReference addFollowing = mDatabase.child(uid).child("following").push();
+                        addFollowing.setValue(currentProfile);
+                    }
+                }
             }
         });
 
