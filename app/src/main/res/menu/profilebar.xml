@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-        <group android:id="@+id/drawerSectionOne" android:checkableBehavior="none">
+        <group android:id="@+id/drawerSectionOne"
+            android:checkableBehavior="none">
             <item
                 android:id="@+id/profileTab"
                 android:title="My Profile" />
@@ -16,6 +17,9 @@
             <item
                 android:id="@+id/createTab"
                 android:title="Create an Event" />
+            <item
+                android:id="@+id/myEvents"
+                android:title="My Events"/>
             <item
                 android:id="@+id/logOut"
                 android:title="Log Out"

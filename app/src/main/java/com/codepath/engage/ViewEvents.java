@@ -302,7 +302,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        })
+        });
         //End getting data from stored firebase database
         counterToGetPositionOfEvent=0;
         eventRequestCompleted = false;

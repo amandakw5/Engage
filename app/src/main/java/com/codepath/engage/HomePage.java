@@ -109,7 +109,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         ActionBar actionbar = getSupportActionBar();
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         btnFilter = (ImageButton) findViewById(R.id.btnFilter);
-        btnFilter.setVisibility(View.GONE);
         setSupportActionBar (toolbar);
         configureNavigationDrawer();
         profileImage.setOnClickListener(new View.OnClickListener() {

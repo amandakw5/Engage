@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.codepath.engage.models.CreatedEvents;
+import com.codepath.engage.models.Event;
 import com.facebook.Profile;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -21,6 +22,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.parceler.Parcel;
+import org.parceler.Parcels;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import butterknife.BindView;
@@ -98,10 +103,15 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
 
     public void verifySubmitEvent(){
         if(hasText(eName) && hasText(eLocation) && hasText(eDescription)&&selectedTime&&selectedDate) {
-            final Intent i = new Intent(CreateEventActivity.this,ViewEvents.class);
+            final Intent i = new Intent(CreateEventActivity.this,EventDetailsActivity.class);
+            ArrayList<String> createdEventInfo = new ArrayList<>();
             String eventName = eName.getText().toString();
             String eventDescription = eDescription.getText().toString();
             String eventLocation = eLocation.getText().toString();
+            createdEventInfo.add(eventName);
+            createdEventInfo.add(eventLocation);
+            createdEventInfo.add(eventDescription);
+            i.putExtra("createdEventInfo", Parcels.wrap(createdEventInfo));
             final CreatedEvents createdEvent = new CreatedEvents(eventName,eventLocation,eventDescription,String.valueOf(mHour),String.valueOf(mMinute),String.valueOf(mDay),String.valueOf(mMonth),String.valueOf(mYear));
             rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -112,7 +122,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
 
                             @Override
                             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                                createdEventID = dataSnapshot.getChildrenCount() +1;
+                                createdEventID = dataSnapshot.getChildrenCount() + 1;
                                 rootRef.child("CreatedEvents").child(String.valueOf(createdEventID)).setValue(createdEvent);
                                 startActivity(i);
                             }
