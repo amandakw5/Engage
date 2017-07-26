@@ -16,6 +16,7 @@ public class UserEvents {
     public String eventImage;
     public String time;
     public String address;
+
     public UserEvents(){ }
 
     public String getEventDescription() {
