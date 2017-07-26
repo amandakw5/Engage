@@ -36,6 +36,7 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity {
@@ -82,12 +83,14 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 boolean isInside = false;
-                                long x = dataSnapshot.getChildrenCount();
                                 for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
                                     User u = evSnapshot.getValue(User.class);
+                                    u.setUid(evSnapshot.getKey());
                                     try {
-                                        if (u.getUid().equals(object.getString("id"))) {
+                                        if (u.uid.equals(object.getString("id"))) {
                                             isInside = true;
+                                            Intent intent = new Intent(LoginActivity.this, HomePage.class);
+                                            startActivity(intent);
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -97,8 +100,10 @@ public class LoginActivity extends AppCompatActivity {
                                     final User user = new User();
                                     Bundle bFacebookData = getFacebookData(object);
                                     Log.d(TAG, "facebook:onCompleted");
-                                    user.setFollowing(0);
-                                    user.setFollowers(0);
+                                    user.setNumFollowing(0);
+                                    user.setNumFollowers(0);
+                                    user.setFollowers(new ArrayList<User>());
+                                    user.setFollowing(new ArrayList<User>());
                                     try {
                                         String id = object.getString("id");
                                         user.setUid(id);
@@ -133,8 +138,9 @@ public class LoginActivity extends AppCompatActivity {
                                     } catch (MalformedURLException e) {
                                         e.printStackTrace();
                                     }
-                                    writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), 0, 0, bFacebookData);
+                                    writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), 0, 0, new ArrayList<User>(), new ArrayList<User>(), bFacebookData); //
                                 }
+
                             }
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
@@ -184,6 +190,7 @@ public class LoginActivity extends AppCompatActivity {
                         bundle.putString("last_name", object.getString("last_name"));
                     if (object.has("email"))
                         bundle.putString("email", object.getString("email"));
+
                     return bundle;
                 }
                 catch(JSONException e) {
@@ -243,8 +250,8 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture, int followers, int following, final Bundle facebookData) {
-        final User user = new User(firstName, lastName, email, profilePicture, followers, following);
+    public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, ArrayList<User> followers, ArrayList<User> following, final Bundle facebookData) {
+        final User user = new User(uid, firstName, lastName, email, profilePicture, numFollowers, numFollowing, followers, following);
         mDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
