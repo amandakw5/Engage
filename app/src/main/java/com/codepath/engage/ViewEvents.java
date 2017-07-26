@@ -295,14 +295,16 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         createdEvents.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                    Log.i("Inof",snapshot.getValue().toString());
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        })
+        });
         //End getting data from stored firebase database
         counterToGetPositionOfEvent=0;
         eventRequestCompleted = false;
