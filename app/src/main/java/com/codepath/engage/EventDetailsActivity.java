@@ -235,7 +235,7 @@ public class EventDetailsActivity extends AppCompatActivity{
         }
     }
 
-    public void saveNewEvent(String uid, String eventId, String eventName, String eventHost,String eventTime, String eventAddress, String eventImage, String eventDescription) {
+    public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription) {
         savedEventsCreated = false;
         events.clear();
 
@@ -247,6 +247,18 @@ public class EventDetailsActivity extends AppCompatActivity{
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     events.add(postSnapshot.getValue().toString());
                 }
+                if(!events.contains(eventId))
+                    events.add(eventId);
+                users.child(uid).child("eventsList").setValue(events, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError != null) {
+                            System.out.println("Data could not be saved " + databaseError.getMessage());
+                        } else {
+                            System.out.println("Data saved successfully.");
+                        }
+                    }
+                });
             }
 
             @Override
@@ -254,20 +266,6 @@ public class EventDetailsActivity extends AppCompatActivity{
 
             }
         });
-
-        for (int i = 0; i < events.size(); i++)
-            Log.i("Info", events.get(i));
-            events.add(eventId);
-            users.child(uid).child("eventsList").setValue(events, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                    if (databaseError != null) {
-                        System.out.println("Data could not be saved " + databaseError.getMessage());
-                    } else {
-                        System.out.println("Data saved successfully.");
-                    }
-                }
-            });
         }
 
 }
