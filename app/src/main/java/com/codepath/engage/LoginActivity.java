@@ -15,6 +15,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -84,10 +85,12 @@ public class LoginActivity extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 boolean isInside = false;
                                 for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
+                                    String k = evSnapshot.getKey();
                                     User u = evSnapshot.getValue(User.class);
                                     u.setUid(evSnapshot.getKey());
+                                  //  User u = evSnapshot.getValue(User.class);
                                     try {
-                                        if (u.uid.equals(object.getString("id"))) {
+                                        if (k.equals(object.getString("id"))) {
                                             isInside = true;
                                             Intent intent = new Intent(LoginActivity.this, HomePage.class);
                                             startActivity(intent);
@@ -200,6 +203,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

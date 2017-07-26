@@ -7,12 +7,12 @@
             <item
                 android:id="@+id/feedTab"
                 android:title="My Feed" />
-            <item
-                android:id="@+id/interestedTab"
-                android:title="Interested Events" />
-            <item
-                android:id="@+id/pastTabs"
-                android:title="Past Events" />
+            <!--<item-->
+                <!--android:id="@+id/interestedTab"-->
+                <!--android:title="Interested Events" />-->
+            <!--<item-->
+                <!--android:id="@+id/pastTabs"-->
+                <!--android:title="Past Events" />-->
             <item
                 android:id="@+id/createTab"
                 android:title="Create an Event" />

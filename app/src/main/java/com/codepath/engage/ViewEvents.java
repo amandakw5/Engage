@@ -35,7 +35,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.codepath.engage.models.Event;
-import com.codepath.engage.models.EventAdapter;
 import com.codepath.engage.models.Organizer;
 import com.codepath.engage.models.User;
 import com.codepath.engage.models.Venue;
@@ -129,6 +128,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
         // set the adapter
 
+        mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
         //Getting the location for the user.
         //Setting up the location google maps
@@ -219,17 +219,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     transaction.commit();
                     mDrawer.closeDrawers();
                     return true;
-                }
-
-                switch (itemId){
-                    case R.id.feedTab:
-                        Intent i = new Intent(ViewEvents.this, UserFeed.class);
-                        startActivity(i);
-                    case R.id.logOut:
-                        FirebaseAuth.getInstance().signOut();
-                        LoginManager.getInstance().logOut();
-                        Intent intent = new Intent(ViewEvents.this, LoginActivity.class);
-                        startActivity(intent);
                 }
                 return false;
             }

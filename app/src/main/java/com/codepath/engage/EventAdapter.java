@@ -1,4 +1,4 @@
-package com.codepath.engage.models;
+package com.codepath.engage;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,8 @@ import com.bumptech.glide.Glide;
 import com.codepath.engage.EventDetailsActivity;
 import com.codepath.engage.ProfileActivity;
 import com.codepath.engage.R;
+import com.codepath.engage.models.Event;
+import com.codepath.engage.models.User;
 
 import org.parceler.Parcels;
 
@@ -65,8 +67,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             holder.tvEventName.setText(event.tvEventName);
             holder.tvEventInfo.setText(event.tvEventInfo);
             holder.tvDescription.setText(event.tvDescription);
-            Glide.with(context).load(event.ivEventImage).centerCrop().into(holder.ivProfileImage);
-            //        holder.tvHost.setText(event.organizer.name);
+            if (event.ivEventImage.equals("null")){
+                Glide.with(context).load(R.drawable.image_not_found).centerCrop().into(holder.ivProfileImage);
+            } else {
+                Glide.with(context).load(event.ivEventImage).centerCrop().into(holder.ivProfileImage);
+            }
         }
     }
 

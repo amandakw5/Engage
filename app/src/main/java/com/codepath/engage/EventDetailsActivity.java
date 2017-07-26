@@ -27,13 +27,16 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.parceler.Parcels;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -58,6 +61,11 @@ public class EventDetailsActivity extends AppCompatActivity{
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference users;
+    DatabaseReference savedEvents;
+    List<String> events ;
+    boolean savedEventsCreated;
+
+    String queryTerm;
     /**
      * Define a global variable that identifies the name of a file that
      * contains the developer's API key.
@@ -73,19 +81,36 @@ public class EventDetailsActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_details);
+
+        currentUpdate = Parcels.unwrap(getIntent().getParcelableExtra("current"));
+
+        event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
+
+        if (currentUpdate == null){
+            if (event.ivEventImage.equals("null")){
+                setContentView(R.layout.event_details_activity);
+            } else {
+                setContentView(R.layout.activity_event_details);
+            }
+        } else {
+            if (currentUpdate.eventImage.equals("null")){
+                setContentView(R.layout.event_details_activity);
+            } else {
+                setContentView(R.layout.activity_event_details);
+            }
+        }
+
         ButterKnife.bind(this);
+        events = new ArrayList<String>();
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         
         firebaseDatabase = FirebaseDatabase.getInstance();
         users = firebaseDatabase.getReference("users");
+        savedEvents = firebaseDatabase.getReference();
         uid = Profile.getCurrentProfile().getId();
 
-        currentUpdate = Parcels.unwrap(getIntent().getParcelableExtra("current"));
-
         if (currentUpdate == null) {
-            event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
             if (ivPicture != null) {
                 Glide.with(this)
                         .load(event.ivEventImage)
@@ -101,11 +126,12 @@ public class EventDetailsActivity extends AppCompatActivity{
                 public void onClick(View v) {
                     Intent intent = new Intent(EventDetailsActivity.this, MapActivity.class);
                     intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
-                    intent.putExtra("whichProfile", "You are ");
                     startActivity(intent);
                 }
             });
-        }else {
+            queryTerm = event.getOrganizerName();
+
+        } else {
             if (ivPicture != null) {
                 Glide.with(this)
                         .load(currentUpdate.eventImage)
@@ -120,7 +146,7 @@ public class EventDetailsActivity extends AppCompatActivity{
             btnMap.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + event.venue.getSimpleAddress());
+                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + currentUpdate.eventAddress);
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
                     if (mapIntent.resolveActivity(getPackageManager()) != null) {
@@ -128,7 +154,7 @@ public class EventDetailsActivity extends AppCompatActivity{
                     }
                 }
             });
-
+            queryTerm = currentUpdate.eventHost;
         }
 
         Properties properties = new Properties();
@@ -145,9 +171,6 @@ public class EventDetailsActivity extends AppCompatActivity{
                 }
             }).setApplicationName("youtube-cmdline-search-sample").build();
 
-            // Prompt the user to enter a query term.
-            String queryTerm = event.getOrganizerName()
-                    ;
             // Define the API request for retrieving search results.
             YouTube.Search.List search = youtube.search().list("id,snippet");
 
@@ -203,28 +226,46 @@ public class EventDetailsActivity extends AppCompatActivity{
     }
 
 
-    public void saveEvent(View view){
-        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(),event.getVenue().getAddress()+" "+event.getVenue().getCity() +" " +event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
+    public void saveEvent(View view) {
+
+        if (event.ivEventImage == null) {
+            saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription);
+        } else {
+            saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
+        }
     }
 
-    public void saveNewEvent(String uid, String eventId, String eventName, String eventHost,String eventTime, String eventAddress, String eventImage, String eventDescription){
+    public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription) {
+        savedEventsCreated = false;
+        events.clear();
 
-
-        UserEvents info = new UserEvents(eventName, eventHost,eventTime,eventAddress, eventId, eventImage, eventDescription );
-
-        users.child(uid).child("events").child(eventId).setValue(info, new DatabaseReference.CompletionListener(){
+        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription);
+        savedEvents.child("savedEvents").child(eventId).setValue(info);
+        users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    events.add(postSnapshot.getValue().toString());
+                }
+                if(!events.contains(eventId))
+                    events.add(eventId);
+                users.child(uid).child("eventsList").setValue(events, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError != null) {
+                            System.out.println("Data could not be saved " + databaseError.getMessage());
+                        } else {
+                            System.out.println("Data saved successfully.");
+                        }
+                    }
+                });
+            }
 
             @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    System.out.println("Data could not be saved " + databaseError.getMessage());
-                } else {
-                    System.out.println("Data saved successfully.");
-                    Intent intent = new Intent(EventDetailsActivity.this, ProfileActivity.class);
-                    intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
-                    startActivity(intent);
-                }
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
-    }
+        }
+
 }
