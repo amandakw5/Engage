@@ -2,6 +2,7 @@ package com.codepath.engage;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -97,6 +98,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
 
     public void verifySubmitEvent(){
         if(hasText(eName) && hasText(eLocation) && hasText(eDescription)&&selectedTime&&selectedDate) {
+            final Intent i= new Intent(CreateEventActivity.this,ViewEvents.class);
             String eventName = eName.getText().toString();
             String eventDescription = eDescription.getText().toString();
             String eventLocation = eLocation.getText().toString();
@@ -112,6 +114,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                                 createdEventID = dataSnapshot.getChildrenCount() +1;
                                 rootRef.child("CreatedEvents").child(String.valueOf(createdEventID)).setValue(createdEvent);
+                                startActivity(i);
                             }
 
                             @Override
@@ -131,12 +134,11 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-
                             }
                         });
                     }else{
                         rootRef.child("CreatedEvents").child("1").setValue(createdEvent);
-
+                        startActivity(i);
                     }
                 }
 
