@@ -34,6 +34,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.codepath.engage.models.CreatedEvents;
 import com.codepath.engage.models.Event;
 import com.codepath.engage.models.Organizer;
 import com.codepath.engage.models.User;
@@ -77,6 +78,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     private EventbriteClient client;
     EventAdapter eventAdapter;
     ArrayList<Event> events;
+    ArrayList<CreatedEvents> createdEventsList;
     ArrayList<Venue> venues;
     RecyclerView rvEvents;
     //Holds the search term that is used to pass into the eventbrite api to look for events
@@ -100,7 +102,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     private Toolbar toolbar;
     private ImageView profileImage;
     private DatabaseReference mDatabase;
-
+    private DatabaseReference createdEvents;
     private FirebaseAuth mAuth;
     String distance;
 
@@ -117,6 +119,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         //find the recycler view
         rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
         //initiating the array list
+        createdEventsList = new ArrayList<>();
         events = new ArrayList<>();
         venues = new ArrayList<>();
         users = new ArrayList<>();
@@ -127,6 +130,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         // set the adapter
 
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
+        createdEvents = FirebaseDatabase.getInstance().getReference("CreatedEvents");
 
         //Getting the location for the user.
         //Setting up the location google maps
@@ -143,7 +147,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         if(!isLocationEnabled())
             showAlert();
         Intent intentQuery = getIntent();
-        if(intentQuery != null){
+        if(intentQuery != null && intentQuery.getStringExtra("Query") != null ){
             callSearchFromIntent(intentQuery);
         }
         //Referencing the variables to their respective I.Ds for the xml style sheet
@@ -287,6 +291,19 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         events.clear();
         venues.clear();
         valueOfQuery = query;
+        //Getting events stored from in firabse database
+        createdEvents.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        })
+        //End getting data from stored firebase database
         counterToGetPositionOfEvent=0;
         eventRequestCompleted = false;
 //        closeSearchView(searchView);
