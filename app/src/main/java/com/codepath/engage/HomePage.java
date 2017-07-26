@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.Image;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -32,6 +33,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -79,6 +82,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     GoogleApiClient gac;
     LocationRequest locationRequest;
     String tvLatitude, tvLongitude, tvTime;
+    ImageButton btnFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +107,9 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         searchView = (SearchView) findViewById(R.id.search);
         ActionBar actionbar = getSupportActionBar();
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        setSupportActionBar(toolbar);
+        btnFilter = (ImageButton) findViewById(R.id.btnFilter);
+        btnFilter.setVisibility(View.GONE);
+        setSupportActionBar (toolbar);
         configureNavigationDrawer();
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -101,8 +101,8 @@ public class LoginActivity extends AppCompatActivity {
                                     final User user = new User();
                                     Bundle bFacebookData = getFacebookData(object);
                                     Log.d(TAG, "facebook:onCompleted");
-                                    user.setFollowing(0);
-                                    user.setFollowers(0);
+                                    user.setNumFollowers(0);
+                                    user.setNumFollowing(0);
                                     try {
                                         String id = object.getString("id");
                                         user.setUid(id);

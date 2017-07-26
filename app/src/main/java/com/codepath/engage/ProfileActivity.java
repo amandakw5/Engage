@@ -94,6 +94,7 @@ int i=0;
                                 UserEvents e = evSnapshot.getValue(UserEvents.class);
                                 events.add(e);
                                 adapter.notifyItemInserted(events.size()-1);
+                                break;
                             }
                         }
                     }

@@ -2,6 +2,9 @@ package com.codepath.engage.models;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import static com.codepath.engage.R.id.followers;
+import static com.codepath.engage.R.id.following;
+
 /**
  * Created by awestort on 7/18/17.
  */
@@ -13,8 +16,8 @@ public class User {
     public String lastName;
     public String email;
     public String profilePicture;
-    public int followers;
-    public int following;
+    public int numFollowers;
+    public int numFollowing;
 
 
     public User(){
@@ -25,8 +28,8 @@ public class User {
         this.lastName = lastName;
         this.email = email;
         this.profilePicture = profilePicture;
-        this.followers = followers;
-        this.following = following;
+        this.numFollowers = followers;
+        this.numFollowing = following;
     }
 
     public String getUid() { return uid; }
@@ -65,11 +68,19 @@ public class User {
         this.profilePicture = profilePicture;
     }
 
-    public int getFollowers() { return followers; }
+    public int getNumFollowers() {
+        return numFollowers;
+    }
 
-    public void setFollowers(int followers) { this.followers = followers; }
+    public void setNumFollowers(int numFollowers) {
+        this.numFollowers = numFollowers;
+    }
 
-    public int getFollowing() { return following; }
+    public int getNumFollowing() {
+        return numFollowing;
+    }
 
-    public void setFollowing(int following) { this.following = following; }
+    public void setNumFollowing(int numFollowing) {
+        this.numFollowing = numFollowing;
+    }
 }
