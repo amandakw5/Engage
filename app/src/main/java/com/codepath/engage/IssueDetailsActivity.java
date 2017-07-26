@@ -21,7 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.engage.models.Event;
+import com.codepath.engage.models.EventAdapter;
 import com.codepath.engage.models.Organizer;
+import com.codepath.engage.models.User;
 import com.codepath.engage.models.Venue;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -60,6 +62,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
     List<String> upEvents;
     @BindView(R.id.issueTitle) TextView issueTitle;
     ArrayList<Event> events;
+    ArrayList<User> allUsers;
     GoogleApiClient gac;
     LocationRequest locationRequest;
     String tvLatitude, tvLongitude, tvTime;
@@ -136,10 +139,11 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
         //pastEvents = new ArrayList<>();
         issueSubsectionTitles.addAll(Arrays.asList(strs));
         upEvents = new ArrayList<String>();
+        allUsers = new ArrayList<>();
         venues = new ArrayList<>();
         events = new ArrayList<>();
-        eventAdapter = new EventAdapter(events);
         adapter = new IssueDetailsAdapter(issue, issueSubsectionTitles, specificIssues, organizations, upEvents); //, pastEvents
+        eventAdapter = new EventAdapter(events, allUsers, 0);
         rvIssueSubsections = (RecyclerView) findViewById(R.id.rvIssueSubsections);
         rvIssueSubsections.setLayoutManager(new LinearLayoutManager(this));
         rvIssueSubsections.setAdapter(adapter);
