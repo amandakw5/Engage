@@ -52,7 +52,6 @@ public class ProfileActivity extends AppCompatActivity {
         rvUpdates.setLayoutManager(new LinearLayoutManager(this));
         rvUpdates.setAdapter(adapter);
         uid = Profile.getCurrentProfile().getId();
-//        Event event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
         DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
 
@@ -67,21 +66,8 @@ public class ProfileActivity extends AppCompatActivity {
                     Log.d("eventIds", eventIDs.toString());
                     }
                 }
-
-//                DataSnapshot contactChildren = dataSnapshot.child("eventsList");
-//               for (DataSnapshot evSnapshot: contactChildren.getChildren()){
-//                   GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>(){};
-//                   List<String> eventIds = evSnapshot.getValue(t);
-//                   Log.d("plswork", eventIds.toString());
-//                   UserEvents e = evSnapshot.getValue(UserEvents.class);
-//                   events.add(e);
-//                   adapter.notifyItemInserted(events.size() - 1);
-//               }
-
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-int i=0;
-            }
+            public void onCancelled(DatabaseError databaseError) { int i=0; }
         });
 
         savedEvents.addValueEventListener(new ValueEventListener() {

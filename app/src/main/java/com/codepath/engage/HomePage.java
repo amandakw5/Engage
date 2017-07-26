@@ -103,6 +103,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 .build();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         profileImage = (ImageView) findViewById(R.id.profileImage);
         searchView = (SearchView) findViewById(R.id.search);
         ActionBar actionbar = getSupportActionBar();
@@ -358,6 +359,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
                         .show();
             } else {
+                Toast.makeText(this, "This device is not supported.", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "This device is not supported.");
                 finish();
             }

@@ -148,6 +148,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         }
         //Referencing the variables to their respective I.Ds for the xml style sheet
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         profileImage = (ImageView) findViewById(R.id.profileImage);
         searchView = (SearchView) findViewById(R.id.search);
         ActionBar actionbar = getSupportActionBar();
