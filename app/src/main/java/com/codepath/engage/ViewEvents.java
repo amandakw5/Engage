@@ -378,7 +378,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         });
     }
     private void populateUsers(final String query){
-        progress.setMessage("Retrieving Events");
+        progress.setMessage("Retrieving Users");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIndeterminate(true);
         progress.show();
@@ -399,10 +399,12 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     String f = (String) evSnapshot.child("firstName").getValue();
                     String l = (String) evSnapshot.child("lastName").getValue();
                    // User u = evSnapshot.getValue(User.class);
-                    if (f.equals(first) && l.equals(last)){
-                        User u = evSnapshot.getValue(User.class);
-                        users.add(u);
-                        eventAdapter.notifyDataSetChanged();
+                    if (f != null) {
+                        if (f.equals(first) && l.equals(last)) {
+                            User u = evSnapshot.getValue(User.class);
+                            users.add(u);
+                            eventAdapter.notifyDataSetChanged();
+                        }
                     }
                 }
                 progress.dismiss();

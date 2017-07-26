@@ -150,7 +150,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
 
     }
     private void getEventsInfo(String issue){
-        progress.setMessage("Updating6");
+        progress.setMessage("Updating");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIndeterminate(true);
         progress.show();
