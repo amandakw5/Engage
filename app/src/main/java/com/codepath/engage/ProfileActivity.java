@@ -36,6 +36,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         whichprofile = getIntent().getStringExtra("whichProfile");
         events = new ArrayList<>();
+
         adapter = new UpdateAdapter(events, whichprofile);
         FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
 
@@ -43,13 +44,13 @@ public class ProfileActivity extends AppCompatActivity {
         rvUpdates.setLayoutManager(new LinearLayoutManager(this));
         rvUpdates.setAdapter(adapter);
         uid = Profile.getCurrentProfile().getId();
-        Event event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
-        mDatabase = FirebaseDatabase.getInstance().getReference("users");
+//        Event event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
+        mDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid);
 
-        mDatabase.child(uid).addValueEventListener(new ValueEventListener() {
+        mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                DataSnapshot contactChildren = dataSnapshot.child("events");
+                DataSnapshot contactChildren = dataSnapshot.child("eventsList");
                for (DataSnapshot evSnapshot: contactChildren.getChildren()){
                    UserEvents e = evSnapshot.getValue(UserEvents.class);
                    events.add(e);
