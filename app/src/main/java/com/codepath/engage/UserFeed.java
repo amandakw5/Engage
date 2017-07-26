@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 
 import com.codepath.engage.models.Event;
-import com.codepath.engage.models.EventAdapter;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
