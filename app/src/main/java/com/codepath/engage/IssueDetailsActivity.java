@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.engage.models.Event;
-import com.codepath.engage.models.EventAdapter;
 import com.codepath.engage.models.Organizer;
 import com.codepath.engage.models.User;
 import com.codepath.engage.models.Venue;

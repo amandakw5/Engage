@@ -10,10 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.codepath.engage.EventDetailsActivity;
+import com.codepath.engage.ProfileActivity;
+import com.codepath.engage.R;
 import com.codepath.engage.models.Event;
+import com.codepath.engage.models.User;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,8 +28,14 @@ import java.util.List;
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
     private List<Event> mEvents;
     private Context context;
-    public EventAdapter(List<Event> events){
+    public int recyclerType;
+    private List<User> mUsers;
+    View recycleView;
+
+    public EventAdapter(List<Event> events, ArrayList<User> users, int i){
         mEvents = events;
+        recyclerType = i;
+        mUsers = users;
     }
 
     @Override
@@ -32,30 +43,46 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
 
         context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View eventView = inflater.inflate(R.layout.event_item,parent,false);
-        ViewHolder viewHolder = new ViewHolder(eventView);
+        if (recyclerType == 0) {
+            recycleView = inflater.inflate(R.layout.item_user,parent,false);
+        }
+        else {
+            recycleView = inflater.inflate(R.layout.event_item,parent,false);
+        }
+        ViewHolder viewHolder = new ViewHolder(recycleView);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        position = holder.getAdapterPosition();
-        Event event = mEvents.get(position);
-        holder.tvHost.setText(event.organizerName);
-        holder.tvEventName.setText(event.tvEventName);
-        holder.tvEventInfo.setText(event.tvEventInfo);
-        holder.tvDescription.setText(event.tvDescription);
-        if (event.ivEventImage == "null"){
-            Glide.with(context).load(R.drawable.image_not_found).centerCrop().into(holder.ivProfileImage);
-        } else {
-            Glide.with(context).load(event.ivEventImage).centerCrop().into(holder.ivProfileImage);
-//        holder.tvHost.setText(event.organizer.name);
+        if (recyclerType == 0){
+            User u = mUsers.get(position);
+            holder.name.setText(u.firstName + " " + u.lastName);
+            Glide.with(context).load(u.profilePicture).centerCrop().into(holder.profileImage);
+        }
+        else {
+            position = holder.getAdapterPosition();
+            Event event = mEvents.get(position);
+            holder.tvHost.setText(event.organizerName);
+            holder.tvEventName.setText(event.tvEventName);
+            holder.tvEventInfo.setText(event.tvEventInfo);
+            holder.tvDescription.setText(event.tvDescription);
+            if (event.ivEventImage.equals("null")){
+                Glide.with(context).load(R.drawable.image_not_found).centerCrop().into(holder.ivProfileImage);
+            } else {
+                Glide.with(context).load(event.ivEventImage).centerCrop().into(holder.ivProfileImage);
+            }
         }
     }
 
     @Override
     public int getItemCount() {
-        return mEvents.size();
+        if (recyclerType == 0){
+            return mUsers.size();
+        }
+        else{
+            return mEvents.size();
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -64,6 +91,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         public TextView tvEventInfo;
         public TextView tvDescription;
         public TextView tvHost;
+        public ImageView profileImage;
+        public TextView name;
         public ViewHolder(View itemView){
             super(itemView);
             tvHost = (TextView) itemView.findViewById(R.id.tvHost);
@@ -72,6 +101,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             tvEventInfo = (TextView) itemView.findViewById(R.id.tvLocationInfo);
             tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
             tvHost = (TextView) itemView.findViewById(R.id.tvHost);
+            profileImage = (ImageView) itemView.findViewById(R.id.profileImage);
+            name = (TextView) itemView.findViewById(R.id.name);
             itemView.setOnClickListener(this);
         }
 
@@ -79,10 +110,19 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         public void onClick(View v) {
             final int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
-                final Event event = mEvents.get(position);
-                Intent intent = new Intent(context, EventDetailsActivity.class);
-                intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
-                context.startActivity(intent);
+                if (recyclerType == 0){
+                    final User u = mUsers.get(position);
+                    Intent i = new Intent(context, ProfileActivity.class);
+                    i.putExtra(User.class.getSimpleName(), Parcels.wrap(u));
+                    i.putExtra("whichProfile", u.firstName + " " + u.lastName + " is ");
+                    context.startActivity(i);
+                }
+                else {
+                    final Event event = mEvents.get(position);
+                    Intent intent = new Intent(context, EventDetailsActivity.class);
+                    intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
+                    context.startActivity(intent);
+                }
             }
         }
     }
@@ -93,6 +133,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
 
     public void clear(){
         mEvents.clear();
+        mUsers.clear();
         notifyDataSetChanged();
     }
 }

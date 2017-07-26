@@ -36,7 +36,6 @@ import android.widget.Toast;
 
 import com.codepath.engage.models.CreatedEvents;
 import com.codepath.engage.models.Event;
-import com.codepath.engage.models.EventAdapter;
 import com.codepath.engage.models.Organizer;
 import com.codepath.engage.models.User;
 import com.codepath.engage.models.Venue;
@@ -117,6 +116,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         client = new EventbriteClient();
         //Sets up the listeners needed for the input text of search view.
         setUpSearchView();
+        mDatabase = FirebaseDatabase.getInstance().getReference("users");
+
         //find the recycler view
         rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
         //initiating the array list
@@ -124,7 +125,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         events = new ArrayList<>();
         venues = new ArrayList<>();
         users = new ArrayList<>();
-        //constructing the adapter from this datasoruce
+        //constructing the adapter from this datasource
         //constructing the adapter from this data source
         //recycler view setup(layout manager, use adapter'
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
@@ -414,15 +415,16 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 int i = q.indexOf(' ');
                 String first = q.substring(0, i);
                 String last = q.substring(i+1);
-                long x = dataSnapshot.getChildrenCount();
                 for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
                     String f = (String) evSnapshot.child("firstName").getValue();
                     String l = (String) evSnapshot.child("lastName").getValue();
-                   // User u = evSnapshot.getValue(User.class);
-                    if (f.equals(first) && l.equals(last)){
-                        User u = evSnapshot.getValue(User.class);
-                        users.add(u);
-                        eventAdapter.notifyDataSetChanged();
+                    if (f != null){
+                        if (f.equals(first) && l.equals(last)){
+                           User u = evSnapshot.getValue(User.class);
+                           u.setUid(evSnapshot.getKey());
+                           users.add(u);
+                           eventAdapter.notifyDataSetChanged();
+                        }
                     }
                 }
                 progress.dismiss();

@@ -23,13 +23,13 @@ import butterknife.ButterKnife;
  */
 
 public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder> {
-    public ArrayList<UserEvents> mevents;
-    Context context;
-    String profilePage;
+    public ArrayList<UserEvents> mEvents;
+    private Context context;
+    private String profilePage;
 
 
     public UpdateAdapter(ArrayList<UserEvents> events, String who) {
-        mevents = events;
+        mEvents = events;
         profilePage = who;
     }
     @Override
@@ -44,7 +44,7 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
     }
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        UserEvents e = mevents.get(position);
+        UserEvents e = mEvents.get(position);
         holder.update.setText(profilePage + "interested in " + e.eventName);
     }
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -60,7 +60,7 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
                     int position = getAdapterPosition();
                     // fire the listener callback
                     if (position != RecyclerView.NO_POSITION) {
-                        UserEvents currentUpdate = mevents.get(position);
+                        UserEvents currentUpdate = mEvents.get(position);
                         // create intent for the new activity
                         Intent intent = new Intent(context, EventDetailsActivity.class);
                         intent.putExtra("current", Parcels.wrap(currentUpdate));
@@ -80,7 +80,7 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return mevents.size();
+        return mEvents.size();
     }
 
 }
