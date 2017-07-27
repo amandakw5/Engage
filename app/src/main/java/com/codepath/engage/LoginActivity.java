@@ -15,7 +15,6 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -39,6 +38,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -102,8 +102,8 @@ public class LoginActivity extends AppCompatActivity {
                                     Log.d(TAG, "facebook:onCompleted");
                                     user.setNumFollowing(0);
                                     user.setNumFollowers(0);
-                                    user.setFollowers(new ArrayList<User>());
-                                    user.setFollowing(new ArrayList<User>());
+                                    user.setFollowersL(new ArrayList<String>());
+                                    user.setFollowingL(new ArrayList<String>());
                                     try {
                                         String id = object.getString("id");
                                         user.setUid(id);
@@ -138,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
                                     } catch (MalformedURLException e) {
                                         e.printStackTrace();
                                     }
-                                    writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), 0, 0, new ArrayList<User>(), new ArrayList<User>(), bFacebookData); //
+                                    writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), 0, 0, new ArrayList<String>(), new ArrayList<String>(), bFacebookData); //
                                 }
 
                             }
@@ -251,7 +251,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, ArrayList<User> followers, ArrayList<User> following, final Bundle facebookData) {
+    public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, List<String> followers, List<String> following, final Bundle facebookData) {
         final User user = new User(uid, firstName, lastName, email, profilePicture, numFollowers, numFollowing, followers, following);
         mDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

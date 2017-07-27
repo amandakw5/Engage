@@ -265,8 +265,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 //ON a successful query submission the query is passed and api request call is made
 
                 if (query.startsWith("~")){
-                    eventAdapter = new EventAdapter(events, users, 0);
-                    rvEvents.setAdapter(eventAdapter);
+                    userAdapter = new UserAdapter(users,0);
+                    rvEvents.setAdapter(userAdapter);
                     populateUsers(query);
                 }
                 else{

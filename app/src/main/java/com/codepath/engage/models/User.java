@@ -4,7 +4,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import org.parceler.Parcel;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -21,14 +21,17 @@ public class User {
     public String profilePicture;
     public int numFollowers;
     public int numFollowing;
-    public List<User> followers;
-    public List<User>  following;
+    public HashMap<String,String> following;
+    public HashMap<String,String> followers;
+
+    public List<String> followersL;
+    public List<String>  followingL;
 
 
     public User(){
     }
 
-    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, List<User> followers, List<User> following) { //
+    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String,String>followers, HashMap<String,String> following) { //
         this.uid = uid;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -38,22 +41,54 @@ public class User {
         this.numFollowing = numFollowing;
         this.following = following;
         this.followers = followers;
-    }
+        for(String str : following.values())
+            followingL.add(str);
+        for(String str : followers.values())
+            followersL.add(str);
 
-    public List<User> getFollowers() {
-        return followers;
     }
+    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, List<String> followers,List<String> following) { //
+        this.uid = uid;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.profilePicture = profilePicture;
+        this.numFollowers = numFollowers;
+        this.numFollowing = numFollowing;
+        this.followingL = following;
+        this.followersL = followers;
 
-    public void setFollowers(ArrayList<User> followers) {
-        this.followers = followers;
     }
-
-    public List<User> getFollowing() {
+    public HashMap<String, String> getFollowing() {
         return following;
     }
 
-    public void setFollowing(ArrayList<User> following) {
+    public void setFollowing(HashMap<String, String> following) {
         this.following = following;
+    }
+
+    public HashMap<String, String> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(HashMap<String, String> followers) {
+        this.followers = followers;
+    }
+
+    public List<String> getFollowersL() {
+        return followersL;
+    }
+
+    public void setFollowersL(List<String> followersL) {
+        this.followersL = followersL;
+    }
+
+    public List<String> getFollowingL() {
+        return followingL;
+    }
+
+    public void setFollowingL(List<String> followingL) {
+        this.followingL = followingL;
     }
 
     public String getUid() { return uid; }
