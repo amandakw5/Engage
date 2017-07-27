@@ -431,7 +431,6 @@ Log.i("Info",q);
             {
                 int i = q.indexOf(' ');
                 String first = q.substring(1, i);
-                Log.i("Info",first);
                 String last = q.substring(i+1);
                 Log.i("Info",last);
                 for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
