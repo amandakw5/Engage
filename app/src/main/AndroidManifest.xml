@@ -29,7 +29,6 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
-
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider1356409037788347"
@@ -44,6 +43,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".ViewEvents"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -51,11 +51,13 @@
                 />
             </intent-filter>
         </activity>
+
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:theme="@style/AppTheme" />
+
         <activity
             android:name=".EventDetailsActivity"
             android:theme="@style/AppTheme">
@@ -64,6 +66,7 @@
         <activity
             android:name=".HomePage"
             android:theme="@style/AppTheme" />
+
         <activity
             android:name=".IssueDetailsActivity"
             android:theme="@style/AppTheme">
@@ -72,10 +75,10 @@
         <activity android:name=".ProfileActivity"
             android:theme="@style/AppTheme">
         </activity>
+
         <activity
             android:name=".MapActivity"
             android:theme="@style/AppTheme">
-
         </activity>
 
         <meta-data
@@ -87,13 +90,12 @@
 
         <activity android:name=".CreateEventActivity"
             android:theme="@style/AppTheme">
-
         </activity>
 
         <activity android:name=".UserFeed"
             android:theme="@style/AppTheme">
-
         </activity>
+
     </application>
 
 </manifest>

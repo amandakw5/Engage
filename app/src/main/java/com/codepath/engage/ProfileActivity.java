@@ -73,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 currentProfile = dataSnapshot.getValue(User.class);
-                if (uid == Profile.getCurrentProfile().getId()){
+                if (uid.equals(Profile.getCurrentProfile().getId())){
                     u = currentProfile;
                 }
             }
