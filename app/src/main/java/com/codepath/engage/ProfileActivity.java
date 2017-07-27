@@ -60,7 +60,6 @@ public class ProfileActivity extends AppCompatActivity {
         }
         else {
             uid = Profile.getCurrentProfile().getId();
-
         }
         mDatabase.child(Profile.getCurrentProfile().getId()).addValueEventListener(new ValueEventListener() {
             @Override
