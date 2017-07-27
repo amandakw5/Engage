@@ -5,6 +5,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import org.parceler.Parcel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by awestort on 7/18/17.
@@ -20,14 +21,14 @@ public class User {
     public String profilePicture;
     public int numFollowers;
     public int numFollowing;
-    public ArrayList<User> followers;
-    public ArrayList<User>  following;
+    public List<User> followers;
+    public List<User>  following;
 
 
     public User(){
     }
 
-    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, ArrayList<User> followers, ArrayList<User> following) { //
+    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, List<User> followers, List<User> following) { //
         this.uid = uid;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -39,7 +40,7 @@ public class User {
         this.followers = followers;
     }
 
-    public ArrayList<User> getFollowers() {
+    public List<User> getFollowers() {
         return followers;
     }
 
@@ -47,7 +48,7 @@ public class User {
         this.followers = followers;
     }
 
-    public ArrayList<User> getFollowing() {
+    public List<User> getFollowing() {
         return following;
     }
 

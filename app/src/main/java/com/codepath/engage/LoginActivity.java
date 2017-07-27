@@ -86,9 +86,6 @@ public class LoginActivity extends AppCompatActivity {
                                 boolean isInside = false;
                                 for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
                                     String k = evSnapshot.getKey();
-                                    User u = evSnapshot.getValue(User.class);
-                                    u.setUid(evSnapshot.getKey());
-                                  //  User u = evSnapshot.getValue(User.class);
                                     try {
                                         if (k.equals(object.getString("id"))) {
                                             isInside = true;
