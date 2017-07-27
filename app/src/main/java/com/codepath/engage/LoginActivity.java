@@ -37,7 +37,11 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+<<<<<<< HEAD
 import java.util.HashMap;
+=======
+import java.util.List;
+>>>>>>> c207e1a185fdc5f5dab48fe45f989d943fbae415
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -100,10 +104,16 @@ public class LoginActivity extends AppCompatActivity {
                                     Bundle bFacebookData = getFacebookData(object);
                                     Log.d(TAG, "facebook:onCompleted");
                                     user.setNumFollowers(0);
+<<<<<<< HEAD
                                     user.setFollowers(new HashMap<String,String>());
                                     user.setFollowing(new HashMap<String,String>());
                                     //user.setEventsList(new List<String>());
 
+=======
+                                    user.setNumFollowing(0);
+                                    user.setFollowersL(new ArrayList<String>());
+                                    user.setFollowingL(new ArrayList<String>());
+>>>>>>> c207e1a185fdc5f5dab48fe45f989d943fbae415
                                     try {
                                         String id = object.getString("id");
                                         user.setUid(id);
@@ -138,7 +148,11 @@ public class LoginActivity extends AppCompatActivity {
                                     } catch (MalformedURLException e) {
                                         e.printStackTrace();
                                     }
+<<<<<<< HEAD
                                     writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), 0, 0, new HashMap<String,String>(), new HashMap<String,String>(), bFacebookData); //, new ArrayList<String>()
+=======
+                                    writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), 0, 0, new ArrayList<String>(), new ArrayList<String>(), bFacebookData); //
+>>>>>>> c207e1a185fdc5f5dab48fe45f989d943fbae415
                                 }
 
                             }
@@ -254,8 +268,13 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+<<<<<<< HEAD
     public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String, String> followers, HashMap<String, String> following, final Bundle facebookData) { //, List<String> eventsList
         final User user = new User(uid, firstName, lastName, email, profilePicture, numFollowers, numFollowing, followers, following); //, eventsList
+=======
+    public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, List<String> followers, List<String> following, final Bundle facebookData) {
+        final User user = new User(uid, firstName, lastName, email, profilePicture, numFollowers, numFollowing, followers, following);
+>>>>>>> c207e1a185fdc5f5dab48fe45f989d943fbae415
         mDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

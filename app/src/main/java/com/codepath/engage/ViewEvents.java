@@ -80,7 +80,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     private EventbriteClient client;
 
     EventAdapter eventAdapter;
-
+    UserAdapter userAdapter;
     ArrayList<Event> events;
     ArrayList<CreatedEvents> createdEventsList;
     ArrayList<Venue> venues;
@@ -124,7 +124,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         setUpSearchView();
 
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
-
+        //find the recycler view
+        rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
         //initiating the array list
         createdEventsList = new ArrayList<>();
         events = new ArrayList<>();
@@ -216,8 +217,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         onStart();
         events.clear();
         if (query.startsWith("~")){
-            eventAdapter = new EventAdapter(events, users, 0);
-            rvEvents.setAdapter(eventAdapter);
+            userAdapter = new UserAdapter(users,0);
+            rvEvents.setAdapter(userAdapter);
             populateUsers(query);
         }
         else{
@@ -244,8 +245,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 //ON a successful query submission the query is passed and api request call is made
 
                 if (query.startsWith("~")){
-                    eventAdapter = new EventAdapter(events, users, 0);
-                    rvEvents.setAdapter(eventAdapter);
+                    userAdapter = new UserAdapter(users,0);
+                    rvEvents.setAdapter(userAdapter);
                     populateUsers(query);
                 } else {
                     eventAdapter = new EventAdapter(events, users, 1);
@@ -399,22 +400,25 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         progress.setIndeterminate(true);
         progress.show();
         users.clear();
-        eventAdapter.clear();
+        userAdapter.clear();
         counterToGetPositionOfEvent=0;
+        final String q = query;
+Log.i("Info",q);
         eventRequestCompleted = false;
         mDatabase.addValueEventListener(new ValueEventListener() {
-            String q = query.substring(1);
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
                 int i = q.indexOf(' ');
-                String first = q.substring(0, i);
+                String first = q.substring(1, i);
                 String last = q.substring(i+1);
+                Log.i("Info",last);
                 for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
                     String f = (String) evSnapshot.child("firstName").getValue();
                     String l = (String) evSnapshot.child("lastName").getValue();
                     if (f != null && l != null){
                         if (f.equals(first) && l.equals(last)){
+<<<<<<< HEAD
                             User u = evSnapshot.getValue(User.class);
                             u.setUid(evSnapshot.getKey());
                            // List<User> list = new ArrayList<User>();
@@ -436,6 +440,13 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                             users.add(u);
                             eventAdapter.notifyDataSetChanged();
                         }
+=======
+                           User u = evSnapshot.getValue(User.class);
+                           u.setUid(evSnapshot.getKey());
+                           users.add(u);
+                            Log.i("Info","Added user");
+                            userAdapter.notifyItemInserted(users.size() -1);                        }
+>>>>>>> c207e1a185fdc5f5dab48fe45f989d943fbae415
                     }
                 }
                 progress.dismiss();
