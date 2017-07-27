@@ -131,7 +131,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
         // set the adapter
 
-        mDatabase = FirebaseDatabase.getInstance().getReference("users");
         createdEvents = FirebaseDatabase.getInstance().getReference("CreatedEvents");
 
         //Getting the location for the user.
@@ -433,7 +432,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
                     String f = (String) evSnapshot.child("firstName").getValue();
                     String l = (String) evSnapshot.child("lastName").getValue();
-                    if (f != null){
+                    if (f != null && l != null){
                         if (f.equals(first) && l.equals(last)){
                            User u = evSnapshot.getValue(User.class);
                            u.setUid(evSnapshot.getKey());
