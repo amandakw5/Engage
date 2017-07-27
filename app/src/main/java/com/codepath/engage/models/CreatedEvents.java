@@ -14,6 +14,9 @@ public class CreatedEvents {
     private String eventMonth;
     private String eventYear;
 
+    public CreatedEvents() {
+    }
+
     public CreatedEvents(String eventName, String eventLocation, String eventDescription, String eventHour, String eventMinute, String eventDay, String eventMonth, String eventYear) {
         this.eventName = eventName;
         this.eventLocation = eventLocation;

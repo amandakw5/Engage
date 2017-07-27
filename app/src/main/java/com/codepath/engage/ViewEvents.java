@@ -296,8 +296,16 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         createdEvents.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                int i = 1;
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    Log.i("Inof",snapshot.getValue().toString());
+
+                    CreatedEvents userEvents = snapshot.getValue(CreatedEvents.class);
+                    Event event = new Event(userEvents.getEventName(),userEvents.getEventLocation() + "\n" + userEvents.getEventDay() +"/"+userEvents.getEventMonth() + " " + userEvents.getEventHour()+":"+userEvents.getEventMinute(),userEvents.getEventDescription(),"null",String.valueOf(i));
+                    if(userEvents.getEventDescription().contains(valueOfQuery)) {
+                        events.add(event);
+                        eventAdapter.notifyItemInserted(events.size() - 1);
+                    }
+                    i++;
                 }
             }
 

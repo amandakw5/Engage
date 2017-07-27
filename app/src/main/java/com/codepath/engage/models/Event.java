@@ -30,8 +30,21 @@ public class Event implements Parcelable {
     public Organizer organizer;
     public String timeStart;
 
+    public Event(String tvEventName, String tvEventInfo, String tvDescription, String ivEventImage, String eventId) {
+        this.tvEventName = tvEventName;
+        this.tvEventInfo = tvEventInfo;
+        this.tvDescription = tvDescription;
+        this.ivEventImage = ivEventImage;
+        this.eventId = eventId;
+        this.organizerName = "";
+        veneuId = "";
+        organizerId="";
+        venue = null;
+        organizer = null;
+        timeStart = tvEventInfo;
+    }
 
-    public Event(String tvEventName, String tvEventInfo, String tvDescription, String ivEventImage, String eventId, String veneuId,Venue venue,Organizer organizer,String timeStart) {
+    public Event(String tvEventName, String tvEventInfo, String tvDescription, String ivEventImage, String eventId, String veneuId, Venue venue, Organizer organizer, String timeStart) {
         this.tvEventName = tvEventName;
         this.tvEventInfo = tvEventInfo;
         this.tvDescription = tvDescription;
