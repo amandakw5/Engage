@@ -188,8 +188,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
             }
         });
-
-
+        searchView.setQuery(query, false);
     }
     private void configureNavigationDrawer() {
 
@@ -550,5 +549,11 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     }
                 });
         dialog.show();
+    }
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        overridePendingTransition(0, 0);
     }
 }

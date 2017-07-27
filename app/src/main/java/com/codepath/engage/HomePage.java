@@ -39,6 +39,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.codepath.engage.models.ListItem;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -50,6 +51,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class HomePage extends AppCompatActivity implements View.OnClickListener, LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -82,6 +84,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     GoogleApiClient gac;
     LocationRequest locationRequest;
     String tvLatitude, tvLongitude, tvTime;
+
     ImageButton btnFilter;
 
     @Override
@@ -110,13 +113,13 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         btnFilter = (ImageButton) findViewById(R.id.btnFilter);
         setSupportActionBar (toolbar);
-        configureNavigationDrawer();
-        profileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDrawer.openDrawer(Gravity.RIGHT);
-            }
-        });
+//        configureNavigationDrawer();
+//        profileImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mDrawer.openDrawer(Gravity.RIGHT);
+//            }
+//        });
 
         String[] strs = {"Women", "Food", "Climate Change", "Human Rights", "Poverty"};
         issues = new ArrayList<>();
@@ -131,52 +134,96 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         rvIssues.setAdapter(adapter);
 
         mAuth = FirebaseAuth.getInstance();
+
+        mDrawerList = (ListView) findViewById(R.id.slider_list);
+        String[] list = {"My Profile", "My Feed", "Create an Event", "My Events", "Log Out"};
+        mDrawerList.setOnItemClickListener(new slideItemListener());
+    }
+
+    private class slideItemListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position,
+                                long id) {
+            updateDisplay(position);
+        }
+
+    }
+
+    private boolean updateDisplay(int position) {
+        Fragment f = null;
+        switch (position) {
+            case 0:
+                Intent i = new Intent (this, ProfileActivity.class);
+                i.putExtra("whichProfile", "You are ");
+                startActivity(i);
+                break;
+            case 1:
+                break;
+            case 2:
+                Intent in = new Intent(HomePage.this, CreateEventActivity.class);
+                startActivity(in);
+                break;
+            case 4:
+                mAuth.signOut();
+                LoginManager.getInstance().logOut();
+                Intent intent = new Intent(HomePage.this, LoginActivity.class);
+                startActivity(intent);
+                break;
+        }
+        if (f != null) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.rvIssues, f);
+            transaction.commit();
+            mDrawer.closeDrawers();
+            return true;
+        }
+        return false;
+
     }
 
 
-    private void configureNavigationDrawer() {
-
-        NavigationView navView = (NavigationView) findViewById(R.id.nvView);
-        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-
-                Fragment f = null;
-                int itemId = menuItem.getItemId();
-                switch(itemId){
-                    case R.id.profileTab:
-                        Intent i = new Intent(HomePage.this, ProfileActivity.class);
-                        i.putExtra("whichProfile", "You are ");
-                        startActivity(i);
-                        break;
-                    case R.id.createTab:
-                        Intent in = new Intent(HomePage.this, CreateEventActivity.class);
-                        startActivity(in);
-                        break;
-                    case R.id.logOut:
-                        mAuth.signOut();
-                        LoginManager.getInstance().logOut();
-                        Intent intent = new Intent(HomePage.this, LoginActivity.class);
-                        startActivity(intent);
-                        break;
-                }
-
-                if (f != null) {
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.rvIssues, f);
-                    transaction.commit();
-                    mDrawer.closeDrawers();
-                    return true;
-                }
-                return false;
-            }
-        });
-    }
+//    private void configureNavigationDrawer() {
+//
+//        NavigationView navView = (NavigationView) findViewById(R.id.nvView);
+//        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+//            @Override
+//            public boolean onNavigationItemSelected(MenuItem menuItem) {
+//
+//                Fragment f = null;
+//                int itemId = menuItem.getItemId();
+//                switch(itemId){
+//                    case R.id.profileTab:
+//                        Intent i = new Intent(HomePage.this, ProfileActivity.class);
+//                        i.putExtra("whichProfile", "You are ");
+//                        startActivity(i);
+//                        break;
+//                    case R.id.createTab:
+//                        Intent in = new Intent(HomePage.this, CreateEventActivity.class);
+//                        startActivity(in);
+//                        break;
+//                    case R.id.logOut:
+//                        mAuth.signOut();
+//                        LoginManager.getInstance().logOut();
+//                        Intent intent = new Intent(HomePage.this, LoginActivity.class);
+//                        startActivity(intent);
+//                        break;
+//                }
+//
+//                if (f != null) {
+//                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                    transaction.replace(R.id.rvIssues, f);
+//                    transaction.commit();
+//                    mDrawer.closeDrawers();
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
+//    }
 
     //Performs the Searching Of Desired Event Category
     //TODO finish this function
-    private void searchFor(String query){
-    }
+    private void searchFor(String query){ }
 
     private void addDrawerItems() {
         String[] osArray = { "Android", "iOS", "Windows", "OS X", "Linux" };

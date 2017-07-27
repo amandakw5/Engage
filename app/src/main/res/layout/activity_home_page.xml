@@ -11,12 +11,33 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="match_parent"
         tools:context="com.codepath.engage.HomePage">
 
-        <include layout="@layout/navigational"
+        <include
+            layout="@layout/navigational"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
+        <com.mindorks.placeholderview.PlaceHolderView
+            android:id="@+id/galleryView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical" />
+
+        <FrameLayout
+            android:layout_width="250dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="end"
+            android:background="@android:color/white">
+
+            <com.mindorks.placeholderview.PlaceHolderView
+                android:id="@+id/drawerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/hpIssues"
@@ -40,15 +61,26 @@
 
     </RelativeLayout>
 
-    <android.support.design.widget.NavigationView
-        android:id="@+id/nvView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:background="@android:color/white"
-        android:theme="@style/AppTheme"
-        app:itemTextColor="@android:color/black"
-        app:menu="@menu/profilebar"
-        />
+    <!--<ListView-->
+        <!--android:id="@+id/slider_list"-->
+        <!--android:layout_width="240dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="end"-->
+        <!--android:background="#ffffff"-->
+        <!--android:choiceMode="singleChoice"-->
+        <!--android:divider="@android:color/transparent"-->
+        <!--android:dividerHeight="0dp"-->
+        <!--/>-->
+
+    <!--<android.support.design.widget.NavigationView-->
+        <!--android:id="@+id/nvView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="end"-->
+        <!--android:background="@android:color/white"-->
+        <!--android:theme="@style/AppTheme"-->
+        <!--app:itemTextColor="@android:color/black"-->
+        <!--app:menu="@menu/profilebar"-->
+        <!--/>-->
 
 </android.support.v4.widget.DrawerLayout>

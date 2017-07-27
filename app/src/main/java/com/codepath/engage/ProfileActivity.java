@@ -101,7 +101,7 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 }
             @Override
-            public void onCancelled(DatabaseError databaseError) { int i=0; }
+            public void onCancelled(DatabaseError databaseError) { int i = 0; }
         });
 
         savedEvents.addValueEventListener(new ValueEventListener() {
