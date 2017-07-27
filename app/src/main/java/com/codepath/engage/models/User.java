@@ -4,7 +4,8 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import org.parceler.Parcel;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by awestort on 7/18/17.
@@ -20,14 +21,15 @@ public class User {
     public String profilePicture;
     public int numFollowers;
     public int numFollowing;
-    public ArrayList<User> followers;
-    public ArrayList<User>  following;
+    public HashMap<String,String> followers;
+    public HashMap<String,String>  following;
+    public List<String> eventsList;
 
 
     public User(){
     }
 
-    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, ArrayList<User> followers, ArrayList<User> following) { //
+    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String,String> followers, HashMap<String,String> following) { //, List<String> eventsList
         this.uid = uid;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -37,21 +39,30 @@ public class User {
         this.numFollowing = numFollowing;
         this.following = following;
         this.followers = followers;
+       // this.eventsList = eventsList;
     }
 
-    public ArrayList<User> getFollowers() {
+    public List<String> getEventsList() {
+        return eventsList;
+    }
+
+    public void setEventsList(List<String> eventsList) {
+        this.eventsList = eventsList;
+    }
+
+    public HashMap<String,String> getFollowers() {
         return followers;
     }
 
-    public void setFollowers(ArrayList<User> followers) {
+    public void setFollowers(HashMap<String,String> followers) {
         this.followers = followers;
     }
 
-    public ArrayList<User> getFollowing() {
+    public HashMap<String,String> getFollowing() {
         return following;
     }
 
-    public void setFollowing(ArrayList<User> following) {
+    public void setFollowing(HashMap<String,String> following) {
         this.following = following;
     }
 

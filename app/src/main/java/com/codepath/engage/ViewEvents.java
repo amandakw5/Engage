@@ -401,10 +401,26 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     String l = (String) evSnapshot.child("lastName").getValue();
                     if (f != null){
                         if (f.equals(first) && l.equals(last)){
-                           User u = evSnapshot.getValue(User.class);
-                           u.setUid(evSnapshot.getKey());
-                           users.add(u);
-                           eventAdapter.notifyDataSetChanged();
+                            User u = evSnapshot.getValue(User.class);
+                            u.setUid(evSnapshot.getKey());
+                           // List<User> list = new ArrayList<User>();
+//                            Map<String, Object> objectMap = (HashMap<String, Object>)
+//                                    evSnapshot.getValue();
+//                            User user = new User();
+//                            for (Object obj : objectMap.values()) {
+//                                if ((obj.getValue())equals("uid")){
+//                                    user.setUid(obj);
+//                                }
+//
+//                            }
+
+                            //Map<String, User> result = new HashMap<>();
+                           // result= (Map<String, User>) evSnapshot.getValue(User.class);
+                            int j = 0;
+                            //u.setUid(evSnapshot.getKey());
+                            ///list.add(evSnapshot.getValue(User.class));
+                            users.add(u);
+                            eventAdapter.notifyDataSetChanged();
                         }
                     }
                 }

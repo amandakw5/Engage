@@ -15,7 +15,6 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -37,8 +36,8 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -86,9 +85,6 @@ public class LoginActivity extends AppCompatActivity {
                                 boolean isInside = false;
                                 for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
                                     String k = evSnapshot.getKey();
-                                    User u = evSnapshot.getValue(User.class);
-                                    u.setUid(evSnapshot.getKey());
-                                  //  User u = evSnapshot.getValue(User.class);
                                     try {
                                         if (k.equals(object.getString("id"))) {
                                             isInside = true;
@@ -105,8 +101,9 @@ public class LoginActivity extends AppCompatActivity {
                                     Log.d(TAG, "facebook:onCompleted");
                                     user.setNumFollowing(0);
                                     user.setNumFollowers(0);
-                                    user.setFollowers(new ArrayList<User>());
-                                    user.setFollowing(new ArrayList<User>());
+                                    user.setFollowers(new HashMap<String,String>());
+                                    user.setFollowing(new HashMap<String,String>());
+                                    //user.setEventsList(new List<String>());
                                     try {
                                         String id = object.getString("id");
                                         user.setUid(id);
@@ -141,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
                                     } catch (MalformedURLException e) {
                                         e.printStackTrace();
                                     }
-                                    writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), 0, 0, new ArrayList<User>(), new ArrayList<User>(), bFacebookData); //
+                                    writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), 0, 0, new HashMap<String,String>(), new HashMap<String,String>(), bFacebookData); //, new ArrayList<String>()
                                 }
 
                             }
@@ -254,8 +251,8 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, ArrayList<User> followers, ArrayList<User> following, final Bundle facebookData) {
-        final User user = new User(uid, firstName, lastName, email, profilePicture, numFollowers, numFollowing, followers, following);
+    public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String, String> followers, HashMap<String, String> following, final Bundle facebookData) { //, List<String> eventsList
+        final User user = new User(uid, firstName, lastName, email, profilePicture, numFollowers, numFollowing, followers, following); //, eventsList
         mDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

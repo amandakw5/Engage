@@ -36,6 +36,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -45,6 +47,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -105,6 +109,16 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         setSupportActionBar(toolbar);
         configureNavigationDrawer();
+        URL profile_picture = null;
+        try {
+            profile_picture = new URL("https://graph.facebook.com/" + Profile.getCurrentProfile().getId() + "/picture?width=200&height=200");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        String profilePicture = profile_picture.toString();
+
+        Glide.with(this).load(profilePicture).centerCrop().into(profileImage);
+
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,6 +160,10 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                     case R.id.createTab:
                         Intent in = new Intent(HomePage.this, CreateEventActivity.class);
                         startActivity(in);
+                        break;
+                    case R.id.feedTab:
+                        Intent feedInt = new Intent(HomePage.this, UserFeed.class);
+                        startActivity(feedInt);
                         break;
                     case R.id.logOut:
                         mAuth.signOut();
