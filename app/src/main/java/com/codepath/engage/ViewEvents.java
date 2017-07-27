@@ -118,7 +118,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         //Sets up the listeners needed for the input text of search view.
         setUpSearchView();
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
-
         //find the recycler view
         rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
         //initiating the array list
