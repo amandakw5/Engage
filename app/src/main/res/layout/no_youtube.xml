@@ -22,7 +22,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/tvEventName"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/host"
                 android:textAppearance="@android:style/TextAppearance.Large"
                 android:textSize="25sp" />
@@ -32,18 +32,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvHost"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="5dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:text="@string/event_info"
                 android:textSize="18sp" />
+
             <TextView
                 android:id="@+id/tvEventDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/event_description"
                 android:layout_alignStart="@+id/tvEventInfo"
-                android:layout_below="@+id/tvEventInfo" />
+                android:layout_below="@+id/tvEventInfo"
+                android:layout_marginTop="30dp"
+                android:text="@string/event_description"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tvEventName"
@@ -56,15 +59,6 @@
                 android:text="@string/event_name"
                 android:textSize="36sp"
                 android:textStyle="bold" />
-            <fragment
-                android:id="@+id/youtubeFragment"
-                android:layout_below="@+id/tvEventDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
-                android:layout_marginTop="10dp"
-                android:name="com.google.android.youtube.player.YouTubePlayerFragment">
-            </fragment>
         </RelativeLayout>
     </ScrollView>
     <Button

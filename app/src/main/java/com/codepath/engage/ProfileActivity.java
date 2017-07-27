@@ -22,18 +22,23 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Objects;
+
+import static com.codepath.engage.R.id.floatingActionButton;
+
 public class ProfileActivity extends AppCompatActivity {
     RecyclerView rvUpdates;
     public UpdateAdapter adapter;
     public ArrayList<UserEvents> events;
-    private DatabaseReference mDatabase;
     String uid;
     String whichprofile;
+    DatabaseReference mDatabase;
     TextView profileHeader;
     boolean following;
     User u;
@@ -41,8 +46,6 @@ public class ProfileActivity extends AppCompatActivity {
     ImageView profileImage;
     Context context;
     List<String> eventIDs;
-
-// ...
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +56,12 @@ public class ProfileActivity extends AppCompatActivity {
         whichprofile = getIntent().getStringExtra("whichProfile");
         events = new ArrayList<>();
         profileImage = (ImageView) findViewById(R.id.profileImage);
+        eventIDs = new ArrayList<>();
+
+        adapter = new UpdateAdapter(events, whichprofile);
+        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         profileHeader = (TextView) findViewById(R.id.profileHeader);
         rvUpdates = (RecyclerView) findViewById(R.id.rvUpdates);
-        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         adapter = new UpdateAdapter(events, whichprofile);
 
         rvUpdates.setLayoutManager(new LinearLayoutManager(this));
@@ -78,7 +84,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 currentProfile = dataSnapshot.getValue(User.class);
-                if (uid == Profile.getCurrentProfile().getId()){
+                if (uid.equals(Profile.getCurrentProfile().getId())){
                     u = currentProfile;
                 }
             }
@@ -91,8 +97,12 @@ public class ProfileActivity extends AppCompatActivity {
         Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
 //        Event event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
 
-        final DatabaseReference evDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
+
+        uid = Profile.getCurrentProfile().getId();
+        final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
         DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
+
+        final DatabaseReference evDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
 
         evDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -131,6 +141,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -12,10 +12,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.support.v13.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,31 +24,29 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.codepath.engage.models.CreatedEvents;
 import com.codepath.engage.models.Event;
 import com.codepath.engage.models.Organizer;
 import com.codepath.engage.models.User;
 import com.codepath.engage.models.Venue;
-import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.mindorks.placeholderview.PlaceHolderView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,31 +54,45 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 public class  ViewEvents extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
 
-    ImageButton button1;
+    //Setting the view for U.I
+    @BindView(R.id.btnFilter) ImageButton btnFilter;
+    @BindView(R.id.drawerView) PlaceHolderView mDrawerView;
+    //Variable that will reference the Search view/ Search bar icon
+    @BindView(R.id.search) SearchView searchView;
+    @BindView(R.id.rvEvents) RecyclerView rvEvents;
+    @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
     //Following counters are used to be abel to access the position of the events arraylist in functions where the position of the event is not passed.
     static int counterToGetPositionOfEvent;
     static int counterToSetOrganizer;
-    //Variable that will reference the Search view/ Search bar icon
-    private SearchView searchView;
+
     //Will hold the text that the user inputs to the search view
     private String valueOfQuery;
     ProgressDialog progress;
     //Handle the storage and populating the activity to show the activites around one.
     private EventbriteClient client;
+
     EventAdapter eventAdapter;
+
     ArrayList<Event> events;
+    ArrayList<CreatedEvents> createdEventsList;
     ArrayList<Venue> venues;
-    RecyclerView rvEvents;
-    //Holds the search term that is used to pass into the eventbrite api to look for events
+    ArrayList<User> users;
+
+    String tvLatitude, tvLongitude, tvTime;
+    String distance;
+    //Holds the search term that is used to pass into the Eventbrite api to look for events
     String query;
+
     //Checks if the async call is completed to ensure that data is not being accessed before its actually popualted
     Boolean eventRequestCompleted = false;
-    ArrayList<User> users;
 
     //Used in aiding in retrieving the current location of the user.
     final String TAG = "GPS";
@@ -92,43 +101,42 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     GoogleApiClient gac;
     LocationRequest locationRequest;
-    String tvLatitude, tvLongitude, tvTime;
-    //Setting the view for U.I
-    private DrawerLayout mDrawer;
-    private NavigationView nvDrawer;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private Toolbar toolbar;
-    private ImageView profileImage;
-    private DatabaseReference mDatabase;
 
-    private FirebaseAuth mAuth;
-    String distance;
+    private DatabaseReference mDatabase;
+    private DatabaseReference createdEvents;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_events);
+
         progress  = new ProgressDialog(ViewEvents.this);
+
+        ButterKnife.bind(this);
+
         counterToSetOrganizer = 0;
         counterToGetPositionOfEvent = 0;
+
         client = new EventbriteClient();
+
         //Sets up the listeners needed for the input text of search view.
         setUpSearchView();
+
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
-        //find the recycler view
-        rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
         //initiating the array list
+        createdEventsList = new ArrayList<>();
         events = new ArrayList<>();
         venues = new ArrayList<>();
         users = new ArrayList<>();
+
         //constructing the adapter from this datasource
         //constructing the adapter from this data source
-        //recycler view setup(layout manager, use adapter'
+        //recycler view setup(layout manager, use adapter)
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
-        // set the adapter
 
-        mDatabase = FirebaseDatabase.getInstance().getReference("users");
+        createdEvents = FirebaseDatabase.getInstance().getReference("CreatedEvents");
 
         //Getting the location for the user.
         //Setting up the location google maps
@@ -145,30 +153,19 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         if(!isLocationEnabled())
             showAlert();
         Intent intentQuery = getIntent();
-        if(intentQuery != null){
+        if(intentQuery != null && intentQuery.getStringExtra("Query") != null ){
             callSearchFromIntent(intentQuery);
         }
         //Referencing the variables to their respective I.Ds for the xml style sheet
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        profileImage = (ImageView) findViewById(R.id.profileImage);
-        searchView = (SearchView) findViewById(R.id.search);
         ActionBar actionbar = getSupportActionBar();
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         setSupportActionBar(toolbar);
-        configureNavigationDrawer();
-        //Checks to see if the the image has been clicked and to display sub menu
-        profileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDrawer.openDrawer(Gravity.END);
-            }
-        });
+        setUpDrawer();
 
-        button1 = (ImageButton) findViewById(R.id.btnFilter);
-        button1.setOnClickListener(new View.OnClickListener() {
+        btnFilter = (ImageButton) findViewById(R.id.btnFilter);
+        btnFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu popup = new PopupMenu(ViewEvents.this,button1);
+                PopupMenu popup = new PopupMenu(ViewEvents.this,btnFilter);
                 popup.getMenuInflater().inflate(R.menu.poupup_menu, popup.getMenu());
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -179,51 +176,38 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                         return true;
                     }
                 });
-                popup.show();//showing popup menu
+                popup.show(); //show popup menu
 
             }
         });
-
-
+        searchView.setQuery(query, false);
     }
-    private void configureNavigationDrawer() {
 
-        NavigationView navView = (NavigationView) findViewById(R.id.nvView);
-        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+    private void setUpDrawer(){
+        mDrawerView
+                .addView(new DrawerHeader(this.getApplicationContext()))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_FEED))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_EVENTS))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_CREATE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT));
+
+        ActionBarDrawerToggle  drawerToggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open_drawer, R.string.close_drawer){
             @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
 
-                Fragment f = null;
-                int itemId = menuItem.getItemId();
-                switch(itemId){
-                    case R.id.profileTab:
-                        Intent i = new Intent(ViewEvents.this, ProfileActivity.class);
-                        i.putExtra("whichProfile", "You are ");
-                        startActivity(i);
-                        break;
-                    case R.id.createTab:
-                        Intent in = new Intent(ViewEvents.this, CreateEventActivity.class);
-                        startActivity(in);
-                        break;
-                    case R.id.logOut:
-                        mAuth.signOut();
-                        LoginManager.getInstance().logOut();
-                        Intent intent = new Intent(ViewEvents.this, LoginActivity.class);
-                        startActivity(intent);
-                        break;
-                }
-
-                if (f != null) {
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.rvIssues, f);
-                    transaction.commit();
-                    mDrawer.closeDrawers();
-                    return true;
-                }
-                return false;
             }
-        });
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+
+        mDrawer.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
     }
+
     private void callSearchFromIntent(Intent intent){
         query = intent.getStringExtra("Query");
         tvLongitude = intent.getStringExtra("Longitude");
@@ -250,7 +234,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
     //Initializes all necessary values that will hold all the search view values.
     private void setUpSearchView(){
-        searchView = (SearchView) findViewById(R.id.search);
         // Sets searchable configuration defined in searchable.xml for this SearchView
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -264,8 +247,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     eventAdapter = new EventAdapter(events, users, 0);
                     rvEvents.setAdapter(eventAdapter);
                     populateUsers(query);
-                }
-                else{
+                } else {
                     eventAdapter = new EventAdapter(events, users, 1);
                     rvEvents.setAdapter(eventAdapter);
                     populateEvents(query);
@@ -279,6 +261,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             }
         });
     }
+
     private void populateEvents(String query){
         progress.setMessage("Retrieving Events");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -288,6 +271,36 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         events.clear();
         venues.clear();
         valueOfQuery = query;
+        //Getting events stored from in firabse database
+        createdEvents.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int i = 1;
+                int includeEvent =0;
+                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+
+                    CreatedEvents userEvents = snapshot.getValue(CreatedEvents.class);
+                    Event event = new Event(userEvents.getEventName(),userEvents.getEventLocation() + "\n" + userEvents.getEventDay() +"/"+userEvents.getEventMonth() + " " + userEvents.getEventHour()+":"+userEvents.getEventMinute(),userEvents.getEventDescription(),"null",String.valueOf(i));
+                    if(userEvents.getEventName().contains(valueOfQuery)) {
+                        events.add(event);
+                        eventAdapter.notifyItemInserted(events.size() - 1);
+                    }
+                    String [] split = userEvents.getEventDescription().split("\\s+");
+                    for(int k = 0; k < split.length;k++){
+                        if(split[k].contains(valueOfQuery))
+                            includeEvent++;
+                    }
+                    if(includeEvent >= (userEvents.getEventDescription().length()/10))
+                    i++;
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        //End getting data from stored firebase database
         counterToGetPositionOfEvent=0;
         eventRequestCompleted = false;
 //        closeSearchView(searchView);
@@ -379,8 +392,9 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             }
         });
     }
+
     private void populateUsers(final String query){
-        progress.setMessage("Retrieving Events");
+        progress.setMessage("Retrieving Users");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIndeterminate(true);
         progress.show();
@@ -399,7 +413,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
                     String f = (String) evSnapshot.child("firstName").getValue();
                     String l = (String) evSnapshot.child("lastName").getValue();
-                    if (f != null){
+                    if (f != null && l != null){
                         if (f.equals(first) && l.equals(last)){
                             User u = evSnapshot.getValue(User.class);
                             u.setUid(evSnapshot.getKey());
@@ -433,24 +447,27 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             }
         });
     }
-    //START FUNCTIONS TO GET THE USER LOCATION WITH GOOGLE MAPS API
-    //Functions that deal with user location
+
+    //START FUNCTIONS TO GET THE USER LOCATION WITH GOOGLE MAPS API, deal with user location
     @Override
     protected void onStart() {
         gac.connect();
         super.onStart();
     }
+
     @Override
     protected void onStop() {
         gac.disconnect();
         super.onStop();
     }
+
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
             updateUI(location);
         }
     }
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -548,5 +565,11 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     }
                 });
         dialog.show();
+    }
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        overridePendingTransition(0, 0);
     }
 }
