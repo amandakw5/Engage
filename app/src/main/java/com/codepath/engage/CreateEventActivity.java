@@ -1,8 +1,10 @@
 package com.codepath.engage;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,16 +13,21 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.codepath.engage.models.CreatedEvents;
 import com.codepath.engage.models.Event;
 import com.facebook.Profile;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.parceler.Parcel;
 import org.parceler.Parcels;
@@ -41,7 +48,9 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
     FirebaseDatabase firebaseDatabase;
     DatabaseReference createdEvents;
     DatabaseReference rootRef;
-
+    final int REQUEST_CODE = 1;
+    StorageReference storage;
+    ProgressDialog progress;
     private static final String REQUIRED_MSG = "required";
     private boolean selectedTime = false;
     private boolean selectedDate = false;
@@ -76,6 +85,8 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                 showTimePickerDialog(v);
             }
         });
+        storage = FirebaseStorage.getInstance().getReference();
+        progress = new ProgressDialog(this);
     }
     public void showTimePickerDialog(View v){
         TimePickerFragment newFragment = new TimePickerFragment();
@@ -182,5 +193,30 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         mHour =hourOfDay;
         mMinute = minute;
         selectedTime = true;
+    }
+    //User TO upload image
+    public void pick(View view){
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE && resultCode == RESULT_OK){
+            progress.setMessage("uploading");
+            progress.show();
+            Uri uri = data.getData();
+            StorageReference path = storage.child("photos").child("simple_image");
+            path.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    progress.dismiss();
+                    Toast.makeText(getApplicationContext(),"Successfully upladed image",Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 }

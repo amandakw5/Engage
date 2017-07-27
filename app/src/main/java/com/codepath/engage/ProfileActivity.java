@@ -67,13 +67,12 @@ public class ProfileActivity extends AppCompatActivity {
         }
         else {
             uid = Profile.getCurrentProfile().getId();
-
         }
         mDatabase.child(Profile.getCurrentProfile().getId()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 currentProfile = dataSnapshot.getValue(User.class);
-                if (uid.equals(Profile.getCurrentProfile().getId())){
+                if (uid.equals( Profile.getCurrentProfile().getId())){
                     u = currentProfile;
                 }
             }
