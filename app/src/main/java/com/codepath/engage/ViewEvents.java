@@ -77,6 +77,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     //Handle the storage and populating the activity to show the activites around one.
     private EventbriteClient client;
     EventAdapter eventAdapter;
+    UserAdapter userAdapter;
     ArrayList<Event> events;
     ArrayList<CreatedEvents> createdEventsList;
     ArrayList<Venue> venues;
@@ -236,8 +237,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         onStart();
         events.clear();
         if (query.startsWith("~")){
-            eventAdapter = new EventAdapter(events, users, 0);
-            rvEvents.setAdapter(eventAdapter);
+            userAdapter = new UserAdapter(users,0);
+            rvEvents.setAdapter(userAdapter);
             populateUsers(query);
         }
         else{
@@ -419,16 +420,16 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         progress.setIndeterminate(true);
         progress.show();
         users.clear();
-        eventAdapter.clear();
+        userAdapter.clear();
         counterToGetPositionOfEvent=0;
         eventRequestCompleted = false;
         mDatabase.addValueEventListener(new ValueEventListener() {
-            String q = query.substring(1);
+            String q = query;
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
                 int i = q.indexOf(' ');
-                String first = q.substring(0, i);
+                String first = q.substring(1, i);
                 String last = q.substring(i+1);
                 for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
                     String f = (String) evSnapshot.child("firstName").getValue();
@@ -438,8 +439,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                            User u = evSnapshot.getValue(User.class);
                            u.setUid(evSnapshot.getKey());
                            users.add(u);
-                           eventAdapter.notifyDataSetChanged();
-                        }
+                            Log.i("Info","Added user");
+                            userAdapter.notifyItemInserted(users.size() -1);                        }
                     }
                 }
                 progress.dismiss();
