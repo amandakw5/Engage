@@ -58,14 +58,16 @@ public class EventDetailsActivity extends AppCompatActivity{
     Event event;
     UserEvents currentUpdate;
     String uid;
+    List<String> events;
+    String queryTerm;
+    ArrayList<String> createdEventInfo;
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference users;
     DatabaseReference savedEvents;
-    List<String> events ;
+
     boolean savedEventsCreated;
 
-    String queryTerm;
     /**
      * Define a global variable that identifies the name of a file that
      * contains the developer's API key.
@@ -82,23 +84,28 @@ public class EventDetailsActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        createdEventInfo = Parcels.unwrap(getIntent().getParcelableExtra("createdEventInfo"));
+
         currentUpdate = Parcels.unwrap(getIntent().getParcelableExtra("current"));
 
         event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
 
-        if (currentUpdate == null){
-            if (event.ivEventImage.equals("null")){
-                setContentView(R.layout.event_details_activity);
-            } else {
-                setContentView(R.layout.activity_event_details);
-            }
-        } else {
+        if (currentUpdate != null) {
             if (currentUpdate.eventImage.equals("null")){
                 setContentView(R.layout.event_details_activity);
             } else {
                 setContentView(R.layout.activity_event_details);
             }
+        } else if (createdEventInfo != null){
+            setContentView(R.layout.no_youtube);
+        } else {
+            if (event.ivEventImage.equals("null")) {
+                setContentView(R.layout.event_details_activity);
+            } else {
+                setContentView(R.layout.activity_event_details);
+            }
         }
+
 
         ButterKnife.bind(this);
         events = new ArrayList<String>();
@@ -110,28 +117,7 @@ public class EventDetailsActivity extends AppCompatActivity{
         savedEvents = firebaseDatabase.getReference();
         uid = Profile.getCurrentProfile().getId();
 
-        if (currentUpdate == null) {
-            if (ivPicture != null) {
-                Glide.with(this)
-                        .load(event.ivEventImage)
-                        .centerCrop()
-                        .into(ivPicture);
-            }
-            tvEventName.setText(event.tvEventName);
-            tvEventDescription.setText(event.tvDescription);
-            tvEventInfo.setText(event.tvEventInfo);
-            tvHost.setText(event.organizer.name);
-            btnMap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(EventDetailsActivity.this, MapActivity.class);
-                    intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
-                    startActivity(intent);
-                }
-            });
-            queryTerm = event.getOrganizerName();
-
-        } else {
+        if (currentUpdate != null) {
             if (ivPicture != null) {
                 Glide.with(this)
                         .load(currentUpdate.eventImage)
@@ -155,9 +141,45 @@ public class EventDetailsActivity extends AppCompatActivity{
                 }
             });
             queryTerm = currentUpdate.eventHost;
+        } else if (createdEventInfo != null) {
+            tvEventName.setText(createdEventInfo.get(0));
+            tvEventDescription.setText(createdEventInfo.get(2));
+            tvEventInfo.setText(createdEventInfo.get(1));
+            btnMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + createdEventInfo.get(1));
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(mapIntent);
+                    }
+                }
+            });
+            btnSave.setVisibility(View.GONE);
+        } else {
+            if (ivPicture != null) {
+                Glide.with(this)
+                        .load(event.ivEventImage)
+                        .centerCrop()
+                        .into(ivPicture);
+            }
+            tvEventName.setText(event.tvEventName);
+            tvEventDescription.setText(event.tvDescription);
+            tvEventInfo.setText(event.tvEventInfo);
+            tvHost.setText(event.organizer.name);
+            btnMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(EventDetailsActivity.this, MapActivity.class);
+                    intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
+                    startActivity(intent);
+                }
+            });
+            queryTerm = event.getOrganizerName();
         }
 
-        Properties properties = new Properties();
+//        Properties properties = new Properties();
 
         try {
             // This object is used to make YouTube Data API requests. The last

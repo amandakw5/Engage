@@ -11,12 +11,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.support.v13.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,16 +22,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.facebook.login.LoginManager;
+import com.codepath.engage.models.User;
+import com.facebook.Profile;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -44,26 +36,37 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.mindorks.placeholderview.PlaceHolderView;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class HomePage extends AppCompatActivity implements View.OnClickListener, LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    RecyclerView rvIssues;
     IssueAdapter adapter;
     ArrayList<String> issues;
-    private DrawerLayout mDrawer;
-    private NavigationView nvDrawer;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private Toolbar toolbar;
-    private ImageView profileImage;
-    private ListView mDrawerList;
 
-    //Variable that will reference the Search view/ Search bar icon
-    private SearchView searchView;
+    DatabaseReference mDatabase;
 
-    //Will hold the text that the user inputs to the serach view
+    @BindView(R.id.rvIssues) RecyclerView rvIssues;
+    @BindView(R.id.drawerView) PlaceHolderView mDrawerView;
+    @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    //Variable that will reference the Search view/Search bar icon
+    @BindView(R.id.search) SearchView searchView;
+    @BindView(R.id.btnFilter) ImageButton btnFilter;
+
+    //Will hold the text that the user inputs to the search view
     private String valueOfQuery;
 
     private ArrayAdapter<String> mAdapter;
@@ -74,8 +77,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
-    private FirebaseAuth mAuth;
-
     GoogleApiClient gac;
     LocationRequest locationRequest;
     String tvLatitude, tvLongitude, tvTime;
@@ -85,8 +86,9 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
-        //Getting the location for the user.
-        //Setting up the location google maps
+        ButterKnife.bind(this);
+
+        //Getting user location and setting location in google maps
         isGooglePlayServicesAvailable();
         locationRequest = new LocationRequest();
         locationRequest.setInterval(UPDATE_INTERVAL);
@@ -98,110 +100,55 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 .addApi(LocationServices.API)
                 .build();
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        profileImage = (ImageView) findViewById(R.id.profileImage);
-        searchView = (SearchView) findViewById(R.id.search);
         ActionBar actionbar = getSupportActionBar();
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         setSupportActionBar(toolbar);
-        configureNavigationDrawer();
-        profileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDrawer.openDrawer(Gravity.RIGHT);
-            }
-        });
 
         String[] strs = {"Women", "Food", "Climate Change", "Human Rights", "Poverty"};
         issues = new ArrayList<>();
-
         issues.addAll(Arrays.asList(strs));
-        rvIssues = (RecyclerView) findViewById(R.id.rvIssues);
+
         rvIssues.setLayoutManager(new LinearLayoutManager(this));
 
-
         setUpSearchView();
+
         adapter = new IssueAdapter(issues, tvLatitude, tvLongitude);
         rvIssues.setAdapter(adapter);
-
-        mAuth = FirebaseAuth.getInstance();
+        setUpDrawer();
+        toolbar.setTitle("");
     }
 
+    private void setUpDrawer(){
+        mDrawerView
+                .addView(new DrawerHeader(this.getApplicationContext()))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_FEED))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_EVENTS))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_CREATE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT));
 
-    private void configureNavigationDrawer() {
-
-        NavigationView navView = (NavigationView) findViewById(R.id.nvView);
-        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        ActionBarDrawerToggle  drawerToggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open_drawer, R.string.close_drawer){
             @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-
-                Fragment f = null;
-                int itemId = menuItem.getItemId();
-                switch(itemId){
-                    case R.id.profileTab:
-                        Intent i = new Intent(HomePage.this, ProfileActivity.class);
-                        i.putExtra("whichProfile", "You are ");
-                        startActivity(i);
-                        break;
-                    case R.id.createTab:
-                        Intent in = new Intent(HomePage.this, CreateEventActivity.class);
-                        startActivity(in);
-                        break;
-                    case R.id.logOut:
-                        mAuth.signOut();
-                        LoginManager.getInstance().logOut();
-                        Intent intent = new Intent(HomePage.this, LoginActivity.class);
-                        startActivity(intent);
-                        break;
-                }
-
-                if (f != null) {
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.rvIssues, f);
-                    transaction.commit();
-                    mDrawer.closeDrawers();
-                    return true;
-                }
-                return false;
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
             }
-        });
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+
+        mDrawer.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
     }
 
     //Performs the Searching Of Desired Event Category
     //TODO finish this function
-    private void searchFor(String query){
-    }
+    private void searchFor(String query){ }
 
-    private void addDrawerItems() {
-        String[] osArray = { "Android", "iOS", "Windows", "OS X", "Linux" };
-        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
-        mDrawerList.setAdapter(mAdapter);
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(HomePage.this, "Time for an upgrade!", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     private void closeSearchView(SearchView searchView){
         searchView.setIconified(true);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-
-        switch(itemId) {
-            // Android home
-            case R.id.profileImage:
-                mDrawer.openDrawer(GravityCompat.START);
-                return true;
-
-            // manage other entries if you have it ...
-        }
-
-        return true;
     }
 
     //Initializes all necessary values that will hold all the searchview values.
@@ -230,32 +177,11 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         });
     }
 
-    public void selectDrawerItem(MenuItem menuItem) {
-        // Create a new fragment and specify the fragment to show based on nav item clicked
-        Fragment fragment = null;
-        Class fragmentClass = Navigation.class;
-
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.rvIssues, fragment).commit();
-        // Highlight the selected item has been done by NavigationView
-        menuItem.setChecked(true);
-        // Set action bar title
-        setTitle(menuItem.getTitle());
-        // Close the navigation drawer
-        mDrawer.closeDrawers();
-    }
-
     @Override
     public void onClick(View v) {
 
     }
+
     //Functions that deal with user location
     @Override
     protected void onStart() {
@@ -352,6 +278,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
                         .show();
             } else {
+                Toast.makeText(this, "This device is not supported.", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "This device is not supported.");
                 finish();
             }

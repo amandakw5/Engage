@@ -31,15 +31,17 @@
                 android:layout_toEndOf="@+id/ivPicture"
                 android:text="@string/host"
                 android:textAppearance="@android:style/TextAppearance.Large"
-                android:textSize="16sp" />
+                android:textSize="25sp" />
+
             <TextView
+                android:id="@+id/tvEventInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/event_info"
-                android:id="@+id/tvEventInfo"
                 android:layout_below="@+id/tvHost"
+                android:layout_marginBottom="5dp"
                 android:layout_toEndOf="@+id/ivPicture"
-                android:layout_marginBottom="5dp"/>
+                android:text="@string/event_info"
+                android:textSize="18sp" />
             <TextView
                 android:id="@+id/tvEventDescription"
                 android:layout_width="wrap_content"
@@ -57,7 +59,7 @@
                 android:layout_marginTop="10dp"
                 android:fontFamily="serif"
                 android:text="@string/event_name"
-                android:textSize="30sp"
+                android:textSize="36sp"
                 android:textStyle="bold" />
             <fragment
                 android:id="@+id/youtubeFragment"

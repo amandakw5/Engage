@@ -100,8 +100,8 @@ public class LoginActivity extends AppCompatActivity {
                                     final User user = new User();
                                     Bundle bFacebookData = getFacebookData(object);
                                     Log.d(TAG, "facebook:onCompleted");
-                                    user.setNumFollowing(0);
                                     user.setNumFollowers(0);
+                                    user.setNumFollowing(0);
                                     user.setFollowers(new ArrayList<User>());
                                     user.setFollowing(new ArrayList<User>());
                                     try {
@@ -164,6 +164,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onError(FacebookException error) {
+                Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "facebook:onError", error);
 
             }
@@ -194,6 +195,7 @@ public class LoginActivity extends AppCompatActivity {
                     return bundle;
                 }
                 catch(JSONException e) {
+                    Toast.makeText(LoginActivity.this, "Failed to parse properly", Toast.LENGTH_SHORT).show();
                     Log.d(TAG,"Error parsing JSON");
                 }
                 return null;
@@ -224,6 +226,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(in);
         } else {
             // No user is signed in
+            Toast.makeText(LoginActivity.this, "User is not signed in or does not exist.", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "User is not signed in or is null");
         }
         super.onStart();
