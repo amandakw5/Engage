@@ -418,6 +418,11 @@ Log.i("Info",q);
                     String l = (String) evSnapshot.child("lastName").getValue();
                     if (f != null && l != null){
                         if (f.equals(first) && l.equals(last)){
+                            User u = evSnapshot.getValue(User.class);
+                            u.setUid(evSnapshot.getKey());
+                            users.add(u);
+                            eventAdapter.notifyDataSetChanged();
+                        }
                            User u = evSnapshot.getValue(User.class);
                            u.setUid(evSnapshot.getKey());
                            users.add(u);
@@ -425,13 +430,11 @@ Log.i("Info",q);
                             userAdapter.notifyItemInserted(users.size() -1);                        }
                     }
                 }
-                progress.dismiss();
-            }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
+
         });
     }
 

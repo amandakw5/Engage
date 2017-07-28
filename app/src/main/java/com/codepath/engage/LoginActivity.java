@@ -103,6 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                                     user.setNumFollowers(0);
                                     user.setFollowers(new HashMap<String,String>());
                                     user.setFollowing(new HashMap<String,String>());
+                                    user.setNumFollowing(0);
                                     try {
                                         String id = object.getString("id");
                                         user.setUid(id);
