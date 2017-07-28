@@ -18,21 +18,18 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.facebook.Profile;
-import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -64,6 +61,8 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     //Variable that will reference the Search view/Search bar icon
     @BindView(R.id.search) SearchView searchView;
     @BindView(R.id.btnFilter) ImageButton btnFilter;
+    String distance;
+    String query;
 
     //Will hold the text that the user inputs to the search view
     private String valueOfQuery;
@@ -121,6 +120,35 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         rvIssues.setAdapter(adapter);
         setUpDrawer();
         toolbar.setTitle("");
+        btnFilter = (ImageButton) findViewById(R.id.btnFilter);
+        btnFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(HomePage.this,btnFilter);
+                popup.getMenuInflater().inflate(R.menu.poupup_menu, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        distance = item.getTitle().toString();
+                        if(query != null) {
+                            if (!query.equals("null")) {
+                                Intent searchInt = new Intent(HomePage.this, ViewEvents.class);
+                                searchInt.putExtra("Query", query);
+                                searchInt.putExtra("Latitude", tvLatitude);
+                                searchInt.putExtra("Longitude", tvLongitude);
+                                searchInt.putExtra("distance", distance);
+                                startActivity(searchInt);
+                                overridePendingTransition(0, 0);
+                            }
+                        }
+                        return true;
+
+                    }
+                });
+                popup.show(); //show popup menu
+
+            }
+        });
     }
 
     private void setUpDrawer(){
@@ -169,8 +197,10 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 i.putExtra("Query", query);
                 i.putExtra("Latitude",tvLatitude);
                 i.putExtra("Longitude",tvLongitude);
+                i.putExtra("distance", distance);
                 startActivity(i);
                 overridePendingTransition(0, 0);
+
                 return true;
             }
 

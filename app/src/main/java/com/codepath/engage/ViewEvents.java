@@ -101,7 +101,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     GoogleApiClient gac;
     LocationRequest locationRequest;
-
+    //Firebase Variables
     private DatabaseReference mDatabase;
     private DatabaseReference createdEvents;
 
@@ -160,6 +160,9 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             showAlert();
         Intent intentQuery = getIntent();
         if(intentQuery != null && intentQuery.getStringExtra("Query") != null ){
+            if(intentQuery.getStringExtra("distance") != null){
+                distance = intentQuery.getStringExtra("distance");
+            }
             callSearchFromIntent(intentQuery);
         }
         //Referencing the variables to their respective I.Ds for the xml style sheet
@@ -288,17 +291,15 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     if (userEvents != null) {
                         Event event = new Event(userEvents.getEventName(), userEvents.getEventLocation() + "\n" + userEvents.getEventDay() + "/" + userEvents.getEventMonth() + " " + userEvents.getEventHour() + ":" + userEvents.getEventMinute(), userEvents.getEventDescription(), "null", String.valueOf(i));
                         if (userEvents.getEventName().contains(valueOfQuery)) {
+                            event.setCreatedEvent(true);
                             events.add(event);
                             eventAdapter.notifyItemInserted(events.size() - 1);
                         }
                         String[] split = userEvents.getEventDescription().split("\\s+");
-
                         for (String aSplit : split) {
                             if (aSplit.contains(valueOfQuery))
                                 includeEvent++;
                         }
-                        if (includeEvent >= (userEvents.getEventDescription().length() / 10))
-                            i++;
                     }
                 }
             }
@@ -435,11 +436,9 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 }
                 progress.dismiss();
             }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+            @Override public void onCancelled(DatabaseError databaseError) {
 
             }
-
         });
     }
 

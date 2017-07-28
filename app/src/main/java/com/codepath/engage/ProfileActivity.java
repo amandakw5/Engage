@@ -22,52 +22,56 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
-import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.Objects;
-
-import static com.codepath.engage.R.id.floatingActionButton;
+import butterknife.BindDimen;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class ProfileActivity extends AppCompatActivity {
-    RecyclerView rvUpdates;
+
     public UpdateAdapter adapter;
     public ArrayList<UserEvents> events;
     String uid;
     String whichprofile;
     DatabaseReference mDatabase;
-    TextView profileHeader;
-    boolean following;
+    boolean isFollowing;
     User u;
     User currentProfile;
-    ImageView profileImage;
     Context context;
     List<String> eventIDs;
+
+    @BindView(R.id.rvUpdates) RecyclerView rvUpdates;
+    @BindView(R.id.profileImage) ImageView profileImage;
+    @BindView(R.id.profileHeader) TextView profileHeader;
+    @BindView(R.id.following) TextView following;
+    @BindView(R.id.followers) TextView followers;
+    @BindView(R.id.floatingActionButton) FloatingActionButton floatingActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         context = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        ButterKnife.bind(this);
+
         eventIDs = new ArrayList<>();
         whichprofile = getIntent().getStringExtra("whichProfile");
         events = new ArrayList<>();
-        profileImage = (ImageView) findViewById(R.id.profileImage);
         eventIDs = new ArrayList<>();
 
         adapter = new UpdateAdapter(events, whichprofile);
-        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
-        profileHeader = (TextView) findViewById(R.id.profileHeader);
-        rvUpdates = (RecyclerView) findViewById(R.id.rvUpdates);
+
         adapter = new UpdateAdapter(events, whichprofile);
 
         rvUpdates.setLayoutManager(new LinearLayoutManager(this));
         rvUpdates.setAdapter(adapter);
 
-        following = false;
+        isFollowing= false;
         u = new User();
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
@@ -95,8 +99,8 @@ public class ProfileActivity extends AppCompatActivity {
         });
         Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
 //        Event event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
-
-
+        following.setText(u.numFollowing + " following");
+        followers.setText(u.numFollowers + " followers");
         uid = Profile.getCurrentProfile().getId();
         DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
 
@@ -144,22 +148,38 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!uid.equals(currentProfile.uid)){
-                    if (following){
+                    mDatabase.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            DataSnapshot followingList = dataSnapshot.child(currentProfile.uid).child("following");
+                            for (DataSnapshot checkFollowing: followingList.getChildren()){
+                                if (checkFollowing.getValue().equals(uid)){
+                                    isFollowing = true;
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    if (isFollowing){
                         mDatabase.child(uid).child("numFollowers").setValue((u.numFollowers - 1));
                         mDatabase.child(currentProfile.uid).child("numFollowing").setValue(currentProfile.numFollowing - 1);
                         DatabaseReference deleteFollow = mDatabase.child(uid).child("following").child(currentProfile.uid).push();
                         deleteFollow.setValue(null);
                         DatabaseReference deleteFollowing = mDatabase.child(currentProfile.uid).child("followers").child(uid).push();
                         deleteFollowing.setValue(null);
-                        following = false;
-                    } else {
+                        isFollowing = false;
+                    }else{
                         mDatabase.child(uid).child("numFollowers").setValue((u.numFollowers + 1));
                         mDatabase.child(currentProfile.uid).child("numFollowing").setValue(currentProfile.numFollowing + 1);
                         DatabaseReference addFollow = mDatabase.child(uid).child("followers").push();
                         addFollow.setValue(currentProfile.uid);
                         DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
                         addFollowing.setValue(uid);
-                        following = true;
+                        isFollowing = true;
                     }
                 }
             }
