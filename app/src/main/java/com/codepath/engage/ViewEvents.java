@@ -283,6 +283,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     CreatedEvents userEvents = snapshot.getValue(CreatedEvents.class);
                     Event event = new Event(userEvents.getEventName(),userEvents.getEventLocation() + "\n" + userEvents.getEventDay() +"/"+userEvents.getEventMonth() + " " + userEvents.getEventHour()+":"+userEvents.getEventMinute(),userEvents.getEventDescription(),"null",String.valueOf(i));
                     if(userEvents.getEventName().contains(valueOfQuery)) {
+                        event.setCreatedEvent(true);
                         events.add(event);
                         eventAdapter.notifyItemInserted(events.size() - 1);
                     }
