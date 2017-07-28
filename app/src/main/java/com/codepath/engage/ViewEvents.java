@@ -101,7 +101,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     GoogleApiClient gac;
     LocationRequest locationRequest;
-
+    //Firebase Variables
     private DatabaseReference mDatabase;
     private DatabaseReference createdEvents;
 
@@ -417,7 +417,7 @@ Log.i("Info",q);
                     String f = (String) evSnapshot.child("firstName").getValue();
                     String l = (String) evSnapshot.child("lastName").getValue();
                     if (f != null && l != null){
-                        if (f.equals(first) && l.equals(last)){
+                        if (f.equals(first) ){
                            User u = evSnapshot.getValue(User.class);
                            u.setUid(evSnapshot.getKey());
                            users.add(u);

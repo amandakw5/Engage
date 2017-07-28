@@ -3,9 +3,11 @@ package com.codepath.engage;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +18,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.codepath.engage.models.CreatedEvents;
-import com.codepath.engage.models.Event;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
@@ -29,7 +30,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -135,7 +135,27 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                                 createdEventID = dataSnapshot.getChildrenCount() + 1;
                                 rootRef.child("CreatedEvents").child(String.valueOf(createdEventID)).setValue(createdEvent);
-                                startActivity(i);
+                                AlertDialog.Builder builder;
+
+                                    builder = new AlertDialog.Builder(getApplicationContext());
+
+                                builder.setTitle("Add an Image")
+                                        .setMessage("Choose Image")
+                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                // continue with delete
+
+                                            }
+                                        })
+                                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                // do nothing
+                                                startActivity(i);
+                                            }
+                                        })
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .show();
+
                             }
 
                             @Override
@@ -215,6 +235,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     progress.dismiss();
                     Toast.makeText(getApplicationContext(),"Successfully upladed image",Toast.LENGTH_LONG).show();
+
                 }
             });
         }
