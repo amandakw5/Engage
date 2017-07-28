@@ -2,12 +2,8 @@ package com.codepath.engage;
 
 import android.content.Context;
 import android.content.Intent;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.codepath.engage.R;
-import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mindorks.placeholderview.annotations.Click;
@@ -69,7 +65,8 @@ public class DrawerMenuItem {
                 mContext.startActivity(i);
                 break;
             case DRAWER_MENU_ITEM_FEED:
-
+                Intent feedInt = new Intent(mContext, UserFeed.class);
+                mContext.startActivity(feedInt);
                 break;
             case DRAWER_MENU_ITEM_EVENTS:
 

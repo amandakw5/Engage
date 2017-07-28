@@ -1,5 +1,9 @@
 package com.codepath.engage;
 
+/**
+ * Created by awestort on 7/27/17.
+ */
+
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -17,19 +21,16 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by awestort on 7/18/17.
- */
-
-public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder> {
+public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     public ArrayList<UserEvents> mEvents;
     private Context context;
     private String profilePage;
+    public ArrayList<String> feedUsers;
 
 
-    public UpdateAdapter(ArrayList<UserEvents> events, String who) {
+    public FeedAdapter(ArrayList<UserEvents> events, ArrayList<String> users ) {
         mEvents = events;
-        profilePage = who;
+        feedUsers = users;
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -44,11 +45,12 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         UserEvents e = mEvents.get(position);
-
-        holder.update.setText(profilePage + "interested in " + e.eventName);
+        String currentUser = feedUsers.get(position);
+        holder.update.setText(currentUser + " is interested in " + e.eventName);
     }
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.notification) TextView update;
+        @BindView(R.id.notification)
+        TextView update;
 
         public ViewHolder(View itemView) {
             super(itemView);
