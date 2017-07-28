@@ -22,15 +22,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
-import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import java.util.Objects;
-
-import static com.codepath.engage.R.id.floatingActionButton;
 
 public class ProfileActivity extends AppCompatActivity {
     RecyclerView rvUpdates;
@@ -40,7 +35,9 @@ public class ProfileActivity extends AppCompatActivity {
     String whichprofile;
     DatabaseReference mDatabase;
     TextView profileHeader;
-    boolean following;
+    TextView following;
+    TextView followers;
+    boolean isFollowing;
     User u;
     User currentProfile;
     ImageView profileImage;
@@ -57,7 +54,8 @@ public class ProfileActivity extends AppCompatActivity {
         events = new ArrayList<>();
         profileImage = (ImageView) findViewById(R.id.profileImage);
         eventIDs = new ArrayList<>();
-
+        following = (TextView) findViewById(R.id.following);
+        followers = (TextView) findViewById(R.id.followers);
         adapter = new UpdateAdapter(events, whichprofile);
         FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         profileHeader = (TextView) findViewById(R.id.profileHeader);
@@ -67,7 +65,7 @@ public class ProfileActivity extends AppCompatActivity {
         rvUpdates.setLayoutManager(new LinearLayoutManager(this));
         rvUpdates.setAdapter(adapter);
 
-        following = false;
+        isFollowing= false;
         u = new User();
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
@@ -95,10 +93,9 @@ public class ProfileActivity extends AppCompatActivity {
         });
         Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
 //        Event event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
-
-
+        following.setText(u.numFollowing + " following");
+        followers.setText(u.numFollowers + " followers");
         uid = Profile.getCurrentProfile().getId();
-        final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
         DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
 
         final DatabaseReference evDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
@@ -145,14 +142,30 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!uid.equals(currentProfile.uid)){
-                    if (following){
+                    mDatabase.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            DataSnapshot followingList = dataSnapshot.child(currentProfile.uid).child("following");
+                            for (DataSnapshot checkFollowing: followingList.getChildren()){
+                                if (checkFollowing.getValue().equals(uid)){
+                                    isFollowing = true;
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    if (isFollowing){
                         mDatabase.child(uid).child("numFollowers").setValue((u.numFollowers - 1));
                         mDatabase.child(currentProfile.uid).child("numFollowing").setValue(currentProfile.numFollowing - 1);
                         DatabaseReference deleteFollow = mDatabase.child(uid).child("following").child(currentProfile.uid).push();
                         deleteFollow.setValue(null);
                         DatabaseReference deleteFollowing = mDatabase.child(currentProfile.uid).child("followers").child(uid).push();
                         deleteFollowing.setValue(null);
-                        following = false;
+                        isFollowing = false;
                     }
                     else{
                         mDatabase.child(uid).child("numFollowers").setValue((u.numFollowers + 1));
@@ -161,7 +174,7 @@ public class ProfileActivity extends AppCompatActivity {
                         addFollow.setValue(currentProfile.uid);
                         DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
                         addFollowing.setValue(uid);
-                        following = true;
+                        isFollowing = true;
                     }
                 }
             }

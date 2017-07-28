@@ -407,8 +407,7 @@ Log.i("Info",q);
         eventRequestCompleted = false;
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 int i = q.indexOf(' ');
                 String first = q.substring(1, i);
                 String last = q.substring(i+1);
@@ -420,37 +419,17 @@ Log.i("Info",q);
                         if (f.equals(first) && l.equals(last)){
                             User u = evSnapshot.getValue(User.class);
                             u.setUid(evSnapshot.getKey());
-                           // List<User> list = new ArrayList<User>();
-//                            Map<String, Object> objectMap = (HashMap<String, Object>)
-//                                    evSnapshot.getValue();
-//                            User user = new User();
-//                            for (Object obj : objectMap.values()) {
-//                                if ((obj.getValue())equals("uid")){
-//                                    user.setUid(obj);
-//                                }
-//
-//                            }
-
-                            //Map<String, User> result = new HashMap<>();
-                           // result= (Map<String, User>) evSnapshot.getValue(User.class);
-                            int j = 0;
-                            //u.setUid(evSnapshot.getKey());
-                            ///list.add(evSnapshot.getValue(User.class));
                             users.add(u);
-                            eventAdapter.notifyDataSetChanged();
-                        }
-                           User u = evSnapshot.getValue(User.class);
-                           u.setUid(evSnapshot.getKey());
-                           users.add(u);
                             Log.i("Info","Added user");
-                            userAdapter.notifyItemInserted(users.size() -1);                        }
+                            userAdapter.notifyItemInserted(users.size() -1);
+                        }
+
                     }
                 }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+            }
+            @Override public void onCancelled(DatabaseError databaseError) {
 
             }
-
         });
     }
 
