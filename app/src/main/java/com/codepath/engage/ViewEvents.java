@@ -155,6 +155,9 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             showAlert();
         Intent intentQuery = getIntent();
         if(intentQuery != null && intentQuery.getStringExtra("Query") != null ){
+            if(intentQuery.getStringExtra("distance") != null){
+                distance = intentQuery.getStringExtra("distance");
+            }
             callSearchFromIntent(intentQuery);
         }
         //Referencing the variables to their respective I.Ds for the xml style sheet
@@ -408,8 +411,7 @@ Log.i("Info",q);
         eventRequestCompleted = false;
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 int i = q.indexOf(' ');
                 String first = q.substring(1, i);
                 String last = q.substring(i+1);
@@ -422,15 +424,15 @@ Log.i("Info",q);
                            User u = evSnapshot.getValue(User.class);
                            u.setUid(evSnapshot.getKey());
                            users.add(u);
+
                             Log.i("Info","Added user");
-                            userAdapter.notifyItemInserted(users.size() -1);                        }
+                            userAdapter.notifyItemInserted(users.size() -1);
+                        }
+
                     }
                 }
-                progress.dismiss();
             }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+            @Override public void onCancelled(DatabaseError databaseError) {
 
             }
         });

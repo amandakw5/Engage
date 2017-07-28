@@ -18,16 +18,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.codepath.engage.models.User;
 import com.facebook.Profile;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -35,16 +36,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.mindorks.placeholderview.PlaceHolderView;
 
-import org.parceler.Parcels;
-
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -65,6 +61,8 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     //Variable that will reference the Search view/Search bar icon
     @BindView(R.id.search) SearchView searchView;
     @BindView(R.id.btnFilter) ImageButton btnFilter;
+    String distance;
+    String query;
 
     //Will hold the text that the user inputs to the search view
     private String valueOfQuery;
@@ -103,6 +101,22 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         ActionBar actionbar = getSupportActionBar();
 
         setSupportActionBar(toolbar);
+        URL profile_picture = null;
+        try {
+            profile_picture = new URL("https://graph.facebook.com/" + Profile.getCurrentProfile().getId() + "/picture?width=200&height=200");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+//        String profilePicture = profile_picture.toString();
+//
+//        Glide.with(this).load(profilePicture).centerCrop().into(profileImage);
+//
+//        profileImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mDrawer.openDrawer(Gravity.RIGHT);
+//            }
+//        });
 
         String[] strs = {"Women", "Food", "Climate Change", "Human Rights", "Poverty"};
         issues = new ArrayList<>();
@@ -116,6 +130,35 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         rvIssues.setAdapter(adapter);
         setUpDrawer();
         toolbar.setTitle("");
+        btnFilter = (ImageButton) findViewById(R.id.btnFilter);
+        btnFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(HomePage.this,btnFilter);
+                popup.getMenuInflater().inflate(R.menu.poupup_menu, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        distance = item.getTitle().toString();
+                        if(query != null) {
+                            if (!query.equals("null")) {
+                                Intent searchInt = new Intent(HomePage.this, ViewEvents.class);
+                                searchInt.putExtra("Query", query);
+                                searchInt.putExtra("Latitude", tvLatitude);
+                                searchInt.putExtra("Longitude", tvLongitude);
+                                searchInt.putExtra("distance", distance);
+                                startActivity(searchInt);
+                                overridePendingTransition(0, 0);
+                            }
+                        }
+                        return true;
+
+                    }
+                });
+                popup.show(); //show popup menu
+
+            }
+        });
     }
 
     private void setUpDrawer(){
@@ -128,7 +171,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT));
 
         ActionBarDrawerToggle  drawerToggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open_drawer, R.string.close_drawer){
-            @Override
+
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
             }
@@ -164,8 +207,10 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 i.putExtra("Query", query);
                 i.putExtra("Latitude",tvLatitude);
                 i.putExtra("Longitude",tvLongitude);
+                i.putExtra("distance", distance);
                 startActivity(i);
                 overridePendingTransition(0, 0);
+
                 return true;
             }
 
