@@ -28,39 +28,44 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ProfileActivity extends AppCompatActivity {
-    RecyclerView rvUpdates;
+
     public UpdateAdapter adapter;
     public ArrayList<UserEvents> events;
     String uid;
     String whichprofile;
     DatabaseReference mDatabase;
-    TextView profileHeader;
-    TextView following;
-    TextView followers;
     boolean isFollowing;
     User u;
     User currentProfile;
-    ImageView profileImage;
     Context context;
     List<String> eventIDs;
+
+    @BindView(R.id.rvUpdates) RecyclerView rvUpdates;
+    @BindView(R.id.profileImage) ImageView profileImage;
+    @BindView(R.id.profileHeader) TextView profileHeader;
+    @BindView(R.id.following) TextView following;
+    @BindView(R.id.followers) TextView followers;
+    @BindView(R.id.floatingActionButton) FloatingActionButton floatingActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         context = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        ButterKnife.bind(this);
+
         eventIDs = new ArrayList<>();
         whichprofile = getIntent().getStringExtra("whichProfile");
         events = new ArrayList<>();
-        profileImage = (ImageView) findViewById(R.id.profileImage);
         eventIDs = new ArrayList<>();
-        following = (TextView) findViewById(R.id.following);
-        followers = (TextView) findViewById(R.id.followers);
+
         adapter = new UpdateAdapter(events, whichprofile);
-        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
-        profileHeader = (TextView) findViewById(R.id.profileHeader);
-        rvUpdates = (RecyclerView) findViewById(R.id.rvUpdates);
+
         adapter = new UpdateAdapter(events, whichprofile);
 
         rvUpdates.setLayoutManager(new LinearLayoutManager(this));
@@ -70,10 +75,10 @@ public class ProfileActivity extends AppCompatActivity {
         u = new User();
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
-        if ((User) Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName())) != null){
-            u = (User) Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
+        if (Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName())) != null){
+            u = Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
             uid = u.getUid();
-            profileHeader.setText(u.firstName + " " + u.lastName + "'s Profile");
+            profileHeader.setText(u.firstName + " " + u.lastName);
         }
         else {
             uid = Profile.getCurrentProfile().getId();
@@ -84,15 +89,10 @@ public class ProfileActivity extends AppCompatActivity {
                 currentProfile = dataSnapshot.getValue(User.class);
                 if (uid.equals( Profile.getCurrentProfile().getId())){
                     u = currentProfile;
+                    Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
+                    following.setText(u.numFollowing + " following");
+                    followers.setText(u.numFollowers + " followers");
                 }
-//                HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child("following").getValue();
-//                if (followingList!= null){
-//                    for (Object value : followingList.values()) {
-//                        if (((String) (value)).equals(uid)) {
-//                            isFollowing = true;
-//                        }
-//                    }
-//                }
             }
 
             @Override
@@ -100,10 +100,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
-        Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
-//        Event event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
-        following.setText(u.numFollowing + " following");
-        followers.setText(u.numFollowers + " followers");
+
         DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
 
         final DatabaseReference evDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
@@ -114,7 +111,7 @@ public class ProfileActivity extends AppCompatActivity {
                 GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>(){};
                 eventIDs = dataSnapshot.getValue(t);
                 if (eventIDs == null) {
-                    Log.d("did not work", "lol");
+                    Log.d("Event IDs", "null");
                 } else {
                     Log.d("eventIds", eventIDs.toString());
                 }
@@ -176,8 +173,7 @@ public class ProfileActivity extends AppCompatActivity {
                         DatabaseReference deleteFollowing = mDatabase.child(currentProfile.uid).child("followers").child(uid).push();
                         deleteFollowing.setValue(null);
                         isFollowing = false;
-                    }
-                    else{
+                    }else{
                         mDatabase.child(uid).child("numFollowers").setValue((u.numFollowers + 1));
                         mDatabase.child(currentProfile.uid).child("numFollowing").setValue(currentProfile.numFollowing + 1);
                         DatabaseReference addFollow = mDatabase.child(uid).child("followers").push();

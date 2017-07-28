@@ -29,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.facebook.Profile;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -38,6 +39,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DatabaseReference;
 import com.mindorks.placeholderview.PlaceHolderView;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -100,21 +102,13 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
 
         setSupportActionBar(toolbar);
         URL profile_picture = null;
-//        try {
-//           profile_picture = new URL("https://graph.facebook.com/" + Profile.getCurrentProfile().getId() + "/picture?width=200&height=200");
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        }
-//        String profilePicture = profile_picture.toString();
-//
-//        Glide.with(this).load(profilePicture).centerCrop().into(profileImage);
-//
-//        profileImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mDrawer.openDrawer(Gravity.RIGHT);
-//            }
-//        });
+
+
+        try {
+            profile_picture = new URL("https://graph.facebook.com/" + Profile.getCurrentProfile().getId() + "/picture?width=200&height=200");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
         String[] strs = {"Women", "Food", "Climate Change", "Human Rights", "Poverty"};
         issues = new ArrayList<>();

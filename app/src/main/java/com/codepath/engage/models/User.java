@@ -25,11 +25,10 @@ public class User {
     public HashMap<String,String>  following;
     public List<String> eventsList;
 
-
     public User(){
     }
 
-    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String,String> followers, HashMap<String,String> following) { //, List<String> eventsList
+    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String,String> followers, HashMap<String,String> following) {
         this.uid = uid;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -39,7 +38,6 @@ public class User {
         this.numFollowing = numFollowing;
         this.following = following;
         this.followers = followers;
-       // this.eventsList = eventsList;
     }
 
     public List<String> getEventsList() {
@@ -50,20 +48,20 @@ public class User {
         this.eventsList = eventsList;
     }
 
-    public HashMap<String, String> getFollowing() {
-        return following;
-    }
-
-    public void setFollowing(HashMap<String, String> following) {
-        this.following = following;
-    }
-
-    public HashMap<String, String> getFollowers() {
+    public HashMap<String,String> getFollowers() {
         return followers;
     }
 
-    public void setFollowers(HashMap<String, String> followers) {
+    public void setFollowers(HashMap<String,String> followers) {
         this.followers = followers;
+    }
+
+    public HashMap<String,String> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(HashMap<String,String> following) {
+        this.following = following;
     }
 
     public String getUid() { return uid; }

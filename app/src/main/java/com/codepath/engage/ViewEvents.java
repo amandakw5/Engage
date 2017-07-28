@@ -58,6 +58,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
+import static com.codepath.engage.R.string.location;
+
 public class  ViewEvents extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
 
     //Setting the view for U.I
@@ -96,12 +98,10 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
     //Used in aiding in retrieving the current location of the user.
     final String TAG = "GPS";
-    private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
-    private long FASTEST_INTERVAL = 2000; /* 2 sec */
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     GoogleApiClient gac;
     LocationRequest locationRequest;
-
+    //Firebase Variables
     private DatabaseReference mDatabase;
     private DatabaseReference createdEvents;
 
@@ -143,8 +143,13 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         //Setting up the location google maps
         isGooglePlayServicesAvailable();
         locationRequest = new LocationRequest();
+
+        long UPDATE_INTERVAL = 2 * 1000;
         locationRequest.setInterval(UPDATE_INTERVAL);
+
+        long FASTEST_INTERVAL = 2000;
         locationRequest.setFastestInterval(FASTEST_INTERVAL);
+
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         gac = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -165,7 +170,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         setSupportActionBar(toolbar);
         setUpDrawer();
 
-        btnFilter = (ImageButton) findViewById(R.id.btnFilter);
         btnFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -280,22 +284,21 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int i = 1;
-                int includeEvent =0;
+                int includeEvent = 0;
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
 
                     CreatedEvents userEvents = snapshot.getValue(CreatedEvents.class);
-                    Event event = new Event(userEvents.getEventName(),userEvents.getEventLocation() + "\n" + userEvents.getEventDay() +"/"+userEvents.getEventMonth() + " " + userEvents.getEventHour()+":"+userEvents.getEventMinute(),userEvents.getEventDescription(),"null",String.valueOf(i));
+                    Event event = new Event(userEvents.getEventName(),userEvents.getEventLocation() + "\n" +userEvents.getEventMonth() +"/"+  userEvents.getEventDay() + " " + userEvents.getEventHour()+":"+userEvents.getEventMinute(),userEvents.getEventDescription(),"null",String.valueOf(i));
                     if(userEvents.getEventName().contains(valueOfQuery)) {
+                        event.setCreatedEvent(true);
                         events.add(event);
                         eventAdapter.notifyItemInserted(events.size() - 1);
                     }
                     String [] split = userEvents.getEventDescription().split("\\s+");
-                    for(int k = 0; k < split.length;k++){
-                        if(split[k].contains(valueOfQuery))
+                    for (String aSplit : split) {
+                        if (aSplit.contains(valueOfQuery))
                             includeEvent++;
                     }
-                    if(includeEvent >= (userEvents.getEventDescription().length()/10))
-                    i++;
                 }
             }
 
@@ -307,7 +310,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         //End getting data from stored firebase database
         counterToGetPositionOfEvent=0;
         eventRequestCompleted = false;
-//        closeSearchView(searchView);
         client.getInfoByQuery(valueOfQuery,tvLatitude,tvLongitude,distance,new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -356,7 +358,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                                     try {
                                         Venue venue = Venue.fromJSON(response);
-                                        for(int i =0; i  < events.size();i++) {
+                                        for(int i = 0; i  < events.size();i++) {
                                             if(events.get(i).getVeneuId().equals(venue.getId())) {
                                                 venues.add(venue);
                                                 events.get(i).setVenue(venue);
@@ -405,30 +407,33 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         users.clear();
         userAdapter.clear();
         counterToGetPositionOfEvent=0;
-        final String q = query;
-Log.i("Info",q);
+        Log.i("Info", query);
         eventRequestCompleted = false;
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                int i = q.indexOf(' ');
-                String first = q.substring(1, i);
-                String last = q.substring(i+1);
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                int i = query.indexOf(' ');
+                String first = query.substring(1, i);
+                String last = query.substring(i+1);
                 Log.i("Info",last);
                 for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
                     String f = (String) evSnapshot.child("firstName").getValue();
                     String l = (String) evSnapshot.child("lastName").getValue();
-                    if (f != null && l != null){
-                        if (f.equals(first) && l.equals(last)){
+                    if (f != null && l != null) {
+                        if (f.equals(first) && l.equals(last)) {
                             User u = evSnapshot.getValue(User.class);
-                            u.setUid(evSnapshot.getKey());
+                            if (u != null) {
+                                u.setUid(evSnapshot.getKey());
+                            }
                             users.add(u);
-                            Log.i("Info","Added user");
-                            userAdapter.notifyItemInserted(users.size() -1);
+                            Log.i("Info", "Added user");
+                            userAdapter.notifyItemInserted(users.size() - 1);
                         }
-
                     }
                 }
+                btnFilter.setOnClickListener(null);
+                progress.dismiss();
             }
             @Override public void onCancelled(DatabaseError databaseError) {
 
@@ -468,8 +473,6 @@ Log.i("Info",q);
 
             return;
         }
-
-        Location ll = LocationServices.FusedLocationApi.getLastLocation(gac);
 
         LocationServices.FusedLocationApi.requestLocationUpdates(gac, locationRequest, this);
     }

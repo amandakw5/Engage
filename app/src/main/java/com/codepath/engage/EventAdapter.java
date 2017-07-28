@@ -3,6 +3,7 @@ package com.codepath.engage;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.codepath.engage.EventDetailsActivity;
-import com.codepath.engage.ProfileActivity;
-import com.codepath.engage.R;
 import com.codepath.engage.models.Event;
 import com.codepath.engage.models.User;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.parceler.Parcels;
 
@@ -28,9 +28,9 @@ import java.util.List;
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
     private List<Event> mEvents;
     private Context context;
-    public int recyclerType;
+    private int recyclerType;
     private List<User> mUsers;
-    View recycleView;
+    private View recycleView;
 
     public EventAdapter(List<Event> events, ArrayList<User> users, int i){
         mEvents = events;
@@ -49,8 +49,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         else {
             recycleView = inflater.inflate(R.layout.event_item,parent,false);
         }
-        ViewHolder viewHolder = new ViewHolder(recycleView);
-        return viewHolder;
+        return new ViewHolder(recycleView);
     }
 
     @Override
@@ -67,10 +66,19 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             holder.tvEventName.setText(event.tvEventName);
             holder.tvEventInfo.setText(event.tvEventInfo);
             holder.tvDescription.setText(event.tvDescription);
-            if (event.ivEventImage.equals("null")){
-                Glide.with(context).load(R.drawable.image_not_found).centerCrop().into(holder.ivProfileImage);
-            } else {
-                Glide.with(context).load(event.ivEventImage).centerCrop().into(holder.ivProfileImage);
+            if(event.isCreatedEvent()){
+                Log.i("Ingo","Goes here");
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(event.getEventId()));
+                Glide.with(context)
+                        .using(new FirebaseImageLoader())
+                        .load(storageReference)
+                        .into(holder.ivProfileImage);
+            }else {
+                if (event.ivEventImage.equals("null")) {
+                    Glide.with(context).load(R.drawable.image_not_found).centerCrop().into(holder.ivProfileImage);
+                } else {
+                    Glide.with(context).load(event.ivEventImage).centerCrop().into(holder.ivProfileImage);
+                }
             }
         }
     }
@@ -131,7 +139,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         return mEvents.get(i);
     }
 
-    public void clear(){
+    void clear(){
         mEvents.clear();
         mUsers.clear();
         notifyDataSetChanged();

@@ -78,13 +78,5 @@
         android:layout_below="@+id/eDate"
         android:layout_alignStart="@+id/eDate" />
 
-    <Button
-        android:id="@+id/btnUpload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/submitEvent"
-        android:layout_alignEnd="@+id/eDate"
-        android:text="Pick Image"
-        android:onClick="pick"/>
 
 </RelativeLayout>

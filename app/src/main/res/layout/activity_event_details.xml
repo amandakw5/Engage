@@ -31,7 +31,7 @@
                 android:layout_toEndOf="@+id/ivPicture"
                 android:text="@string/host"
                 android:textAppearance="@android:style/TextAppearance.Large"
-                android:textSize="25sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/tvEventInfo"
@@ -41,7 +41,8 @@
                 android:layout_marginBottom="5dp"
                 android:layout_toEndOf="@+id/ivPicture"
                 android:text="@string/event_info"
-                android:textSize="18sp" />
+                android:textSize="16sp"
+                android:textStyle="italic"/>
             <TextView
                 android:id="@+id/tvEventDescription"
                 android:layout_width="wrap_content"
