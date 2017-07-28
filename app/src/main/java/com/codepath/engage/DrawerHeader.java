@@ -58,7 +58,7 @@ public class DrawerHeader{
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
                 if (user != null){
-                    nameTxt.setText(user.getFirstName()+user.getLastName());
+                    nameTxt.setText(user.getFirstName()+ " "+ user.getLastName());
                     emailTxt.setText(user.getEmail());
                     Glide.with(mContext).load(user.getProfilePicture()).into(profileImage);
                 } else {

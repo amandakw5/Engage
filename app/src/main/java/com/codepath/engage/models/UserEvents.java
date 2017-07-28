@@ -54,6 +54,7 @@ public class UserEvents {
 
     }
 
+
     public String getEventId() {
         return eventId;
     }
