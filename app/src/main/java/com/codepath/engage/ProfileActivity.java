@@ -95,7 +95,6 @@ public class ProfileActivity extends AppCompatActivity {
 //        Event event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
         following.setText(u.numFollowing + " following");
         followers.setText(u.numFollowers + " followers");
-        uid = Profile.getCurrentProfile().getId();
         DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
 
         final DatabaseReference evDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
