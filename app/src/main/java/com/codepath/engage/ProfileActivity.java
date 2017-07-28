@@ -75,10 +75,10 @@ public class ProfileActivity extends AppCompatActivity {
         u = new User();
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
-        if ((User) Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName())) != null){
-            u = (User) Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
+        if (Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName())) != null){
+            u = Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
             uid = u.getUid();
-            profileHeader.setText(u.firstName + " " + u.lastName + "'s Profile");
+            profileHeader.setText(u.firstName + " " + u.lastName);
         }
         else {
             uid = Profile.getCurrentProfile().getId();
@@ -89,6 +89,9 @@ public class ProfileActivity extends AppCompatActivity {
                 currentProfile = dataSnapshot.getValue(User.class);
                 if (uid.equals( Profile.getCurrentProfile().getId())){
                     u = currentProfile;
+                    Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
+                    following.setText(u.numFollowing + " following");
+                    followers.setText(u.numFollowers + " followers");
                 }
             }
 
@@ -97,11 +100,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
-        Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
-//        Event event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
-        following.setText(u.numFollowing + " following");
-        followers.setText(u.numFollowers + " followers");
-        uid = Profile.getCurrentProfile().getId();
+
         DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
 
         final DatabaseReference evDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");

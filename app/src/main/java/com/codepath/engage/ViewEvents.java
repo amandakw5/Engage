@@ -284,22 +284,20 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int i = 1;
-                int includeEvent =0;
+                int includeEvent = 0;
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
 
                     CreatedEvents userEvents = snapshot.getValue(CreatedEvents.class);
-                    if (userEvents != null) {
-                        Event event = new Event(userEvents.getEventName(), userEvents.getEventLocation() + "\n" + userEvents.getEventDay() + "/" + userEvents.getEventMonth() + " " + userEvents.getEventHour() + ":" + userEvents.getEventMinute(), userEvents.getEventDescription(), "null", String.valueOf(i));
-                        if (userEvents.getEventName().contains(valueOfQuery)) {
-                            event.setCreatedEvent(true);
-                            events.add(event);
-                            eventAdapter.notifyItemInserted(events.size() - 1);
-                        }
-                        String[] split = userEvents.getEventDescription().split("\\s+");
-                        for (String aSplit : split) {
-                            if (aSplit.contains(valueOfQuery))
-                                includeEvent++;
-                        }
+                    Event event = new Event(userEvents.getEventName(),userEvents.getEventLocation() + "\n" +userEvents.getEventMonth() +"/"+  userEvents.getEventDay() + " " + userEvents.getEventHour()+":"+userEvents.getEventMinute(),userEvents.getEventDescription(),"null",String.valueOf(i));
+                    if(userEvents.getEventName().contains(valueOfQuery)) {
+                        event.setCreatedEvent(true);
+                        events.add(event);
+                        eventAdapter.notifyItemInserted(events.size() - 1);
+                    }
+                    String [] split = userEvents.getEventDescription().split("\\s+");
+                    for (String aSplit : split) {
+                        if (aSplit.contains(valueOfQuery))
+                            includeEvent++;
                     }
                 }
             }
@@ -434,6 +432,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                         }
                     }
                 }
+                btnFilter.setOnClickListener(null);
                 progress.dismiss();
             }
             @Override public void onCancelled(DatabaseError databaseError) {
