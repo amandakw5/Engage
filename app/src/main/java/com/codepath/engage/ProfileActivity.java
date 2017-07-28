@@ -25,9 +25,9 @@ import com.google.firebase.database.ValueEventListener;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import butterknife.BindDimen;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -150,10 +150,12 @@ public class ProfileActivity extends AppCompatActivity {
                     mDatabase.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            DataSnapshot followingList = dataSnapshot.child(currentProfile.uid).child("following");
-                            for (DataSnapshot checkFollowing: followingList.getChildren()){
-                                if (checkFollowing.getValue().equals(uid)){
-                                    isFollowing = true;
+                            HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child("following").getValue();
+                            if (followingList!= null){
+                                for (Object value : followingList.values()){
+                                    if (((String)(value)).equals(uid)){
+                                        isFollowing = true;
+                                    }
                                 }
                             }
                         }

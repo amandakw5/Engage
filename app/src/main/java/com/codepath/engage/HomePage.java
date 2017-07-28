@@ -102,6 +102,8 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
 
         setSupportActionBar(toolbar);
         URL profile_picture = null;
+
+
         try {
             profile_picture = new URL("https://graph.facebook.com/" + Profile.getCurrentProfile().getId() + "/picture?width=200&height=200");
         } catch (MalformedURLException e) {
