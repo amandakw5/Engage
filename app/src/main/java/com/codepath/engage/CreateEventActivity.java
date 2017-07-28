@@ -1,12 +1,16 @@
 package com.codepath.engage;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -16,10 +20,8 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.codepath.engage.models.CreatedEvents;
-import com.codepath.engage.models.Event;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,7 +31,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
     private boolean selectedTime = false;
     private boolean selectedDate = false;
     private int mYear, mMonth, mDay, mHour, mMinute;
+    private boolean finishedAddingEvent = false;
     String uid;
     long createdEventID;
     @Override
@@ -114,7 +116,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
 
     public void verifySubmitEvent(){
         if(hasText(eName) && hasText(eLocation) && hasText(eDescription)&&selectedTime&&selectedDate) {
-            final Intent i = new Intent(CreateEventActivity.this,EventDetailsActivity.class);
+            final Intent i = new Intent(CreateEventActivity.this,ViewEvents.class);
             ArrayList<String> createdEventInfo = new ArrayList<>();
             String eventName = eName.getText().toString();
             String eventDescription = eDescription.getText().toString();
@@ -122,6 +124,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             createdEventInfo.add(eventName);
             createdEventInfo.add(eventLocation);
             createdEventInfo.add(eventDescription);
+            finishedAddingEvent = false;
             i.putExtra("createdEventInfo", Parcels.wrap(createdEventInfo));
             final CreatedEvents createdEvent = new CreatedEvents(eventName,eventLocation,eventDescription,String.valueOf(mHour),String.valueOf(mMinute),String.valueOf(mDay),String.valueOf(mMonth),String.valueOf(mYear));
             rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -129,37 +132,67 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                 public void onDataChange(DataSnapshot snapshot) {
                     if (snapshot.hasChild("CreatedEvents")) {
                         // run some code
-                        rootRef.addChildEventListener(new ChildEventListener() {
-
+                        rootRef.child("CreatedEvents").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
-                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                            public void onDataChange(DataSnapshot dataSnapshot) {
                                 createdEventID = dataSnapshot.getChildrenCount() + 1;
+                                Log.i("Info", String.valueOf(createdEventID));
                                 rootRef.child("CreatedEvents").child(String.valueOf(createdEventID)).setValue(createdEvent);
-                                startActivity(i);
-                            }
-
-                            @Override
-                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                            }
-
-                            @Override
-                            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                            }
-
-                            @Override
-                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                                finishedAddingEvent =true;
+                                AlertDialog.Builder builder;
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    builder = new AlertDialog.Builder(CreateEventActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+                                } else {
+                                    builder = new AlertDialog.Builder(CreateEventActivity.this);
+                                }
+                                builder.setTitle("Delete entry")
+                                        .setMessage("Want to upload an image?")
+                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                // continue with delete
+                                                pick();
+                                            }
+                                        })
+                                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                // do nothing
+                                                finish();
+                                            }
+                                        })
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .show();
 
                             }
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
+
                             }
                         });
                     }else{
                         rootRef.child("CreatedEvents").child("1").setValue(createdEvent);
-                        startActivity(i);
+                        AlertDialog.Builder builder;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            builder = new AlertDialog.Builder(CreateEventActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+                        } else {
+                            builder = new AlertDialog.Builder(CreateEventActivity.this);
+                        }
+                        builder.setTitle("Delete entry")
+                                .setMessage("Want to upload an image?")
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // continue with delete
+                                        pick();
+                                    }
+                                })
+                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // do nothing
+                                        finish();
+                                    }
+                                })
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
                     }
                 }
 
@@ -195,7 +228,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         selectedTime = true;
     }
     //User TO upload image
-    public void pick(View view){
+    public void pick(){
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_PICK);
         intent.setType("image/*");
@@ -209,12 +242,16 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             progress.setMessage("uploading");
             progress.show();
             Uri uri = data.getData();
-            StorageReference path = storage.child("photos").child("simple_image");
+            if(createdEventID == 0)
+                createdEventID =1;
+            StorageReference path = storage.child("photos").child(String.valueOf(createdEventID));
             path.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     progress.dismiss();
                     Toast.makeText(getApplicationContext(),"Successfully upladed image",Toast.LENGTH_LONG).show();
+                    finish();
+
                 }
             });
         }

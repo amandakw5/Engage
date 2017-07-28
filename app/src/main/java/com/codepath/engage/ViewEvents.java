@@ -101,7 +101,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     GoogleApiClient gac;
     LocationRequest locationRequest;
-
+    //Firebase Variables
     private DatabaseReference mDatabase;
     private DatabaseReference createdEvents;
 
@@ -286,6 +286,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     CreatedEvents userEvents = snapshot.getValue(CreatedEvents.class);
                     Event event = new Event(userEvents.getEventName(),userEvents.getEventLocation() + "\n" + userEvents.getEventDay() +"/"+userEvents.getEventMonth() + " " + userEvents.getEventHour()+":"+userEvents.getEventMinute(),userEvents.getEventDescription(),"null",String.valueOf(i));
                     if(userEvents.getEventName().contains(valueOfQuery)) {
+                        event.setCreatedEvent(true);
                         events.add(event);
                         eventAdapter.notifyItemInserted(events.size() - 1);
                     }
@@ -419,10 +420,10 @@ Log.i("Info",q);
                     String f = (String) evSnapshot.child("firstName").getValue();
                     String l = (String) evSnapshot.child("lastName").getValue();
                     if (f != null && l != null){
-                        if (f.equals(first) && l.equals(last)){
-                            User u = evSnapshot.getValue(User.class);
-                            u.setUid(evSnapshot.getKey());
-                            users.add(u);
+                        if (f.equals(first) ){
+                           User u = evSnapshot.getValue(User.class);
+                           u.setUid(evSnapshot.getKey());
+                           users.add(u);
                             Log.i("Info","Added user");
                             userAdapter.notifyItemInserted(users.size() -1);
                         }

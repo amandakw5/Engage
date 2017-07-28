@@ -29,6 +29,15 @@ public class Event implements Parcelable {
     public Venue venue;
     public Organizer organizer;
     public String timeStart;
+    boolean createdEvent;
+
+    public boolean isCreatedEvent() {
+        return createdEvent;
+    }
+
+    public void setCreatedEvent(boolean createdEvent) {
+        this.createdEvent = createdEvent;
+    }
 
     public Event(String tvEventName, String tvEventInfo, String tvDescription, String ivEventImage, String eventId) {
         this.tvEventName = tvEventName;
