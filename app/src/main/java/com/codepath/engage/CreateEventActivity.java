@@ -169,10 +169,8 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                 }
             });
         }
-        else{
-            return;
-        }
     }
+    
     // check the input field has any text or not
     // return true if it contains text otherwise false
     public static boolean hasText(EditText editText) {

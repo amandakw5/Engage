@@ -10,11 +10,13 @@
         android:id="@+id/profileHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/profileImage"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:text="My Profile"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        android:layout_alignBottom="@+id/profileImage"
+        android:layout_toEndOf="@+id/Home"
+        android:layout_toStartOf="@+id/profileImage"
+        android:gravity="center"/>
 
     <ImageView
         android:id="@+id/profileImage"

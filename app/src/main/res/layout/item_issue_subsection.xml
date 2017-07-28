@@ -11,10 +11,10 @@
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/readmore"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:text="Specific Issues"
-        android:textSize="17dp" />
+        android:textSize="17sp" />
 
     <ListView
         android:id="@+id/issueList"
@@ -22,9 +22,8 @@
         android:layout_height="118dp"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/subTitle"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="15dp"
-        android:layout_weight="0.11" />
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="15dp" />
 
     <TextView
         android:id="@+id/readmore"
@@ -33,6 +32,6 @@
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/issueList"
         android:layout_marginBottom="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         android:text="Read more!" />
 </RelativeLayout>

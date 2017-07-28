@@ -35,7 +35,7 @@ import static com.codepath.engage.R.id.nameTxt;
 @Layout(R.layout.drawer_header)
 public class DrawerHeader{
 
-    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("users");
+    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("users");
     User user;
     private Context mContext;
 
@@ -61,8 +61,6 @@ public class DrawerHeader{
                     nameTxt.setText(user.getFirstName()+ " "+ user.getLastName());
                     emailTxt.setText(user.getEmail());
                     Glide.with(mContext).load(user.getProfilePicture()).into(profileImage);
-                } else {
-                    Log.d(":(", ":(((((");
                 }
             }
 

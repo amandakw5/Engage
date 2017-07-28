@@ -16,6 +16,9 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by calderond on 7/27/17.
  */
@@ -23,21 +26,17 @@ import java.util.List;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
     private List<User> users;
     private Context context;
-    private int recyclerType;
-    View recyclerView;
 
-    public UserAdapter(List<User> users,int i){
+    public UserAdapter(List<User> users, int i){
         this.users = users;
-        recyclerType = i;
     }
 
     @Override
     public UserAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        recyclerView = inflater.inflate(R.layout.user_item,parent,false);
-        ViewHolder viewHolder = new ViewHolder (recyclerView);
-        return viewHolder;
+        View recyclerView = inflater.inflate(R.layout.user_item, parent, false);
+        return new ViewHolder (recyclerView);
     }
 
     @Override
@@ -51,14 +50,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
     public int getItemCount() {
         return users.size();
     }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener{
-        public TextView tvUserName;
-        public ImageView ivProfileImage;
+        @BindView(R.id.tvUserName) TextView tvUserName;
+        @BindView(R.id.ivProfileImage) ImageView ivProfileImage;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            tvUserName = (TextView) itemView.findViewById(R.id.tvUserName);
-            ivProfileImage = (ImageView) itemView.findViewById(R.id.ivProfileImage);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
@@ -72,7 +71,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
             context.startActivity(i);
         }
     }
-    public void clear(){
+    void clear(){
         users.clear();
         notifyDataSetChanged();
     }

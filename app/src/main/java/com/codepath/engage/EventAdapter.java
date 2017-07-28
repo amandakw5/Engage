@@ -30,7 +30,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
     private Context context;
     public int recyclerType;
     private List<User> mUsers;
-    View recycleView;
+    private View recycleView;
 
     public EventAdapter(List<Event> events, ArrayList<User> users, int i){
         mEvents = events;
@@ -49,8 +49,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         else {
             recycleView = inflater.inflate(R.layout.event_item,parent,false);
         }
-        ViewHolder viewHolder = new ViewHolder(recycleView);
-        return viewHolder;
+        return new ViewHolder(recycleView);
     }
 
     @Override
@@ -131,7 +130,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         return mEvents.get(i);
     }
 
-    public void clear(){
+    void clear(){
         mEvents.clear();
         mUsers.clear();
         notifyDataSetChanged();

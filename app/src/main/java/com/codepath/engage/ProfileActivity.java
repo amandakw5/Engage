@@ -98,7 +98,6 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         uid = Profile.getCurrentProfile().getId();
-        final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
         DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
 
         final DatabaseReference evDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
@@ -109,7 +108,7 @@ public class ProfileActivity extends AppCompatActivity {
                 GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>(){};
                 eventIDs = dataSnapshot.getValue(t);
                 if (eventIDs == null) {
-                    Log.d("did not work", "lol");
+                    Log.d("Event IDs", "null");
                 } else {
                     Log.d("eventIds", eventIDs.toString());
                 }
@@ -153,8 +152,7 @@ public class ProfileActivity extends AppCompatActivity {
                         DatabaseReference deleteFollowing = mDatabase.child(currentProfile.uid).child("followers").child(uid).push();
                         deleteFollowing.setValue(null);
                         following = false;
-                    }
-                    else{
+                    } else {
                         mDatabase.child(uid).child("numFollowers").setValue((u.numFollowers + 1));
                         mDatabase.child(currentProfile.uid).child("numFollowing").setValue(currentProfile.numFollowing + 1);
                         DatabaseReference addFollow = mDatabase.child(uid).child("followers").push();
