@@ -255,8 +255,10 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String, String> followers, HashMap<String, String> following, final Bundle facebookData) { //, List<String> eventsList
-        final User user = new User(uid, firstName, lastName, email, profilePicture, numFollowers, numFollowing, followers, following); //, eventsList
+    public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String, String> followers, HashMap<String, String> following, final Bundle facebookData) {
+        FirebaseUser userF = FirebaseAuth.getInstance().getCurrentUser();
+//, List<String> eventsList
+        final User user = new User(uid, firstName, lastName, email, profilePicture, numFollowers, numFollowing, followers, following,userF.getUid()); //, eventsList
 
         mDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

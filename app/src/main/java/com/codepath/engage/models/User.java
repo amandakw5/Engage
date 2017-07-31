@@ -15,6 +15,7 @@ import java.util.List;
 @Parcel
 public class User {
     public String uid;
+    public String chatUid;
     public String firstName;
     public String lastName;
     public String email;
@@ -29,7 +30,7 @@ public class User {
     public User(){
     }
 
-    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String,String> followers, HashMap<String,String> following) { //, List<String> eventsList
+    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String,String> followers, HashMap<String,String> following,String chatUid) { //, List<String> eventsList
         this.uid = uid;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -39,6 +40,7 @@ public class User {
         this.numFollowing = numFollowing;
         this.following = following;
         this.followers = followers;
+        this.chatUid = chatUid;
        // this.eventsList = eventsList;
     }
 
