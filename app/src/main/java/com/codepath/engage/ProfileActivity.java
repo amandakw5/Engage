@@ -115,7 +115,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
-
+        DatabaseReference createdEvents = FirebaseDatabase.getInstance().getReference("createdEvents");
         final DatabaseReference evDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
 
         evDatabase.addValueEventListener(new ValueEventListener() {
@@ -134,6 +134,28 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         savedEvents.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (eventIDs != null){
+                    for (String id : eventIDs) {
+                        for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
+                            if (id.equals(evSnapshot.getKey())){
+                                UserEvents e = evSnapshot.getValue(UserEvents.class);
+                                events.add(e);
+                                adapter.notifyItemInserted(events.size()-1);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        createdEvents.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (eventIDs != null){
