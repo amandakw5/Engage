@@ -89,6 +89,12 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         });
         storage = FirebaseStorage.getInstance().getReference();
         progress = new ProgressDialog(this);
+        if ((mHour != 0) && (mMinute) != 0) {
+            eTime.setText(mHour + ":" + mMinute);
+        }
+        if ((mYear != 0) && (mMonth != 0) && (mDay != 0)) {
+            eDate.setText(mYear + "/" + mMonth + "/" + mDay);
+        }
     }
     public void showTimePickerDialog(View v){
         TimePickerFragment newFragment = new TimePickerFragment();
@@ -111,6 +117,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         mYear = year;
         mMonth = monthOfYear;
         mDay = dayOfMonth;
+        eDate.setText(mMonth + "/" + mDay + "/" + mYear);
         selectedDate =true;
     }
 
@@ -124,9 +131,10 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             createdEventInfo.add(eventName);
             createdEventInfo.add(eventLocation);
             createdEventInfo.add(eventDescription);
+            createdEventInfo.add(Profile.getCurrentProfile().getId());
             finishedAddingEvent = false;
             i.putExtra("createdEventInfo", Parcels.wrap(createdEventInfo));
-            final CreatedEvents createdEvent = new CreatedEvents(eventName,eventLocation,eventDescription,String.valueOf(mHour),String.valueOf(mMinute),String.valueOf(mDay),String.valueOf(mMonth),String.valueOf(mYear));
+            final CreatedEvents createdEvent = new CreatedEvents(eventName,eventLocation,eventDescription,String.valueOf(mHour),String.valueOf(mMinute),String.valueOf(mDay),String.valueOf(mMonth),String.valueOf(mYear), Profile.getCurrentProfile().getId());
             rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
@@ -221,9 +229,24 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        mHour =hourOfDay;
+        mHour = hourOfDay;
         mMinute = minute;
+        String half;
+        if (mHour > 12){
+            half = "PM";
+            mHour = mHour % 12;
+        }
+        else{
+            half = "AM";
+        }
+        if (mMinute < 10){
+            eTime.setText(mHour + ":0" + mMinute);
+        }
+        else{
+            eTime.setText(mHour + ":" + mMinute + " " + half);
+        }
         selectedTime = true;
+
     }
     //User TO upload image
     public void pick(){

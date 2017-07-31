@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.TextView;
 
 import com.codepath.engage.models.User;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +26,7 @@ public class FollowActivity extends AppCompatActivity {
     ArrayList<User> follows;
     ArrayList<String> uids;
     @BindView(R.id.rvFollow) RecyclerView rvFollow;
+    @BindView(R.id.followTitle) TextView followTitle;
     User user;
     DatabaseReference mDatabase;
     public String whichView;
@@ -43,6 +45,12 @@ public class FollowActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
         loadFollow(whichView);
         uids = new ArrayList<>();
+        if (whichView.equals("followers")){
+            followTitle.setText("Followers");
+        }
+        else{
+            followTitle.setText("Following");
+        }
     }
 
     private void loadFollow(final String whichView) {
