@@ -1,6 +1,7 @@
 package com.codepath.engage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -83,24 +84,35 @@ public class ProfileActivity extends AppCompatActivity {
         else {
             uid = Profile.getCurrentProfile().getId();
         }
-        mDatabase.child(Profile.getCurrentProfile().getId()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                currentProfile = dataSnapshot.getValue(User.class);
-                if (uid.equals( Profile.getCurrentProfile().getId())){
-                    u = currentProfile;
+
+            mDatabase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    currentProfile = dataSnapshot.child(Profile.getCurrentProfile().getId()).getValue(User.class);
+                    if (uid.equals(Profile.getCurrentProfile().getId())){
+                        u = currentProfile;
+
+                    }
+                    Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
+                    following.setText(u.numFollowing + " following");
+                    followers.setText(u.numFollowers + " followers");
+
+                    HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child(currentProfile.uid).child("following").getValue();
+                    if (followingList != null) {
+                        for (Object value : followingList.values()) {
+                            if (((String) (value)).equals(uid)) {
+                                isFollowing = true;
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
                 }
-                Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
-                following.setText(u.numFollowing + " following");
-                followers.setText(u.numFollowers + " followers");
-            }
+            });
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
 
@@ -151,7 +163,7 @@ public class ProfileActivity extends AppCompatActivity {
                     mDatabase.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child("following").getValue();
+                            HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child(currentProfile.uid).child("following").getValue();
                             if (followingList!= null){
                                 for (Object value : followingList.values()){
                                     if (((String)(value)).equals(uid)){
@@ -184,6 +196,22 @@ public class ProfileActivity extends AppCompatActivity {
                         isFollowing = true;
                     }
                 }
+            }
+        });
+        followers.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent i = new Intent(ProfileActivity.this, FollowActivity.class);
+                i.putExtra(User.class.getSimpleName(), Parcels.wrap(u));
+                i.putExtra("f", "followers");
+                startActivity(i);
+            }
+        });
+        following.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent i = new Intent(ProfileActivity.this, FollowActivity.class);
+                i.putExtra(User.class.getSimpleName(), Parcels.wrap(u));
+                i.putExtra("f", "following");
+                startActivity(i);
             }
         });
 
