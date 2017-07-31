@@ -166,7 +166,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             callSearchFromIntent(intentQuery);
         }
         //Referencing the variables to their respective I.Ds for the xml style sheet
-        ActionBar actionbar = getSupportActionBar();
+//        ActionBar actionbar = getSupportActionBar();
         setSupportActionBar(toolbar);
         setUpDrawer();
 
@@ -188,6 +188,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
             }
         });
+
         searchView.setQuery(query, false);
     }
 
@@ -243,8 +244,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     //Initializes all necessary values that will hold all the search view values.
     private void setUpSearchView(){
         // Sets searchable configuration defined in searchable.xml for this SearchView
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -307,6 +307,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
             }
         });
+
         //End getting data from stored firebase database
         counterToGetPositionOfEvent=0;
         eventRequestCompleted = false;

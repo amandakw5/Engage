@@ -65,14 +65,12 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     String query;
 
     //Will hold the text that the user inputs to the search view
-    private String valueOfQuery;
-
-    private ArrayAdapter<String> mAdapter;
+//    private String valueOfQuery;
+//
+//    private ArrayAdapter<String> mAdapter;
 
     //Following variables are for maps
     final String TAG = "GPS";
-    private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
-    private long FASTEST_INTERVAL = 2000; /* 2 sec */
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     GoogleApiClient gac;
@@ -86,10 +84,14 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
 
         ButterKnife.bind(this);
 
+        toolbar.setContentInsetStartWithNavigation(0);
+
         //Getting user location and setting location in google maps
         isGooglePlayServicesAvailable();
         locationRequest = new LocationRequest();
+        long UPDATE_INTERVAL = 2 * 1000;
         locationRequest.setInterval(UPDATE_INTERVAL);
+        long FASTEST_INTERVAL = 2000;
         locationRequest.setFastestInterval(FASTEST_INTERVAL);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         gac = new GoogleApiClient.Builder(this)
@@ -101,9 +103,9 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         ActionBar actionbar = getSupportActionBar();
 
         setSupportActionBar(toolbar);
-        URL profile_picture = null;
+
         try {
-            profile_picture = new URL("https://graph.facebook.com/" + Profile.getCurrentProfile().getId() + "/picture?width=200&height=200");
+            URL profile_picture = new URL("https://graph.facebook.com/" + Profile.getCurrentProfile().getId() + "/picture?width=200&height=200");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -345,5 +347,9 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         dialog.show();
     }
 
+    @Override
+    public void onBackPressed() {
+        overridePendingTransition(0, 0);
+    }
 
 }

@@ -164,7 +164,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onError(FacebookException error) {
-                Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Error. Check your internet connection.", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "facebook:onError", error);
 
             }

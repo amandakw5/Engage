@@ -26,5 +26,6 @@
         <item name="spinBars">false</item>
         <item name="color">@android:color/holo_red_dark</item>
     </style>
-
+    <style name="toolbarStyle"
+        />
 </resources>

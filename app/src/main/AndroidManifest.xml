@@ -26,6 +26,7 @@
         android:label="Engage"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -39,7 +40,6 @@
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -47,8 +47,7 @@
         <activity android:name=".ViewEvents"
             android:theme="@style/AppTheme">
             <intent-filter>
-                <action android:name="android.intent.action.SEARCH"
-                />
+                <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
 
