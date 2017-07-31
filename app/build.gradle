@@ -57,6 +57,8 @@ dependencies {
     compile 'com.google.firebase:firebase-core:11.0.2'
     compile 'com.google.firebase:firebase-database:11.0.2'
     compile 'com.google.firebase:firebase-storage:11.0.2'
+    compile 'com.google.firebase:firebase-messaging:11.0.2'
+
     compile 'com.jakewharton:butterknife:8.4.0'
     compile 'org.parceler:parceler-api:1.1.6'
     compile 'jp.wasabeef:glide-transformations:2.0.2'
@@ -73,6 +75,12 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     annotationProcessor 'org.parceler:parceler:1.1.6'
     annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:2.4.0'
+
+    //okhttp
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+
+    //event bus
+    compile 'org.greenrobot:eventbus:3.0.0'
 }
 configurations {
     compile.exclude group: "org.apache.httpcomponents", module: "httpclient"
