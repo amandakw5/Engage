@@ -7,6 +7,7 @@ import com.codepath.engage.R;
 import com.codepath.engage.models.UserChat;
 import com.codepath.engage.utils.Constants;
 import com.codepath.engage.utils.SharedPrefUtil;
+import com.facebook.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,7 +26,7 @@ public class AddUserInteractor implements AddUserContract.Interactor {
     @Override
     public void addUserToDatabase(final Context context, FirebaseUser firebaseUser) {
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-        UserChat user = new UserChat(firebaseUser.getUid(),
+        UserChat user = new UserChat(Profile.getCurrentProfile().getId(),
                 firebaseUser.getEmail(),
                 new SharedPrefUtil(context).getString(Constants.ARG_FIREBASE_TOKEN));
         database.child(Constants.ARG_USERS)

@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.codepath.engage.R;
 import com.codepath.engage.models.Chat;
-import com.google.firebase.auth.FirebaseAuth;
+import com.facebook.Profile;
 
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (TextUtils.equals(mChats.get(position).senderUid,
-                FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                Profile.getCurrentProfile().getId())) {
             configureMyChatViewHolder((MyChatViewHolder) holder, position);
         } else {
             configureOtherChatViewHolder((OtherChatViewHolder) holder, position);
@@ -62,7 +62,7 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private void configureMyChatViewHolder(MyChatViewHolder myChatViewHolder, int position) {
         Chat chat = mChats.get(position);
 
-        String alphabet = "a";
+        String alphabet = chat.sender.substring(0,1);
 
         myChatViewHolder.txtChatMessage.setText(chat.message);
         myChatViewHolder.txtUserAlphabet.setText(alphabet);
@@ -71,7 +71,7 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private void configureOtherChatViewHolder(OtherChatViewHolder otherChatViewHolder, int position) {
         Chat chat = mChats.get(position);
 
-        String alphabet = chat.sender.substring(0, 1);
+        String alphabet = chat.sender.substring(0,1);
 
         otherChatViewHolder.txtChatMessage.setText(chat.message);
         otherChatViewHolder.txtUserAlphabet.setText(alphabet);
@@ -88,7 +88,7 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public int getItemViewType(int position) {
         if (TextUtils.equals(mChats.get(position).senderUid,
-                FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                Profile.getCurrentProfile().getId())) {
             return VIEW_TYPE_ME;
         } else {
             return VIEW_TYPE_OTHER;

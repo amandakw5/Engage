@@ -14,7 +14,6 @@ import android.widget.Toast;
 import com.codepath.engage.R;
 import com.codepath.engage.core.users.getall.GetUsersContract;
 import com.codepath.engage.core.users.getall.GetUsersPresenter;
-import com.codepath.engage.models.User;
 import com.codepath.engage.models.UserChat;
 import com.codepath.engage.ui.activities.ChatActivity;
 import com.codepath.engage.ui.activities.adapters.UserListingRecyclerAdapter;
