@@ -19,7 +19,7 @@ public class Chat  {
     public Chat(String sender, String receiver, String senderUid, String receiverUid, String message, long timestamp){
         this.sender = sender;
         this.receiver = receiver;
-        this.senderUid = senderUid;
+        this.senderUid =senderUid;
         this.receiverUid = receiverUid;
         this.message = message;
         this.timestamp = timestamp;

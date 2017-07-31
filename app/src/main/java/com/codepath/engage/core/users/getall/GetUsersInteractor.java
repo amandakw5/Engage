@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.codepath.engage.models.UserChat;
 import com.codepath.engage.utils.Constants;
-import com.google.firebase.auth.FirebaseAuth;
+import com.facebook.Profile;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -28,6 +28,8 @@ public class GetUsersInteractor implements GetUsersContract.Interactor {
 
     @Override
     public void getAllUsersFromFirebase() {
+        final String checkUid = Profile.getCurrentProfile().getId();
+
         FirebaseDatabase.getInstance().getReference().child(Constants.ARG_USERS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -36,7 +38,7 @@ public class GetUsersInteractor implements GetUsersContract.Interactor {
                 while (dataSnapshots.hasNext()) {
                     DataSnapshot dataSnapshotChild = dataSnapshots.next();
                     UserChat user = dataSnapshotChild.getValue(UserChat.class);
-                    if (!TextUtils.equals(user.chatUid, FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                    if (!TextUtils.equals(user.uid, checkUid)) {
                         users.add(user);
                     }
                 }

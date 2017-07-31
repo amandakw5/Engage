@@ -4,7 +4,7 @@ package com.codepath.engage.models;
  * Created by calderond on 7/31/17.
  */
 public class UserChat {
-    public String chatUid;
+    public String uid;
     public String email;
     public String firebaseToken;
 
@@ -13,7 +13,7 @@ public class UserChat {
     }
 
     public UserChat(String uid, String email, String firebaseToken){
-        this.chatUid = uid;
+        this.uid = uid;
         this.email = email;
         this.firebaseToken = firebaseToken;
     }
