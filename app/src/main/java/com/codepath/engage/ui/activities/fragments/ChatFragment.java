@@ -22,7 +22,6 @@ import com.codepath.engage.models.Chat;
 import com.codepath.engage.ui.activities.adapters.ChatRecyclerAdapter;
 import com.codepath.engage.utils.Constants;
 import com.facebook.Profile;
-import com.google.firebase.auth.FirebaseAuth;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -112,7 +111,7 @@ public class ChatFragment extends Fragment implements ChatContract.View, TextVie
         String message = mETxtMessage.getText().toString();
         String receiver = getArguments().getString(Constants.ARG_RECEIVER);
         String receiverUid = getArguments().getString(Constants.ARG_RECEIVER_UID);
-        String sender = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        String sender = Profile.getCurrentProfile().getFirstName() + " " + Profile.getCurrentProfile().getLastName();
         String senderUid = Profile.getCurrentProfile().getId();
         String receiverFirebaseToken = getArguments().getString(Constants.ARG_FIREBASE_TOKEN);
         Chat chat = new Chat(sender,
