@@ -89,18 +89,10 @@ public class ProfileActivity extends AppCompatActivity {
                 currentProfile = dataSnapshot.getValue(User.class);
                 if (uid.equals(Profile.getCurrentProfile().getId())) {
                     u = currentProfile;
-                    Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
-                    if (u.followers != null) {
-                        int i = u.getFollowers().size();
-                        following.setText(i + "followers");
-                    }
-                    if (u.following != null) {
-                        int j = u.getFollowing().size();
-                        following.setText(j + "followers");
-                    }
-//                    following.setText(u.numFollowing + " following");
-//                    followers.setText(u.numFollowers + " followers");
                 }
+                Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
+                following.setText(u.numFollowing + " following");
+                followers.setText(u.numFollowers + " followers");
             }
 
             @Override

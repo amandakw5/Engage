@@ -25,7 +25,6 @@ public class DrawerMenuItem {
 
     private int mMenuPosition;
     private Context mContext;
-    private DrawerCallBack mCallBack;
 
     @View(R.id.itemNameTxt)
     private TextView itemNameTxt;
@@ -82,19 +81,6 @@ public class DrawerMenuItem {
                 mContext.startActivity(intent);
                 break;
         }
-    }
-
-
-    public void setDrawerCallBack(DrawerCallBack callBack) {
-        mCallBack = callBack;
-    }
-
-    public interface DrawerCallBack{
-        void onProfileMenuSelected();
-        void onFeedMenuSelected();
-        void onEventMenuSelected();
-        void onCreatedMenuSelected();
-        void onLogoutMenuSelected();
     }
 }
 
