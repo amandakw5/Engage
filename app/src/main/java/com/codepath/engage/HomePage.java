@@ -277,7 +277,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 } else {
                     Toast.makeText(HomePage.this, "Permission denied!", Toast.LENGTH_LONG).show();
                 }
-                return;
             }
         }
     }

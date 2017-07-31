@@ -24,6 +24,8 @@ import com.mindorks.placeholderview.annotations.View;
 
 import com.facebook.Profile;
 
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
 import static com.codepath.engage.R.id.emailTxt;
 import static com.codepath.engage.R.id.nameTxt;
 
@@ -60,7 +62,10 @@ public class DrawerHeader{
                 if (user != null){
                     nameTxt.setText(user.getFirstName()+ " "+ user.getLastName());
                     emailTxt.setText(user.getEmail());
-                    Glide.with(mContext).load(user.getProfilePicture()).into(profileImage);
+                    Glide.with(mContext)
+                            .load(user.getProfilePicture())
+                            .bitmapTransform(new RoundedCornersTransformation(mContext, 100, 0))
+                            .into(profileImage);
                 }
             }
 

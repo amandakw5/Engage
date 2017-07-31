@@ -80,6 +80,8 @@ public class LoginActivity extends AppCompatActivity {
 
         authFlag = false;
 
+        loginButton = (LoginButton) findViewById(R.id.login_button);
+
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -134,7 +136,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
 
-        loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
 
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
@@ -164,13 +165,13 @@ public class LoginActivity extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
                                 }
-                                if(!isInside){
+                                if(!isInside) {
                                     final User user = new User();
                                     Bundle bFacebookData = getFacebookData(object);
                                     Log.d(TAG, "facebook:onCompleted");
                                     user.setNumFollowers(0);
-                                    user.setFollowers(new HashMap<String,String>());
-                                    user.setFollowing(new HashMap<String,String>());
+                                    user.setFollowers(new HashMap<String, String>());
+                                    user.setFollowing(new HashMap<String, String>());
                                     user.setNumFollowing(0);
                                     try {
                                         String id = object.getString("id");
@@ -178,13 +179,15 @@ public class LoginActivity extends AppCompatActivity {
                                         Log.d(TAG, "facebook id");
                                     } catch (JSONException e) {
                                         e.printStackTrace();
-                                    }try {
+                                    }
+                                    try {
                                         String first_name = object.getString("first_name");
                                         user.setFirstName(first_name);
                                         Log.d(TAG, "facebook first_name");
                                     } catch (JSONException e) {
                                         e.printStackTrace();
-                                    }try {
+                                    }
+                                    try {
                                         String last_name = object.getString("last_name");
                                         user.setLastName(last_name);
                                         Log.d(TAG, "facebook last_name");
@@ -206,7 +209,7 @@ public class LoginActivity extends AppCompatActivity {
                                     } catch (MalformedURLException e) {
                                         e.printStackTrace();
                                     }
-                                    writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), 0, 0, new HashMap<String,String>(), new HashMap<String,String>(), bFacebookData);
+                                        writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), 0, 0, new HashMap<String, String>(), new HashMap<String, String>(), bFacebookData);
                                 }
 
                             }

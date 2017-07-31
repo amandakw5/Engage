@@ -32,6 +32,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -90,7 +91,10 @@ public class ProfileActivity extends AppCompatActivity {
                 if (uid.equals(Profile.getCurrentProfile().getId())) {
                     u = currentProfile;
                 }
-                Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
+                Glide.with(context)
+                        .load(u.profilePicture)
+                        .centerCrop()
+                        .into(profileImage);
                 following.setText(u.numFollowing + " following");
                 followers.setText(u.numFollowers + " followers");
             }
