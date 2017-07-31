@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.codepath.engage.models.Event;
@@ -73,11 +74,6 @@ public class EventDetailsActivity extends AppCompatActivity{
      * contains the developer's API key.
      */
     private static final long NUMBER_OF_VIDEOS_RETURNED = 25;
-    /**
-     * Define a global instance of a Youtube object, which will be used
-     * to make YouTube Data API requests.
-     */
-    private static YouTube youtube;
 
 
     @Override
@@ -179,14 +175,14 @@ public class EventDetailsActivity extends AppCompatActivity{
             queryTerm = event.getOrganizerName();
         }
 
-//        Properties properties = new Properties();
-
         try {
             // This object is used to make YouTube Data API requests. The last
             // argument is required, but since we don't need anything
             // initialized when the HttpRequest is initialized, we override
             // the interface and provide a no-op function.
-            youtube = new YouTube.Builder( new NetHttpTransport(), new JacksonFactory(), new HttpRequestInitializer() {
+
+            //Define a global instance of a Youtube object, which will be used to make YouTube Data API requests.
+            YouTube youtube = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), new HttpRequestInitializer() {
                 @Override
                 public void initialize(com.google.api.client.http.HttpRequest request) throws IOException {
 
@@ -255,6 +251,7 @@ public class EventDetailsActivity extends AppCompatActivity{
         } else {
             saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
         }
+        Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
     }
 
     public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription) {
@@ -288,6 +285,6 @@ public class EventDetailsActivity extends AppCompatActivity{
 
             }
         });
-        }
+    }
 
 }

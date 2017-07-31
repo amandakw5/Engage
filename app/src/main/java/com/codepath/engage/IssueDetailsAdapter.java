@@ -1,13 +1,20 @@
 package com.codepath.engage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.codepath.engage.models.Event;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,13 +28,12 @@ import butterknife.ButterKnife;
  */
 
 public class IssueDetailsAdapter extends RecyclerView.Adapter<IssueDetailsAdapter.ViewHolder>{
-    ArrayList<String> issueSubsectionTitles;
-    String[] specificIssues;
-    String[] organizations;
-    List<String> upEvents;
-    //ArrayList<String> pastEvents;
-    private ArrayAdapter<String> listAdapter ;
-    String issue;
+    private ArrayList<String> issueSubsectionTitles;
+    private String[] specificIssues;
+    private String[] organizations;
+    private List<String> upEvents;
+    private List<Event> upEventIds;
+    private String issue;
 
     Context context;
 
@@ -35,19 +41,19 @@ public class IssueDetailsAdapter extends RecyclerView.Adapter<IssueDetailsAdapte
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
+
         // create the view using the item_movie layout
         View issueView = inflater.inflate(R.layout.item_issue_subsection, parent, false);
-        ViewHolder viewHolder = new ViewHolder(issueView);
 
-        return viewHolder;
+        return new ViewHolder(issueView);
     }
-    public IssueDetailsAdapter(String issue, ArrayList<String> issueSubsectionTitles, String[] specificIssues, String[] organizations, List<String> upEvents) { //, ArrayList<String> pastEvents
+    public IssueDetailsAdapter(String issue, ArrayList<String> issueSubsectionTitles, String[] specificIssues, String[] organizations, List<String> upEvents, List<Event> upEventIds) {
         this.issueSubsectionTitles = issueSubsectionTitles;
         this.specificIssues = specificIssues;
         this.organizations = organizations;
         this.upEvents = upEvents;
-        //this.pastEvents = pastEvents;
         this.issue = issue;
+        this.upEventIds = upEventIds;
     }
 
     @Override
@@ -58,9 +64,8 @@ public class IssueDetailsAdapter extends RecyclerView.Adapter<IssueDetailsAdapte
         specificIssueList.addAll( Arrays.asList(specificIssues) );
         ArrayList<String> organizationList = new ArrayList<String>();
         organizationList.addAll( Arrays.asList(organizations) );
-//       List<String> upcomingEventsList = new ArrayList<String>();
-//        upcomingEventsList.addAll( Arrays.asList(upcomingEvents));
         // Create ArrayAdapter using the planet list.
+        ArrayAdapter<String> listAdapter;
         if (position == 0 ) {
             listAdapter = new ArrayAdapter<String>(context, R.layout.simplerow, specificIssueList);
         }
@@ -74,7 +79,7 @@ public class IssueDetailsAdapter extends RecyclerView.Adapter<IssueDetailsAdapte
         // into the ArrayAdapter constructor, you must not add more items.
         // Otherwise an exception will occur.
         // Set the ArrayAdapter as the ListView's adapter.
-        holder.issueList.setAdapter( listAdapter );
+        holder.issueList.setAdapter(listAdapter);
     }
 
     @Override
@@ -82,12 +87,26 @@ public class IssueDetailsAdapter extends RecyclerView.Adapter<IssueDetailsAdapte
         return issueSubsectionTitles.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.subTitle) TextView subTitle;
         @BindView(R.id.issueList) ListView issueList;
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            issueList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        int rPosition = getAdapterPosition();
+                        int innerPosition = issueList.getPositionForView(view);
+                        if (rPosition == 2) {
+                            Event event = upEventIds.get(innerPosition);
+                            Intent intent = new Intent(context, EventDetailsActivity.class);
+                            intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
+                            context.startActivity(intent);
+                    }
+                }
+            });
         }
     }
 }

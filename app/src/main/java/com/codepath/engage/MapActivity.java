@@ -52,14 +52,18 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.parceler.Parcels;
+import org.w3c.dom.Text;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.codepath.engage.R.id.tvDuration;
 import static com.codepath.engage.R.string.location;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 import static junit.runner.Version.id;
@@ -71,9 +75,10 @@ import static junit.runner.Version.id;
 @RuntimePermissions
 public class MapActivity extends AppCompatActivity implements DirectionFinderListener {
 
-    private SupportMapFragment mapFragment;
+    @BindView(R.id.tvDuration) TextView tvDuration;
+    @BindView(R.id.tvDistance) TextView tvDistance;
+
     private GoogleMap map;
-    private LocationRequest mLocationRequest;
 
     Location mCurrentLocation;
     Event event;
@@ -89,21 +94,22 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
 
     private double destLat;
     private double destLng;
-    private LatLng destination;
+
     private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
 
         destLat = Double.parseDouble(event.venue.getLatitude());
         destLng = Double.parseDouble(event.venue.getLongitude());
 
-        destination = new LatLng(destLat, destLng);
-
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_map);
+
+        ButterKnife.bind(this);
 
         if (TextUtils.isEmpty(getResources().getString(R.string.google_maps_api_key))) {
             throw new IllegalStateException("You forgot to supply a Google Maps API key");
@@ -114,7 +120,7 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
 
-        mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
+        SupportMapFragment mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
         if (mapFragment != null) {
             mapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
@@ -141,7 +147,7 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         MapActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
@@ -209,17 +215,11 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
         // Report to the UI that the location was updated
         mCurrentLocation = location;
 
-        if (mCurrentLocation != null) {
+        double originLat = mCurrentLocation.getLatitude();
+        double originLong = mCurrentLocation.getLongitude();
 
-            double originLat = mCurrentLocation.getLatitude();
-            double originLong = mCurrentLocation.getLongitude();
-
-//            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(destination, 13);
-//            map.animateCamera(cameraUpdate);
-
-            //send origin and destination to google maps
-            sendRequest(originLat, originLong, destLat, destLng);
-        }
+        //send origin and destination to google maps
+        sendRequest(originLat, originLong, destLat, destLng);
 
     }
 
@@ -246,6 +246,7 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
         }
 
         // Return a Dialog to the DialogFragment.
+        @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return mDialog;
@@ -293,15 +294,15 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
         destinationMarkers = new ArrayList<>();
 
         for (Route route : routes) {
-            ((TextView) findViewById(R.id.tvDuration)).setText(route.duration.text);
-            ((TextView) findViewById(R.id.tvDistance)).setText(route.distance.text);
+            tvDuration.setText(route.duration.text);
+            tvDistance.setText(route.distance.text);
 
             originMarkers.add(map.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.red_marker))
                     .title(route.startAddress)
                     .position(route.startLocation)));
             destinationMarkers.add(map.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_marker))
                     .title(route.endAddress)
                     .position(route.endLocation)));
 

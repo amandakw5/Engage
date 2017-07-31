@@ -47,17 +47,14 @@ import cz.msebera.android.httpclient.Header;
 import static com.codepath.engage.ViewEvents.counterToGetPositionOfEvent;
 import static com.codepath.engage.ViewEvents.counterToSetOrganizer;
 
-public class IssueDetailsActivity extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{
+public class IssueDetailsActivity extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
     RecyclerView rvIssueSubsections;
     IssueDetailsAdapter adapter;
-    EventAdapter eventAdapter;
     ArrayList<String> issueSubsectionTitles;
     String[] specificIssues;
     String[] organizations;
     String[] upcomingEvents;
     ArrayList<Venue> venues;
-    //ArrayList<String> pastEvents;
     List<String> upEvents;
     @BindView(R.id.issueTitle) TextView issueTitle;
     ArrayList<Event> events;
@@ -71,8 +68,6 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
     ProgressDialog progress;
     //Following
     final String TAG = "GPS";
-    private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
-    private long FASTEST_INTERVAL = 2000; /* 2 sec */
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     String distance = "15mi";
 
@@ -82,7 +77,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue_details);
         progress  = new ProgressDialog(IssueDetailsActivity.this);
-        String[] strs = {"Specific Issues", "Organizations", "Popular Upcoming Events"}; //, "Past events"
+        String[] strs = {"Specific Issues", "Organizations", "Upcoming Events"}; //, "Past events"
         String[] womenSpecificIssues = new String[] {"Sexual and Reproductive Rights","Freedom from violence", "Economic and Political Empowerment"};
         String[] womenOrganizations = new String[] {"National Organization for Women","Planned Parenthood", "Association of Women's Rights in Development", "American Association of University Women"};
         String[] foodSpecificIssues = new String[] {"World Hunger", "Malnutrition"};
@@ -95,14 +90,20 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
         String[] povertyOrganizations = new String[] {"ONE Campaign", "UNICEF", "Partners in Health"};
         Intent intent = getIntent();
         String issue = intent.getStringExtra("current");
+
         tvLatitude = intent.getStringExtra("tvLatitude");
         tvLongitude = intent.getStringExtra("tvLongitude");
+
         counterToSetOrganizer = 0;
         counterToGetPositionOfEvent = 0;
+
         client = new EventbriteClient();
+
         isGooglePlayServicesAvailable();
         locationRequest = new LocationRequest();
+        long UPDATE_INTERVAL = 2 * 1000;
         locationRequest.setInterval(UPDATE_INTERVAL);
+        long FASTEST_INTERVAL = 2000;
         locationRequest.setFastestInterval(FASTEST_INTERVAL);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         gac = new GoogleApiClient.Builder(this)
@@ -111,38 +112,39 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
                 .addApi(LocationServices.API)
                 .build();
 
-        if (issue.equals("Women")){
-            organizations = womenOrganizations;
-            specificIssues = womenSpecificIssues;
+        switch (issue) {
+            case "Women":
+                organizations = womenOrganizations;
+                specificIssues = womenSpecificIssues;
+                break;
+            case "Food":
+                specificIssues = foodSpecificIssues;
+                organizations = foodOrganizations;
+                break;
+            case "Climate Change":
+                organizations = climateOrganizations;
+                specificIssues = climateSpecificIssues;
+                break;
+            case "Human Rights":
+                organizations = humanRightsOrganizations;
+                specificIssues = humanRightsSpecificIssues;
+                break;
+            default:
+                organizations = povertyOrganizations;
+                specificIssues = povertySpecificIssues;
+                break;
         }
-        else if(issue.equals("Food")){
-            specificIssues = foodSpecificIssues;
-            organizations = foodOrganizations;
-        }
-        else if(issue.equals("Climate Change")){
-            organizations = climateOrganizations;
-            specificIssues = climateSpecificIssues;
-        }
-        else if(issue.equals("Human Rights")){
-            organizations = humanRightsOrganizations;
-            specificIssues = humanRightsSpecificIssues;
-        }
-        else{
-            organizations = povertyOrganizations;
-            specificIssues = povertySpecificIssues;
-        }
+
         ButterKnife.bind(this);
         issueTitle.setText(issue);
         issueSubsectionTitles = new ArrayList<>();
         upcomingEvents = new String[3];
-        //pastEvents = new ArrayList<>();
         issueSubsectionTitles.addAll(Arrays.asList(strs));
         upEvents = new ArrayList<String>();
         allUsers = new ArrayList<>();
         venues = new ArrayList<>();
         events = new ArrayList<>();
-        adapter = new IssueDetailsAdapter(issue, issueSubsectionTitles, specificIssues, organizations, upEvents); //, pastEvents
-        eventAdapter = new EventAdapter(events, allUsers, 0);
+        adapter = new IssueDetailsAdapter(issue, issueSubsectionTitles, specificIssues, organizations, upEvents, events);
         rvIssueSubsections = (RecyclerView) findViewById(R.id.rvIssueSubsections);
         rvIssueSubsections.setLayoutManager(new LinearLayoutManager(this));
         rvIssueSubsections.setAdapter(adapter);
@@ -154,7 +156,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIndeterminate(true);
         progress.show();
-        counterToGetPositionOfEvent=0;
+        counterToGetPositionOfEvent = 0;
         client.getInfoByQuery(issue,tvLatitude,tvLongitude,distance,new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -163,16 +165,16 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
                     for (int i = 0 ; i < 3; i++){
                         Event event = Event.fromJSON(eventsObject.getJSONObject(i));
                         events.add(event);
-                        eventAdapter.notifyItemInserted(events.size() -1);
                         upEvents.add(event.tvEventName);
-                        //upcomingEvents[i]=event.tvEventName;
-                       adapter.notifyItemInserted(upEvents.size() -1);
+                        adapter.notifyItemInserted(upEvents.size() - 1);
+                        adapter.notifyItemInserted(events.size() - 1);
                         adapter.notifyDataSetChanged();
-                        if(i == eventsObject.length() -1)
+                        if(i == 2)
                             eventRequestCompleted = true;
                     }
+
                     if(eventRequestCompleted) {
-                        counterToSetOrganizer =0;
+                        counterToSetOrganizer = 0;
                         for (int i = 0; i < events.size(); i++) {
                             client.getOrganizerInfo(events.get(i).getOrganizerId(), new JsonHttpResponseHandler() {
                                 @Override
@@ -180,13 +182,16 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
                                     Organizer organizer = Organizer.fromJson(response);
                                     events.get(counterToSetOrganizer).setOrganizer(organizer);
                                     counterToSetOrganizer++;
+                                    adapter.notifyDataSetChanged();
                                 }
                             });
                         }
                     }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
                 finally {
                     for (int i = 0; i < events.size(); i++) {
                         if (eventRequestCompleted) {
@@ -194,7 +199,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
                                 @Override
                                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                                     try {
-                                        Venue venue = Venue.fromJSON(response.getJSONObject("address"));
+                                        Venue venue = Venue.fromJSON(response);
                                         venues.add(venue);
                                         events.get(counterToGetPositionOfEvent).setVenue(venue);
                                         String address ="";
@@ -206,7 +211,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
                                             address += ", "+ venue.getCountry();
                                         events.get(counterToGetPositionOfEvent).setTvEventInfo(events.get(counterToGetPositionOfEvent).getTvEventInfo() +"\n"+ address);
                                         counterToGetPositionOfEvent++;
-                                        eventAdapter.notifyDataSetChanged();
+                                        adapter.notifyDataSetChanged();
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -293,7 +298,6 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
                 } else {
                     Toast.makeText(IssueDetailsActivity.this, "Permission denied!", Toast.LENGTH_LONG).show();
                 }
-                return;
             }
         }
     }

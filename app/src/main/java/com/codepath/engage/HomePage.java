@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.Profile;
@@ -61,9 +63,10 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     //Variable that will reference the Search view/Search bar icon
     @BindView(R.id.search) SearchView searchView;
     @BindView(R.id.btnFilter) ImageButton btnFilter;
+    @BindView(R.id.hpIssues) TextView hpIssues;
     String distance;
     String query;
-
+    Context context;
     //Will hold the text that the user inputs to the search view
     private String valueOfQuery;
 
@@ -83,9 +86,12 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+        context = getApplicationContext();
 
         ButterKnife.bind(this);
+        Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Molengo-Regular.ttf");
 
+        hpIssues.setTypeface(font);
         //Getting user location and setting location in google maps
         isGooglePlayServicesAvailable();
         locationRequest = new LocationRequest();
@@ -102,21 +108,13 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
 
         setSupportActionBar(toolbar);
         URL profile_picture = null;
+
+
         try {
             profile_picture = new URL("https://graph.facebook.com/" + Profile.getCurrentProfile().getId() + "/picture?width=200&height=200");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-//        String profilePicture = profile_picture.toString();
-//
-//        Glide.with(this).load(profilePicture).centerCrop().into(profileImage);
-//
-//        profileImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mDrawer.openDrawer(Gravity.RIGHT);
-//            }
-//        });
 
         String[] strs = {"Women", "Food", "Climate Change", "Human Rights", "Poverty"};
         issues = new ArrayList<>();
@@ -188,6 +186,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     //Performs the Searching Of Desired Event Category
     //TODO finish this function
     private void searchFor(String query){ }
+
 
 
     private void closeSearchView(SearchView searchView){

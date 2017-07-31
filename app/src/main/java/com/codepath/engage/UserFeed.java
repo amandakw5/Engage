@@ -26,7 +26,6 @@ public class UserFeed extends AppCompatActivity {
     ImageView profileImage;
     Context context;
     String uid;
-    private DatabaseReference mDatabase;
     String whichprofile;
     public ArrayList<String> feedUsers;
 
@@ -34,50 +33,35 @@ public class UserFeed extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_feed);
-//        //find the recycler view
         events = new ArrayList<>();
         feedUsers = new ArrayList<>();
         profileImage = (ImageView) findViewById(R.id.profileImage);
         rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
-        //constructing the adapter from this datasoruce
-//        //eventAdapter = new EventAdapter(events);
-//        //recycler view setup(layout manager, use adapter'
-//        rvEvents.setLayoutManager(new LinearLayoutManager(this));
-//        // set the adapter
-//        //rvEvents.setAdapter(eventAdapter);
-//        //Linking Firebase Database to variable
-//        mDataBase = FirebaseDatabase.getInstance().getReference();
-//        setUserEvents();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 currentProfile = dataSnapshot.child("users").child(Profile.getCurrentProfile().getId()).getValue(User.class);
-                whichprofile = currentProfile.firstName + " " + currentProfile.lastName;
-                if (currentProfile.following != null){
-                    for(String ids: currentProfile.following.values()){
-                        //all the event IDS from someone user is following is followersSaved
-                        DataSnapshot followersSaved = dataSnapshot.child("users").child(ids).child("eventsList");
-                        // for each event ID
-                        for (DataSnapshot followersEvents: followersSaved.getChildren()){
-                           // dataSnapshot.child("savedEvents").child(followersEvents.getValue(String));
-                            String e = (String) followersEvents.getValue();
-                            for (DataSnapshot findEvent: dataSnapshot.child("savedEvents").getChildren()){
-                                if ((findEvent.getKey()).equals(e)) {
-                                    events.add(findEvent.getValue(UserEvents.class));
-                                    feedUsers.add((dataSnapshot.child("users").child(ids).child("firstName").getValue() + " " + (dataSnapshot.child("users").child(ids).child("lastName").getValue())));
-                                    adapter.notifyDataSetChanged();
+                if (currentProfile != null) {
+                    whichprofile = currentProfile.firstName + " " + currentProfile.lastName;
+                    if (currentProfile.following != null) {
+                        for (String ids : currentProfile.following.values()) {
+                            //all the event IDS from someone user is following is followersSaved
+                            DataSnapshot followersSaved = dataSnapshot.child("users").child(ids).child("eventsList");
+                            // for each event ID
+                            for (DataSnapshot followersEvents : followersSaved.getChildren()) {
+                                // dataSnapshot.child("savedEvents").child(followersEvents.getValue(String));
+                                String e = (String) followersEvents.getValue();
+                                for (DataSnapshot findEvent : dataSnapshot.child("savedEvents").getChildren()) {
+                                    if ((findEvent.getKey()).equals(e)) {
+                                        events.add(findEvent.getValue(UserEvents.class));
+                                        feedUsers.add((dataSnapshot.child("users").child(ids).child("firstName").getValue() + " " + (dataSnapshot.child("users").child(ids).child("lastName").getValue())));
+                                        adapter.notifyDataSetChanged();
+                                    }
                                 }
                             }
-                          //  events.add(e);
-
                         }
                     }
-//                    for (int i = 0; i < currentProfile.following.size(); i++){
-//                        //for each person they are following, get their eventlist
-//                        String id = currentProfile.following.get(i);
-//                        DataSnapshot followersSaved = dataSnapshot.child(id).child("eventList");
-//
                 }
             }
             @Override
@@ -89,9 +73,6 @@ public class UserFeed extends AppCompatActivity {
 
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
         rvEvents.setAdapter(adapter);
-        //Glide.with(context).load(currentProfile.profilePicture).centerCrop().into(profileImage);
-
-
     }
 
 }

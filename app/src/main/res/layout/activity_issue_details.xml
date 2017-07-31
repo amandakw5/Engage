@@ -10,13 +10,12 @@
         android:id="@+id/issueTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="115dp"
         android:layout_marginStart="115dp"
         android:layout_marginTop="16dp"
-        android:text="issueTitle"
+        android:gravity="center"
+        android:text="Issue Title"
         android:textSize="30sp" />
 
     <android.support.v7.widget.RecyclerView

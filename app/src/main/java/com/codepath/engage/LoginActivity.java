@@ -36,9 +36,9 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -103,7 +103,6 @@ public class LoginActivity extends AppCompatActivity {
                                     user.setNumFollowers(0);
                                     user.setFollowers(new HashMap<String,String>());
                                     user.setFollowing(new HashMap<String,String>());
-                                    //user.setEventsList(new List<String>());
                                     user.setNumFollowing(0);
                                     try {
                                         String id = object.getString("id");
@@ -230,7 +229,6 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(LoginActivity.this, "User is not signed in or does not exist.", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "User is not signed in or is null");
         }
-        super.onStart();
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
@@ -257,7 +255,6 @@ public class LoginActivity extends AppCompatActivity {
 
     public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String, String> followers, HashMap<String, String> following, final Bundle facebookData) { //, List<String> eventsList
         final User user = new User(uid, firstName, lastName, email, profilePicture, numFollowers, numFollowing, followers, following); //, eventsList
-
         mDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
