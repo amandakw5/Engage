@@ -89,10 +89,11 @@ public class ProfileActivity extends AppCompatActivity {
                 currentProfile = dataSnapshot.getValue(User.class);
                 if (uid.equals( Profile.getCurrentProfile().getId())){
                     u = currentProfile;
-                    Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
-                    following.setText(u.numFollowing + " following");
-                    followers.setText(u.numFollowers + " followers");
+
                 }
+                Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
+                following.setText(u.numFollowing + " following");
+                followers.setText(u.numFollowers + " followers");
             }
 
             @Override
