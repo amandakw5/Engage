@@ -20,6 +20,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.codepath.engage.models.CreatedEvents;
+import com.codepath.engage.models.UserEvents;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -56,7 +57,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
     private static final String REQUIRED_MSG = "required";
     private boolean selectedTime = false;
     private boolean selectedDate = false;
-    private int mYear, mMonth, mDay, mHour, mMinute;
+    private String mYear, mMonth, mDay, mHour, mMinute, half;
     private boolean finishedAddingEvent = false;
     String uid;
     long createdEventID;
@@ -90,12 +91,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         });
         storage = FirebaseStorage.getInstance().getReference();
         progress = new ProgressDialog(this);
-        if ((mHour != 0) && (mMinute) != 0) {
-            eTime.setText(mHour + ":" + mMinute);
-        }
-        if ((mYear != 0) && (mMonth != 0) && (mDay != 0)) {
-            eDate.setText(mYear + "/" + mMonth + "/" + mDay);
-        }
+
     }
     public void showTimePickerDialog(View v){
         TimePickerFragment newFragment = new TimePickerFragment();
@@ -115,9 +111,19 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, monthOfYear);
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        mYear = year;
-        mMonth = monthOfYear;
-        mDay = dayOfMonth;
+        mYear = "" + year;
+        if (monthOfYear > 9){
+            mMonth = "" +monthOfYear;
+        }
+        else{
+            mMonth = "0" +monthOfYear;
+        }
+        if (dayOfMonth > 9){
+            mDay = "" +dayOfMonth;
+        }
+        else{
+            mDay = "0" +dayOfMonth;
+        }
         eDate.setText(mMonth + "/" + mDay + "/" + mYear);
         selectedDate =true;
     }
@@ -137,6 +143,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             createdEventInfo.add(String.valueOf(date));
             finishedAddingEvent = false;
             i.putExtra("createdEventInfo", Parcels.wrap(createdEventInfo));
+            final UserEvents newEv = new UserEvents(eventName, Profile.getCurrentProfile().getFirstName() + " "+ Profile.getCurrentProfile().getLastName(), mMonth + "-" +mDay + " " + mHour + ":" + mMinute + " " + half, eventLocation,  null, null, eventDescription, Profile.getCurrentProfile().getId(), date);
             final CreatedEvents createdEvent = new CreatedEvents(eventName,eventLocation,eventDescription,String.valueOf(mHour),String.valueOf(mMinute),String.valueOf(mDay),String.valueOf(mMonth),String.valueOf(mYear), Profile.getCurrentProfile().getId(), date);
             rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -148,8 +155,8 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 createdEventID = dataSnapshot.getChildrenCount() + 1;
                                 Log.i("Info", String.valueOf(createdEventID));
-                                rootRef.child("CreatedEvents").child(String.valueOf(createdEventID)).setValue(createdEvent);
-                                finishedAddingEvent =true;
+                                rootRef.child("CreatedEvents").child(String.valueOf(createdEventID)).setValue(newEv);
+                                finishedAddingEvent = true;
                                 AlertDialog.Builder builder;
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                     builder = new AlertDialog.Builder(CreateEventActivity.this, android.R.style.Theme_Material_Dialog_Alert);
@@ -180,8 +187,9 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
 
                             }
                         });
-                    }else{
-                        rootRef.child("CreatedEvents").child("1").setValue(createdEvent);
+                    }
+                    else{
+                        rootRef.child("CreatedEvents").child("1").setValue(newEv);
                         AlertDialog.Builder builder;
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             builder = new AlertDialog.Builder(CreateEventActivity.this, android.R.style.Theme_Material_Dialog_Alert);
@@ -232,20 +240,20 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        mHour = hourOfDay;
-        mMinute = minute;
-        String half;
-        if (mHour > 12){
+        if (hourOfDay > 12){
             half = "PM";
-            mHour = mHour % 12;
+            mHour = "" + hourOfDay % 12;
         }
         else{
             half = "AM";
+            mHour = "0" + hourOfDay;
         }
-        if (mMinute < 10){
+        if (minute < 10){
+            mMinute = "0" + minute;
             eTime.setText(mHour + ":0" + mMinute);
         }
         else{
+            mMinute = "" + minute;
             eTime.setText(mHour + ":" + mMinute + " " + half);
         }
         selectedTime = true;

@@ -61,7 +61,8 @@ public class DrawerMenuItem {
         switch (mMenuPosition){
             case DRAWER_MENU_ITEM_PROFILE:
                 Intent i = new Intent (mContext, ProfileActivity.class);
-                i.putExtra("whichProfile", "You are ");
+                i.putExtra("whichProfile", "You");
+                i.putExtra("verb", " are ");
                 mContext.startActivity(i);
                 break;
             case DRAWER_MENU_ITEM_FEED:
