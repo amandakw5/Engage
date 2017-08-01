@@ -6,6 +6,7 @@ import android.util.Log;
 import com.codepath.engage.fcm.FcmNotificationBuilder;
 import com.codepath.engage.models.Chat;
 import com.codepath.engage.utils.Constants;
+import com.codepath.engage.utils.SharedPrefUtil;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -60,13 +61,13 @@ public class ChatInteractor implements ChatContract.Interactor {
                     databaseReference.child(Constants.ARG_CHAT_ROOMS).child(room_type_1).child(String.valueOf(chat.timestamp)).setValue(chat);
                     getMessageFromFirebaseUser(chat.senderUid, chat.receiverUid);
                 }
-//                // send push notification to the receiver
-//                sendPushNotificationToReceiver(chat.sender,
-//                        chat.message,
-//                        chat.senderUid,
-//                        new SharedPrefUtil(context).getString(Constants.ARG_FIREBASE_TOKEN),
-//                        receiverFirebaseToken);
-//                mOnSendMessageListener.onSendMessageSuccess();
+                // send push notification to the receiver
+                sendPushNotificationToReceiver(chat.sender,
+                        chat.message,
+                        chat.senderUid,
+                        new SharedPrefUtil(context).getString(Constants.ARG_FIREBASE_TOKEN),
+                        receiverFirebaseToken);
+                mOnSendMessageListener.onSendMessageSuccess();
             }
 
             @Override

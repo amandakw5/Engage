@@ -52,12 +52,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         username,
                         uid,
                         fcmToken);
+                Log.i("MESSAGE","Goes here");
+
             } else {
                 EventBus.getDefault().post(new PushNotificationEvent(title,
                         message,
                         username,
                         uid,
                         fcmToken));
+                Log.i("MESSAGE","Goes here");
             }
         }
     }
@@ -91,5 +94,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0, notificationBuilder.build());
+    }
+
+    @Override
+    public void handleIntent(Intent intent) {
+        super.handleIntent(intent);
     }
 }

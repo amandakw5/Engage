@@ -58,8 +58,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
-import static com.codepath.engage.R.string.location;
-
 public class  ViewEvents extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
 
     //Setting the view for U.I
@@ -269,7 +267,9 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             }
         });
     }
-
+    /*
+        Deal with the retrieval of events from firabase that include the various storages, for now serach is included to our personal databse and event brites events.
+     */
     private void populateEvents(String query){
         progress.setMessage("Retrieving Events");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -279,7 +279,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         events.clear();
         venues.clear();
         valueOfQuery = query;
-        //Getting events stored from in firabse database
+        //Getting events stored from in firabse database created by user on our own app
         createdEvents.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -289,7 +289,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
                     CreatedEvents userEvents = snapshot.getValue(CreatedEvents.class);
                     Event event = new Event(userEvents.getEventName(),userEvents.getEventLocation() + "\n" +userEvents.getEventMonth() +"/"+  userEvents.getEventDay() + " " + userEvents.getEventHour()+":"+userEvents.getEventMinute(),userEvents.getEventDescription(),"null",String.valueOf(i));
-                    if(userEvents.getEventName().contains(valueOfQuery)) {
+                    if( userEvents.getEventName().toLowerCase().contains(valueOfQuery.toLowerCase())) {
                         event.setCreatedEvent(true);
                         events.add(event);
                         eventAdapter.notifyItemInserted(events.size() - 1);
@@ -299,6 +299,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                         if (aSplit.contains(valueOfQuery))
                             includeEvent++;
                     }
+                    i++;
                 }
             }
 
@@ -308,6 +309,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             }
         });
         //End getting data from stored firebase database
+        //Retrieving events from firebase if they match the search query
         counterToGetPositionOfEvent=0;
         eventRequestCompleted = false;
         client.getInfoByQuery(valueOfQuery,tvLatitude,tvLongitude,distance,new JsonHttpResponseHandler(){
@@ -386,6 +388,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                         }
                     }
                 }
+                progress.dismiss();
+
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -421,7 +425,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     String f = (String) evSnapshot.child("firstName").getValue();
                     String l = (String) evSnapshot.child("lastName").getValue();
                     if (f != null && l != null) {
-                        if (f.equals(first) && l.equals(last)) {
+                        if (f.toLowerCase().contains(first.toLowerCase()) && l.toLowerCase().contains(last.toLowerCase())) {
                             User u = evSnapshot.getValue(User.class);
                             if (u != null) {
                                 u.setUid(evSnapshot.getKey());
