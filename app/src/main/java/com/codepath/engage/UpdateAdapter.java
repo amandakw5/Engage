@@ -40,26 +40,10 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
         this.dates = dates;
         finalEvents = new ArrayList<>();
         mEvents = events;
-                //sortByDate(events);
         profilePage = who;
         verb = v;
     }
-    public ArrayList<UserEvents> sortByDate(ArrayList<UserEvents> ev){
-        for (UserEvents u: ev){
-            dates.add(u.date);
-        }
-        if (!(dates.equals(null))){
-            Collections.sort(dates);
-            for(Date d: dates){
-                for (UserEvents ue: ev){
-                    if (ue.date.equals(d)){
-                        finalEvents.add(ue);
-                    }
-                }
-            }
-        }
-        return finalEvents;
-    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

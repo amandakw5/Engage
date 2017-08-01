@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class UserFeed extends AppCompatActivity {
     FeedAdapter adapter;
@@ -28,6 +29,7 @@ public class UserFeed extends AppCompatActivity {
     String uid;
     String whichprofile;
     public ArrayList<String> feedUsers;
+    public ArrayList<Date> dates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class UserFeed extends AppCompatActivity {
         setContentView(R.layout.activity_user_feed);
         events = new ArrayList<>();
         feedUsers = new ArrayList<>();
+        dates = new ArrayList<>();
         profileImage = (ImageView) findViewById(R.id.profileImage);
         rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -54,8 +57,10 @@ public class UserFeed extends AppCompatActivity {
                                 String e = (String) followersEvents.getValue();
                                 for (DataSnapshot findEvent : dataSnapshot.child("savedEvents").getChildren()) {
                                     if ((findEvent.getKey()).equals(e)) {
-                                        events.add(findEvent.getValue(UserEvents.class));
+                                        UserEvents currente = findEvent.getValue(UserEvents.class);
+                                        events.add(currente);
                                         feedUsers.add((dataSnapshot.child("users").child(ids).child("firstName").getValue() + " " + (dataSnapshot.child("users").child(ids).child("lastName").getValue())));
+                                        dates.add(currente.date);
                                         adapter.notifyDataSetChanged();
                                     }
                                 }
@@ -69,7 +74,7 @@ public class UserFeed extends AppCompatActivity {
 
             }
         });
-        adapter = new FeedAdapter(events, feedUsers);
+        adapter = new FeedAdapter(events, feedUsers, dates);
 
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
         rvEvents.setAdapter(adapter);

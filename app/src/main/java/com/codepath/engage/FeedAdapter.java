@@ -17,6 +17,8 @@ import com.codepath.engage.models.UserEvents;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,11 +28,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     private Context context;
     private String profilePage;
     public ArrayList<String> feedUsers;
+    public ArrayList<Date> dates;
 
 
-    public FeedAdapter(ArrayList<UserEvents> events, ArrayList<String> users ) {
+    public FeedAdapter(ArrayList<UserEvents> events, ArrayList<String> users, ArrayList<Date> edates) {
         mEvents = events;
         feedUsers = users;
+        dates = edates;
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -39,14 +43,27 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         // create the view using the item_movie layout
         View updateView = inflater.inflate(R.layout.item_update, parent, false);
         ViewHolder viewHolder = new ViewHolder(updateView);
-
+        if (!(dates.equals(null))) {
+            Collections.sort(dates, Collections.reverseOrder());
+        }
         return viewHolder;
     }
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        UserEvents e = mEvents.get(position);
-        String currentUser = feedUsers.get(position);
-        holder.update.setText(currentUser + " is interested in " + e.eventName);
+        Date d = dates.get(position);
+        int counter = 0;
+        for (UserEvents ue: mEvents) {
+            if ((ue.date.equals(d))) {
+                UserEvents e = ue;
+                String currentUser = feedUsers.get(counter);
+                holder.update.setText(currentUser + " is interested in " + e.eventName);
+            }
+            counter++;
+        }
+
+//        UserEvents e = mEvents.get(position);
+//        String currentUser = feedUsers.get(position);
+//        holder.update.setText(currentUser + " is interested in " + e.eventName);
     }
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.notification)
