@@ -58,8 +58,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
-import static com.codepath.engage.R.string.location;
-
 public class  ViewEvents extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
 
     //Setting the view for U.I
@@ -289,7 +287,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
                     CreatedEvents userEvents = snapshot.getValue(CreatedEvents.class);
                     Event event = new Event(userEvents.getEventName(),userEvents.getEventLocation() + "\n" +userEvents.getEventMonth() +"/"+  userEvents.getEventDay() + " " + userEvents.getEventHour()+":"+userEvents.getEventMinute(),userEvents.getEventDescription(),"null",String.valueOf(i));
-                    if(userEvents.getEventName().contains(valueOfQuery)) {
+                    if( userEvents.getEventName().toLowerCase().contains(valueOfQuery.toLowerCase())) {
                         event.setCreatedEvent(true);
                         events.add(event);
                         eventAdapter.notifyItemInserted(events.size() - 1);
