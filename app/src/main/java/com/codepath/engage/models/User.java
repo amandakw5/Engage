@@ -15,6 +15,7 @@ import java.util.List;
 @Parcel
 public class User {
     public String uid;
+
     public String firstName;
     public String lastName;
     public String email;

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.TextView;
 
+import com.codepath.engage.ui.activities.SplashActivity;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mindorks.placeholderview.annotations.Click;
@@ -22,6 +23,8 @@ public class DrawerMenuItem {
     public static final int DRAWER_MENU_ITEM_EVENTS = 3;
     public static final int DRAWER_MENU_ITEM_CREATE = 4;
     public static final int DRAWER_MENU_ITEM_LOGOUT = 5;
+    public static final int DRAWER_MENU_ITEM_MESSAGE = 6;
+
 
     private int mMenuPosition;
     private Context mContext;
@@ -54,6 +57,9 @@ public class DrawerMenuItem {
                 break;
             case DRAWER_MENU_ITEM_LOGOUT:
                 itemNameTxt.setText("Log Out");
+                break;
+            case DRAWER_MENU_ITEM_MESSAGE:
+                itemNameTxt.setText("Message");
         }
     }
     @Click(R.id.mainView)
@@ -70,7 +76,8 @@ public class DrawerMenuItem {
                 mContext.startActivity(feedInt);
                 break;
             case DRAWER_MENU_ITEM_EVENTS:
-
+                Intent intent1 = new Intent(mContext, SplashActivity.class);
+                mContext.startActivity(intent1);
                 break;
             case DRAWER_MENU_ITEM_CREATE:
                 Intent in = new Intent(mContext, CreateEventActivity.class);
@@ -81,6 +88,9 @@ public class DrawerMenuItem {
                 LoginManager.getInstance().logOut();
                 Intent intent = new Intent(mContext, LoginActivity.class);
                 mContext.startActivity(intent);
+                break;
+            case DRAWER_MENU_ITEM_MESSAGE:
+
                 break;
         }
     }
