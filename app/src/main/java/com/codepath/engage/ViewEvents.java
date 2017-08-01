@@ -297,6 +297,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                         if (aSplit.contains(valueOfQuery))
                             includeEvent++;
                     }
+                    i++;
                 }
             }
 
@@ -384,6 +385,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                         }
                     }
                 }
+                progress.dismiss();
+
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -419,7 +422,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     String f = (String) evSnapshot.child("firstName").getValue();
                     String l = (String) evSnapshot.child("lastName").getValue();
                     if (f != null && l != null) {
-                        if (f.equals(first) && l.equals(last)) {
+                        if (f.toLowerCase().contains(first.toLowerCase()) && l.toLowerCase().contains(last.toLowerCase())) {
                             User u = evSnapshot.getValue(User.class);
                             if (u != null) {
                                 u.setUid(evSnapshot.getKey());
