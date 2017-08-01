@@ -103,7 +103,7 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
                 // create intent for the new activity
                 Intent intent = new Intent(context, IssueDetailsActivity.class);
                 intent.putExtra("current", currentIssue);
-                // serialize the movie using parceler, use its short name as a key
+                // serialize the movie using parceler
                 // show the activity
                 context.startActivity(intent);
             }

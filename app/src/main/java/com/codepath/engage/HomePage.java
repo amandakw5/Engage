@@ -24,6 +24,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -60,17 +61,14 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     @BindView(R.id.drawerView) PlaceHolderView mDrawerView;
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
     @BindView(R.id.toolbar) Toolbar toolbar;
-    //Variable that will reference the Search view/Search bar icon
     @BindView(R.id.search) SearchView searchView;
     @BindView(R.id.btnFilter) ImageButton btnFilter;
     @BindView(R.id.hpIssues) TextView hpIssues;
     String distance;
     String query;
     Context context;
+
     //Will hold the text that the user inputs to the search view
-//    private String valueOfQuery;
-//
-//    private ArrayAdapter<String> mAdapter;
 
     //Following variables are for maps
     final String TAG = "GPS";
@@ -90,6 +88,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Molengo-Regular.ttf");
 
         hpIssues.setTypeface(font);
+
         //Getting user location and setting location in google maps
         isGooglePlayServicesAvailable();
         locationRequest = new LocationRequest();
@@ -103,8 +102,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-
-        ActionBar actionbar = getSupportActionBar();
 
         setSupportActionBar(toolbar);
 
@@ -145,7 +142,8 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
 
                     }
                 });
-                popup.show(); //show popup menu
+                //show popup menu
+                popup.show();
 
             }
         });
@@ -174,12 +172,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         mDrawer.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
     }
-
-    //Performs the Searching Of Desired Event Category
-    //TODO finish this function
-    private void searchFor(String query){ }
-
-
 
     private void closeSearchView(SearchView searchView){
         searchView.setIconified(true);
@@ -322,6 +314,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         Log.d(TAG, "This device is supported.");
         return true;
     }
+
 
     private void showAlert() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);

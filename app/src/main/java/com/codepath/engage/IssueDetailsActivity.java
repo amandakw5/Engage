@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -54,6 +55,8 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
     String[] specificIssues;
     String[] organizations;
     String[] upcomingEvents;
+    String[] urlIssues;
+    String[] urlOrgs;
     ArrayList<Venue> venues;
     List<String> upEvents;
     @BindView(R.id.issueTitle) TextView issueTitle;
@@ -81,13 +84,23 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
         String[] womenSpecificIssues = new String[] {"Sexual and Reproductive Rights","Freedom from violence", "Economic and Political Empowerment"};
         String[] womenOrganizations = new String[] {"National Organization for Women","Planned Parenthood", "Association of Women's Rights in Development", "American Association of University Women"};
         String[] foodSpecificIssues = new String[] {"World Hunger", "Malnutrition"};
-        String[] foodOrganizations = new String[] {"World Food Program", "World Bank", "The Food and Agriculture Organization of the United Nations"};
-        String[] climateSpecificIssues = new String[] {"Global Warming", "Rising Sea Levels", "More Frequent Extreme Weather"};
+        String[] foodOrganizations = new String[] {"World Food Program", "Action Against Hunger", "The Food and Agriculture Organization of the United Nations"};
+        String[] climateSpecificIssues = new String[] {"Global Warming/Climate Change", "Rising Sea Levels", "More Frequent Extreme Weather"};
         String[] climateOrganizations = new String[] {"350.org", "GreenPeace","Climate Reality Project", "iMatter"};
         String[] humanRightsSpecificIssues = new String[] {"LGBTQ Rights", "Disability Rights", "Racism", "Refugee Rights"};
         String[] humanRightsOrganizations = new String[] {"Amnesty International", "Human Rights Watch", "Human Rights Campaign"};
         String[] povertySpecificIssues = new String[] {"Education", "Homelessness", "Poor Health"};
         String[] povertyOrganizations = new String[] {"ONE Campaign", "UNICEF", "Partners in Health"};
+        String[] wSpecificIssues = new String[] {"http://www.ohchr.org/EN/Issues/Women/WRGS/Pages/HealthRights.aspx", "http://www.ohchr.org/EN/Issues/Women/WRGS/Pages/VAW.aspx", "http://www.unwomen.org/en/what-we-do/economic-empowerment", "http://www.unwomen.org/en"};
+        String[] wOrganizations = new String[] {"http://now.org/about/", "https://www.plannedparenthood.org/learn", "https://www.awid.org/about-us", "http://salsa4.salsalabs.com/o/50796/p/dia/action4/common/public/?action_KEY=22954", "https://en.wikipedia.org/wiki/List_of_women%27s_organizations"};
+        String[] fSpecificIssues = new String[] {"http://www.worldhunger.org/learn-about-hunger/", "https://data.unicef.org/topic/nutrition/malnutrition/", "http://www.un.org/en/sections/issues-depth/food/index.html"};
+        String[] fOrganizations = new String[] {"http://www1.wfp.org/overview", "http://www.actionagainsthunger.org/about", "http://www.fao.org/about/en/", "https://mswonlineprograms.org/poverty-hunger/"};
+        String[] cSpecificIssues = new String[] {"http://www.un.org/en/sections/issues-depth/climate-change/", "http://www.nationalgeographic.com/environment/global-warming/sea-level-rise/", "http://nca2014.globalchange.gov/highlights/report-findings/extreme-weather", "http://www.un.org/sustainabledevelopment/climatechange/"};
+        String[] cOrganizations = new String[] {"https://350.org/about/", "http://greenpeacefund.org/our-projects/", "https://www.climaterealityproject.org/our-mission", "http://www.imatteryouth.org/about-us/", "https://en.wikipedia.org/wiki/Category:Climate_change_organizations"};
+        String[] hRSpecificIssues = new String[] {"https://www.unfe.org/about/", "https://www.ada.gov/cguide.htm", "http://www.un.org/en/events/racialdiscriminationday/index.shtml", "http://www.unhcr.org/afr/publications/brochures/3b779dfe2/protecting-refugees-questions-answers.html", "http://www.ohchr.org/EN/Issues/Pages/WhatareHumanRights.aspx"};
+        String[] hROrganizations = new String[] {"https://www.amnesty.org/en/", "https://www.hrw.org/topic/lgbt-rights", "http://www.hrc.org/", "http://www.humanrights.com/voices-for-human-rights/human-rights-organizations/non-governmental.html"};
+        String[] pSpecificIssues = new String[] {"http://www.un.org/sustainabledevelopment/wp-content/uploads/2017/02/ENGLISH_Why_it_Matters_Goal_4_QualityEducation.pdf", "http://www.ohchr.org/EN/Issues/Housing/Pages/Homelessnessandhumanrights.aspx", "https://www.healthpovertyaction.org/info-and-resources/the-cycle-of-poverty-and-poor-health/key-facts/", "http://www.un.org/sustainabledevelopment/poverty/"};
+        String[] pOrganizations = new String[] {"https://www.one.org/international/about/", "https://www.unicef.org/about-us", "https://www.pih.org/pages/our-mission", "https://borgenproject.org/top-10-global-poverty-nonprofits/"};
         Intent intent = getIntent();
         String issue = intent.getStringExtra("current");
 
@@ -116,22 +129,32 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
             case "Women":
                 organizations = womenOrganizations;
                 specificIssues = womenSpecificIssues;
+                urlIssues = wSpecificIssues;
+                urlOrgs = wOrganizations;
                 break;
             case "Food":
                 specificIssues = foodSpecificIssues;
                 organizations = foodOrganizations;
+                urlIssues = fSpecificIssues;
+                urlOrgs = fOrganizations;
                 break;
             case "Climate Change":
                 organizations = climateOrganizations;
                 specificIssues = climateSpecificIssues;
+                urlIssues = cSpecificIssues;
+                urlOrgs = cOrganizations;
                 break;
             case "Human Rights":
                 organizations = humanRightsOrganizations;
                 specificIssues = humanRightsSpecificIssues;
+                urlIssues = hRSpecificIssues;
+                urlOrgs = hROrganizations;
                 break;
             default:
                 organizations = povertyOrganizations;
                 specificIssues = povertySpecificIssues;
+                urlIssues = pSpecificIssues;
+                urlOrgs = pOrganizations;
                 break;
         }
 
@@ -144,7 +167,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
         allUsers = new ArrayList<>();
         venues = new ArrayList<>();
         events = new ArrayList<>();
-        adapter = new IssueDetailsAdapter(issue, issueSubsectionTitles, specificIssues, organizations, upEvents, events);
+        adapter = new IssueDetailsAdapter(issue, issueSubsectionTitles, specificIssues, organizations, upEvents, events, urlIssues, urlOrgs);
         rvIssueSubsections = (RecyclerView) findViewById(R.id.rvIssueSubsections);
         rvIssueSubsections.setLayoutManager(new LinearLayoutManager(this));
         rvIssueSubsections.setAdapter(adapter);
@@ -369,4 +392,5 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
                 });
         dialog.show();
     }
+
 }

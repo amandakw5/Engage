@@ -151,6 +151,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         locationRequest.setFastestInterval(FASTEST_INTERVAL);
 
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
         gac = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -158,7 +159,9 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 .build();
         if(!isLocationEnabled())
             showAlert();
+
         Intent intentQuery = getIntent();
+
         if(intentQuery != null && intentQuery.getStringExtra("Query") != null ){
             if(intentQuery.getStringExtra("distance") != null){
                 distance = intentQuery.getStringExtra("distance");
@@ -166,7 +169,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             callSearchFromIntent(intentQuery);
         }
         //Referencing the variables to their respective I.Ds for the xml style sheet
-//        ActionBar actionbar = getSupportActionBar();
         setSupportActionBar(toolbar);
         setUpDrawer();
 
@@ -228,8 +230,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             userAdapter = new UserAdapter(users,0);
             rvEvents.setAdapter(userAdapter);
             populateUsers(query);
-        }
-        else{
+        } else {
             eventAdapter = new EventAdapter(events, users, 1);
             rvEvents.setAdapter(eventAdapter);
             populateEvents(query);

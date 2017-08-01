@@ -13,11 +13,12 @@ public class CreatedEvents {
     private String eventDay;
     private String eventMonth;
     private String eventYear;
+    private String uid;
 
     public CreatedEvents() {
     }
 
-    public CreatedEvents(String eventName, String eventLocation, String eventDescription, String eventHour, String eventMinute, String eventDay, String eventMonth, String eventYear) {
+    public CreatedEvents(String eventName, String eventLocation, String eventDescription, String eventHour, String eventMinute, String eventDay, String eventMonth, String eventYear, String uid) {
         this.eventName = eventName;
         this.eventLocation = eventLocation;
         this.eventDescription = eventDescription;
@@ -26,6 +27,15 @@ public class CreatedEvents {
         this.eventDay = eventDay;
         this.eventMonth = eventMonth;
         this.eventYear = eventYear;
+        this.uid = uid;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getEventName() {
