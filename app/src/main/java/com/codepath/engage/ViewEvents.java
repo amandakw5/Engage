@@ -267,7 +267,9 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             }
         });
     }
-
+    /*
+        Deal with the retrieval of events from firabase that include the various storages, for now serach is included to our personal databse and event brites events.
+     */
     private void populateEvents(String query){
         progress.setMessage("Retrieving Events");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -277,7 +279,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         events.clear();
         venues.clear();
         valueOfQuery = query;
-        //Getting events stored from in firabse database
+        //Getting events stored from in firabse database created by user on our own app
         createdEvents.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -307,6 +309,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             }
         });
         //End getting data from stored firebase database
+        //Retrieving events from firebase if they match the search query
         counterToGetPositionOfEvent=0;
         eventRequestCompleted = false;
         client.getInfoByQuery(valueOfQuery,tvLatitude,tvLongitude,distance,new JsonHttpResponseHandler(){
