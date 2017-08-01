@@ -7,7 +7,6 @@ public class UserChat {
     public String uid;
     public String email;
     public String firebaseToken;
-
     public UserChat(){
 
     }

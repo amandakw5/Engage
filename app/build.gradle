@@ -74,7 +74,7 @@ dependencies {
     annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:2.4.0'
 
     //okhttp
-    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.squareup.okhttp3:okhttp:3.8.1'
 
     //event bus
     compile 'org.greenrobot:eventbus:3.0.0'
