@@ -76,8 +76,8 @@ public class DrawerMenuItem {
                 mContext.startActivity(feedInt);
                 break;
             case DRAWER_MENU_ITEM_EVENTS:
-                Intent intent1 = new Intent(mContext, SplashActivity.class);
-                mContext.startActivity(intent1);
+                Intent myEv = new Intent(mContext, MyEventsActivity.class);
+                mContext.startActivity(myEv);
                 break;
             case DRAWER_MENU_ITEM_CREATE:
                 Intent in = new Intent(mContext, CreateEventActivity.class);
@@ -90,7 +90,8 @@ public class DrawerMenuItem {
                 mContext.startActivity(intent);
                 break;
             case DRAWER_MENU_ITEM_MESSAGE:
-
+                Intent intent1 = new Intent(mContext, SplashActivity.class);
+                mContext.startActivity(intent1);
                 break;
         }
     }
