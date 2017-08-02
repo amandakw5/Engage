@@ -88,17 +88,17 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsAdapter.ViewHo
             itemView.setOnClickListener(this);
         }
 
-        @Override
-        public void onClick(View v) {
-            final int position = getAdapterPosition();
-            if (position != RecyclerView.NO_POSITION) {
-                final UserEvents event = mEvents.get(position);
-                Intent intent = new Intent(context, EventDetailsActivity.class);
-                intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
-                context.startActivity(intent);
-
-            }
-        }
+//        @Override
+//        public void onClick(View v) {
+//            final int position = getAdapterPosition();
+//            if (position != RecyclerView.NO_POSITION) {
+//                final UserEvents event = mEvents.get(position);
+//                Intent intent = new Intent(context, EventDetailsActivity.class);
+//                intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
+//                context.startActivity(intent);
+//
+//            }
+//        }
     }
 
     public UserEvents getEvent(int i){
