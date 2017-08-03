@@ -22,6 +22,10 @@ import com.codepath.engage.models.Chat;
 import com.codepath.engage.ui.activities.adapters.ChatRecyclerAdapter;
 import com.codepath.engage.utils.Constants;
 import com.facebook.Profile;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -101,6 +105,7 @@ public class ChatFragment extends Fragment implements ChatContract.View, TextVie
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_SEND) {
+
             sendMessage();
             return true;
         }
@@ -108,21 +113,32 @@ public class ChatFragment extends Fragment implements ChatContract.View, TextVie
     }
 
     private void sendMessage() {
-        String message = mETxtMessage.getText().toString();
-        String receiver = getArguments().getString(Constants.ARG_RECEIVER);
-        String receiverUid = getArguments().getString(Constants.ARG_RECEIVER_UID);
-        String sender = Profile.getCurrentProfile().getFirstName() + " " + Profile.getCurrentProfile().getLastName();
-        String senderUid = Profile.getCurrentProfile().getId();
-        String receiverFirebaseToken = getArguments().getString(Constants.ARG_FIREBASE_TOKEN);
-        Chat chat = new Chat(sender,
-                receiver,
-                senderUid,
-                receiverUid,
-                message,
-                System.currentTimeMillis());
-        mChatPresenter.sendMessage(getActivity().getApplicationContext(),
-                chat,
-                receiverFirebaseToken);
+
+        final String message = mETxtMessage.getText().toString();
+        final String receiver = getArguments().getString(Constants.ARG_RECEIVER);
+        final String receiverUid = getArguments().getString(Constants.ARG_RECEIVER_UID);
+        final String sender = Profile.getCurrentProfile().getFirstName() + " " + Profile.getCurrentProfile().getLastName();
+        final String senderUid = Profile.getCurrentProfile().getId();
+        FirebaseDatabase.getInstance().getReference("users").child(receiverUid).child("firebasetoken").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String receiverFirebaseToken =(String) dataSnapshot.getValue();
+                Chat chat = new Chat(sender,
+                        receiver,
+                        senderUid,
+                        receiverUid,
+                        message,
+                        System.currentTimeMillis());
+                mChatPresenter.sendMessage(getActivity().getApplicationContext(),
+                        chat,
+                        receiverFirebaseToken);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -158,4 +174,5 @@ public class ChatFragment extends Fragment implements ChatContract.View, TextVie
                     pushNotificationEvent.getUid());
         }
     }
+
 }

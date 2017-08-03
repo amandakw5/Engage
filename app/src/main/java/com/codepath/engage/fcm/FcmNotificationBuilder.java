@@ -113,12 +113,15 @@ public class FcmNotificationBuilder {
     private JSONObject getValidJsonBody() throws JSONException {
         JSONObject jsonObjectBody = new JSONObject();
         jsonObjectBody.put(KEY_TO, mReceiverFirebaseToken);
-
+        jsonObjectBody.put("priority","normal");
+        JSONObject jsonObjectInfo = new JSONObject();
+        jsonObjectInfo.put(KEY_TITLE,mTitle);
+        jsonObjectInfo.put("body",mMessage);
+        jsonObjectInfo.put("sound","default");
+        jsonObjectBody.put("notification",jsonObjectInfo);
         JSONObject jsonObjectData = new JSONObject();
         jsonObjectData.put(KEY_TITLE, mTitle);
         jsonObjectData.put(KEY_TEXT, mMessage);
-        jsonObjectData.put(KEY_USERNAME, mUsername);
-        jsonObjectData.put(KEY_UID, mUid);
         jsonObjectData.put(KEY_FCM_TOKEN, mFirebaseToken);
         jsonObjectBody.put(KEY_DATA, jsonObjectData);
 
