@@ -1,7 +1,6 @@
 package com.codepath.engage;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.codepath.engage.models.Event;
 import com.codepath.engage.models.User;
 import com.codepath.engage.models.UserEvents;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -67,7 +63,7 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsAdapter.ViewHo
         return mEvents.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView ivProfileImage;
         public TextView tvEventName;
         public TextView tvEventInfo;
@@ -85,7 +81,7 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsAdapter.ViewHo
             tvHost = (TextView) itemView.findViewById(R.id.tvHost);
             profileImage = (ImageView) itemView.findViewById(R.id.profileImage);
             name = (TextView) itemView.findViewById(R.id.name);
-            itemView.setOnClickListener(this);
+            //itemView.setOnClickListener(this);
         }
 
 //        @Override
