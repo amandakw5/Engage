@@ -25,11 +25,12 @@ public class User {
     public HashMap<String,String> followers;
     public HashMap<String,String>  following;
     public List<String> eventsList;
+    public String firebaseToken;
 
     public User(){
     }
 
-    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String,String> followers, HashMap<String,String> following) {
+    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String,String> followers, HashMap<String,String> following,String firebaseToken) {
         this.uid = uid;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -39,6 +40,7 @@ public class User {
         this.numFollowing = numFollowing;
         this.following = following;
         this.followers = followers;
+        this.firebaseToken = firebaseToken;
     }
 
     public List<String> getEventsList() {
