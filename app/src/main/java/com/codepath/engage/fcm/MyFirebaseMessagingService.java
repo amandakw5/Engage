@@ -4,8 +4,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -22,6 +20,7 @@ import org.greenrobot.eventbus.EventBus;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
+    private static String sound;
 
     /**
      * Called when message is received.
@@ -40,26 +39,25 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
             String title = remoteMessage.getData().get("title");
-            String message = remoteMessage.getData().get("text");
-            String username = remoteMessage.getData().get("username");
-            String uid = remoteMessage.getData().get("uid");
-            String fcmToken = remoteMessage.getData().get("fcm_token");
+            String message = remoteMessage.getData().get("body");
+            sound = remoteMessage.getNotification().getSound();
+            Log.i("INFO",remoteMessage.toString());
 
             // Don't show notification if chat activity is open.
-            if (!FirebaseChatMainApp.isChatActivityOpen()) {
+            if (!FirebaseChatMainApp.isChatActivityOpen()   {
                 sendNotification(title,
                         message,
-                        username,
-                        uid,
-                        fcmToken);
+                        "",
+                       "",
+                        "");
                 Log.i("MESSAGE","Goes here");
 
             } else {
                 EventBus.getDefault().post(new PushNotificationEvent(title,
                         message,
-                        username,
-                        uid,
-                        fcmToken));
+                        "",
+                        "",
+                        ""));
                 Log.i("MESSAGE","Goes here");
             }
         }
@@ -81,13 +79,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_messaging)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
-                .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager =
@@ -96,8 +92,4 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationManager.notify(0, notificationBuilder.build());
     }
 
-    @Override
-    public void handleIntent(Intent intent) {
-        super.handleIntent(intent);
-    }
 }

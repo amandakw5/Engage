@@ -6,19 +6,14 @@ import android.util.Log;
 import com.codepath.engage.fcm.FcmNotificationBuilder;
 import com.codepath.engage.models.Chat;
 import com.codepath.engage.utils.Constants;
-import com.codepath.engage.utils.SharedPrefUtil;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
-/**
- * Author: Kartik Sharma
- * Created on: 9/2/2016 , 10:08 PM
- * Project: FirebaseChat
- */
 
 public class ChatInteractor implements ChatContract.Interactor {
     private static final String TAG = "ChatInteractor";
@@ -53,19 +48,22 @@ public class ChatInteractor implements ChatContract.Interactor {
                 if (dataSnapshot.hasChild(room_type_1)) {
                     Log.e(TAG, "sendMessageToFirebaseUser: " + room_type_1 + " exists");
                     databaseReference.child(Constants.ARG_CHAT_ROOMS).child(room_type_1).child(String.valueOf(chat.timestamp)).setValue(chat);
+
                 } else if (dataSnapshot.hasChild(room_type_2)) {
                     Log.e(TAG, "sendMessageToFirebaseUser: " + room_type_2 + " exists");
                     databaseReference.child(Constants.ARG_CHAT_ROOMS).child(room_type_2).child(String.valueOf(chat.timestamp)).setValue(chat);
+
                 } else {
                     Log.e(TAG, "sendMessageToFirebaseUser: success");
                     databaseReference.child(Constants.ARG_CHAT_ROOMS).child(room_type_1).child(String.valueOf(chat.timestamp)).setValue(chat);
                     getMessageFromFirebaseUser(chat.senderUid, chat.receiverUid);
                 }
+                String senderFirebase = FirebaseInstanceId.getInstance().getToken();
                 // send push notification to the receiver
                 sendPushNotificationToReceiver(chat.sender,
                         chat.message,
                         chat.senderUid,
-                        new SharedPrefUtil(context).getString(Constants.ARG_FIREBASE_TOKEN),
+                        senderFirebase,
                         receiverFirebaseToken);
                 mOnSendMessageListener.onSendMessageSuccess();
             }
