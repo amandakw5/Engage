@@ -44,7 +44,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.i("INFO",remoteMessage.toString());
 
             // Don't show notification if chat activity is open.
-            if (!FirebaseChatMainApp.isChatActivityOpen()   {
+            if (!FirebaseChatMainApp.isChatActivityOpen() )  {
                 sendNotification(title,
                         message,
                         "",

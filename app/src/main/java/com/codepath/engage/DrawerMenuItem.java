@@ -22,8 +22,8 @@ public class DrawerMenuItem {
     public static final int DRAWER_MENU_ITEM_FEED = 2;
     public static final int DRAWER_MENU_ITEM_EVENTS = 3;
     public static final int DRAWER_MENU_ITEM_CREATE = 4;
-    public static final int DRAWER_MENU_ITEM_LOGOUT = 5;
-    public static final int DRAWER_MENU_ITEM_MESSAGE = 6;
+    public static final int DRAWER_MENU_ITEM_LOGOUT = 6;
+    public static final int DRAWER_MENU_ITEM_MESSAGE = 5;
 
 
     private int mMenuPosition;
@@ -55,11 +55,12 @@ public class DrawerMenuItem {
             case DRAWER_MENU_ITEM_CREATE:
                 itemNameTxt.setText("Create an Event");
                 break;
+            case DRAWER_MENU_ITEM_MESSAGE:
+                itemNameTxt.setText("Messaging");
+                break;
             case DRAWER_MENU_ITEM_LOGOUT:
                 itemNameTxt.setText("Log Out");
                 break;
-            case DRAWER_MENU_ITEM_MESSAGE:
-                itemNameTxt.setText("Message");
         }
     }
     @Click(R.id.mainView)
@@ -75,8 +76,6 @@ public class DrawerMenuItem {
                 mContext.startActivity(feedInt);
                 break;
             case DRAWER_MENU_ITEM_EVENTS:
-                Intent intent1 = new Intent(mContext, SplashActivity.class);
-                mContext.startActivity(intent1);
                 break;
             case DRAWER_MENU_ITEM_CREATE:
                 Intent in = new Intent(mContext, CreateEventActivity.class);
@@ -89,7 +88,8 @@ public class DrawerMenuItem {
                 mContext.startActivity(intent);
                 break;
             case DRAWER_MENU_ITEM_MESSAGE:
-
+                Intent intent1 = new Intent(mContext, SplashActivity.class);
+                mContext.startActivity(intent1);
                 break;
         }
     }
