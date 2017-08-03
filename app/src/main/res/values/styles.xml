@@ -31,7 +31,7 @@
         <item name="windowNoTitle">true</item>
     </style>
     <style name = "AppTheme.NoActionBar.Splash">
-        <item name ="android:windowBackground">@drawable/bg</item>
+        <item name="android:background">@drawable/logomark</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
