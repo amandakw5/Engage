@@ -40,6 +40,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DatabaseReference;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.mindorks.placeholderview.PlaceHolderView;
 
 import java.net.MalformedURLException;
@@ -49,6 +50,9 @@ import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.codepath.engage.R.id.search;
+import static com.codepath.engage.R.string.location;
 
 public class HomePage extends AppCompatActivity implements View.OnClickListener, LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -85,6 +89,9 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         context = getApplicationContext();
 
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+
+
         Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Molengo-Regular.ttf");
 
         hpIssues.setTypeface(font);
@@ -103,7 +110,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 .addApi(LocationServices.API)
                 .build();
 
-        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
 
         String[] strs = {"Women", "Food", "Climate Change", "Human Rights", "Poverty"};
         issues = new ArrayList<>();
@@ -149,6 +156,8 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         });
     }
 
+
+
     private void setUpDrawer(){
         mDrawerView
                 .addView(new DrawerHeader(this.getApplicationContext()))
@@ -183,7 +192,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() { //searchView, SearchView
             @Override
             public boolean onQueryTextSubmit(String query) {
                Intent i = new Intent(HomePage.this, ViewEvents.class);
@@ -193,7 +202,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 i.putExtra("distance", distance);
                 startActivity(i);
                 overridePendingTransition(0, 0);
-
                 return true;
             }
 
@@ -342,5 +350,4 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     public void onBackPressed() {
         overridePendingTransition(0, 0);
     }
-
 }

@@ -49,5 +49,15 @@
     <string name="title_activity_splash">SplashActivity</string>
     <string name="logout">Logout</string>
     <string name="are_you_sure">Are you sure ?</string>
+    <string-array name="query_suggestions">
+        <item>women</item>
+        <item>hunger</item>
+        <item>climate change</item>
+        <item>human rights</item>
+        <item>poverty</item>
+    </string-array>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
 </resources>
 

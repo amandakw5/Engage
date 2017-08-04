@@ -24,6 +24,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -46,6 +47,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.mindorks.placeholderview.PlaceHolderView;
 
 import org.json.JSONArray;
@@ -58,6 +60,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
+import static com.codepath.engage.R.id.search;
 import static com.codepath.engage.R.string.location;
 
 public class  ViewEvents extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
@@ -194,6 +197,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         searchView.setQuery(query, false);
     }
 
+
     private void setUpDrawer(){
         mDrawerView
                 .addView(new DrawerHeader(this.getApplicationContext()))
@@ -247,7 +251,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         // Sets searchable configuration defined in searchable.xml for this SearchView
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() { //searchView, SearchView
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //ON a successful query submission the query is passed and api request call is made
@@ -479,8 +483,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         LocationServices.FusedLocationApi.requestLocationUpdates(gac, locationRequest, this);
     }
     @Override
-    public void onRequestPermissionsResult(
-            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {

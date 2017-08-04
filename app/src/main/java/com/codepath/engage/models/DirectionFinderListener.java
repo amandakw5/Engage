@@ -1,5 +1,7 @@
 package com.codepath.engage.models;
 
+import com.google.android.gms.maps.GoogleMap;
+
 import java.util.List;
 
 /**
@@ -9,4 +11,6 @@ import java.util.List;
 public interface DirectionFinderListener {
     void onDirectionFinderStart();
     void onDirectionFinderSuccess(List<Route> route);
+
+    void onDirectionFinderSuccess(List<Route> routes, GoogleMap googleMap);
 }

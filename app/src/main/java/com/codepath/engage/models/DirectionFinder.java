@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.codepath.engage.MapActivity;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.api.client.json.Json;
 
@@ -42,13 +43,15 @@ public class DirectionFinder {
     private double originLong;
     private double destLat;
     private double destLong;
+    private GoogleMap googleMap;
 
-    public DirectionFinder(DirectionFinderListener listener, double originLat, double originLong, double destLat, double destLong) {
+    public DirectionFinder(DirectionFinderListener listener, double originLat, double originLong, double destLat, double destLong, GoogleMap googleMap) {
         this.listener = listener;
         this.originLat = originLat;
         this.originLong = originLong;
         this.destLat = destLat;
         this.destLong = destLong;
+        this.googleMap = googleMap;
     }
 
     public void execute() throws UnsupportedEncodingException {
@@ -140,7 +143,7 @@ public class DirectionFinder {
             routes.add(route);
         }
 
-        listener.onDirectionFinderSuccess(routes);
+        listener.onDirectionFinderSuccess(routes, googleMap);
     }
 
     private List<LatLng> decodePolyLine(final String poly) {
