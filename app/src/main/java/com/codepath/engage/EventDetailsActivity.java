@@ -50,9 +50,7 @@ import org.parceler.Parcels;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -104,7 +102,6 @@ public class EventDetailsActivity extends AppCompatActivity{
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
             }
-
             @Override
             public void onPageSelected(int position) {
                 Log.d("position","position = " + position);

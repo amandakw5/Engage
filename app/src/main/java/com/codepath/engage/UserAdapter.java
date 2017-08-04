@@ -67,7 +67,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
             final User u = users.get(position);
             Intent i = new Intent(context, ProfileActivity.class);
             i.putExtra(User.class.getSimpleName(), Parcels.wrap(u));
-            i.putExtra("whichProfile", u.firstName + " " + u.lastName + " is ");
+            i.putExtra("whichProfile", u.firstName + " " + u.lastName);
+            i.putExtra("verb", " is ");
             context.startActivity(i);
         }
     }

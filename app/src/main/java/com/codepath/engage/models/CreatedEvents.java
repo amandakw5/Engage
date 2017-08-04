@@ -1,5 +1,7 @@
 package com.codepath.engage.models;
 
+import java.util.Date;
+
 /**
  * Created by calderond on 7/26/17.
  */
@@ -14,11 +16,13 @@ public class CreatedEvents {
     private String eventMonth;
     private String eventYear;
     private String uid;
+    private Date dateCreated;
+
 
     public CreatedEvents() {
     }
 
-    public CreatedEvents(String eventName, String eventLocation, String eventDescription, String eventHour, String eventMinute, String eventDay, String eventMonth, String eventYear, String uid) {
+    public CreatedEvents(String eventName, String eventLocation, String eventDescription, String eventHour, String eventMinute, String eventDay, String eventMonth, String eventYear, String uid, Date dateCreated) {
         this.eventName = eventName;
         this.eventLocation = eventLocation;
         this.eventDescription = eventDescription;
@@ -28,6 +32,15 @@ public class CreatedEvents {
         this.eventMonth = eventMonth;
         this.eventYear = eventYear;
         this.uid = uid;
+        this.dateCreated = dateCreated;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     public String getUid() {

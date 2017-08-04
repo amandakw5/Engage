@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.security.spec.ECField;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -290,8 +291,8 @@ public class EventDetailsFragment extends Fragment {
     public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription) {
         savedEventsCreated = false;
         events.clear();
-
-        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription);
+        Date date = new Date();
+        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, date);
         savedEvents.child("savedEvents").child(eventId).setValue(info);
         users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

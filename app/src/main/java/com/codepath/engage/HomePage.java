@@ -40,7 +40,8 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DatabaseReference;
-import com.miguelcatalan.materialsearchview.MaterialSearchView;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.mindorks.placeholderview.PlaceHolderView;
 
 import java.net.MalformedURLException;
@@ -87,7 +88,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         context = getApplicationContext();
-
+        FirebaseDatabase.getInstance().getReference("users").child(Profile.getCurrentProfile().getId()).child("firebasetoken").setValue(FirebaseInstanceId.getInstance().getToken());
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
@@ -165,6 +166,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_FEED))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_EVENTS))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_CREATE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(),DrawerMenuItem.DRAWER_MENU_ITEM_MESSAGE))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT));
 
         ActionBarDrawerToggle  drawerToggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open_drawer, R.string.close_drawer){

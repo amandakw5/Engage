@@ -4,6 +4,8 @@ import android.os.Parcelable;
 
 import org.parceler.Parcel;
 
+import java.util.Date;
+
 /**
  * Created by emilyz on 7/19/17.
  */
@@ -18,6 +20,8 @@ public class UserEvents implements Parcelable {
     public String eventImage;
     public String eventTime;
     public String eventAddress;
+    public String uid;
+    public Date date;
 
     public UserEvents(){ }
 
@@ -43,7 +47,7 @@ public class UserEvents implements Parcelable {
         this.eventImage = eventImage;
     }
 
-    public UserEvents(String eventName, String eventHost, String eventTime, String eventAddress, String eventId, String eventImage, String eventDescription){
+    public UserEvents(String eventName, String eventHost, String eventTime, String eventAddress, String eventId, String eventImage, String eventDescription, String uid, Date date){
         this.eventName = eventName;
         this.eventTime = eventTime;
         this.eventAddress = eventAddress;
@@ -51,8 +55,42 @@ public class UserEvents implements Parcelable {
         this.eventId = eventId;
         this.eventImage = eventImage;
         this.eventDescription = eventDescription;
+        this.uid = uid;
+        this.date = date;
+
     }
 
+    public String getEventTime() {
+        return eventTime;
+    }
+
+    public void setEventTime(String eventTime) {
+        this.eventTime = eventTime;
+    }
+
+    public String getEventAddress() {
+        return eventAddress;
+    }
+
+    public void setEventAddress(String eventAddress) {
+        this.eventAddress = eventAddress;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public String getEventId() {
         return eventId;

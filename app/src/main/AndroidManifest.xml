@@ -8,7 +8,6 @@
     <permission
         android:name="android.permission.ACCESS_COARSE_LOCATION"
         android:protectionLevel="dangerous" />
-
     <service android:name=".MyFirebaseMessagingService">
         <intent-filter>
             <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -114,6 +113,10 @@
             android:name=".UserFeed"
             android:theme="@style/AppTheme">
 
+        </activity>
+
+        <activity android:name=".MyEventsActivity"
+            android:theme="@style/AppTheme">
         </activity>
         <activity
             android:name=".ui.activities.SplashActivity"

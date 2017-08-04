@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.codepath.engage.models.CreatedEvents;
 import com.codepath.engage.models.User;
 import com.codepath.engage.models.UserEvents;
 import com.facebook.Profile;
@@ -26,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,6 +39,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     public UpdateAdapter adapter;
     public ArrayList<UserEvents> events;
+    public ArrayList<CreatedEvents> createdEventList;
     String uid;
     String whichProfile;
     DatabaseReference mDatabase;
@@ -45,6 +48,8 @@ public class ProfileActivity extends AppCompatActivity {
     User currentProfile;
     Context context;
     List<String> eventIDs;
+    String verb;
+    public ArrayList<Date> dates;
 
     @BindView(R.id.rvUpdates) RecyclerView rvUpdates;
     @BindView(R.id.profileImage) ImageView profileImage;
@@ -61,13 +66,15 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         ButterKnife.bind(this);
-
+        dates = new ArrayList<>();
         eventIDs = new ArrayList<>();
         whichProfile = getIntent().getStringExtra("whichProfile");
+        verb = getIntent().getStringExtra("verb");
         events = new ArrayList<>();
+        //createdEventList = new ArrayList<>();
         eventIDs = new ArrayList<>();
 
-        adapter = new UpdateAdapter(events, whichProfile);
+        adapter = new UpdateAdapter(events, whichProfile, verb, dates);
 
         rvUpdates.setLayoutManager(new LinearLayoutManager(this));
         rvUpdates.setAdapter(adapter);
@@ -84,36 +91,35 @@ public class ProfileActivity extends AppCompatActivity {
             uid = Profile.getCurrentProfile().getId();
         }
 
-            mDatabase.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    currentProfile = dataSnapshot.child(Profile.getCurrentProfile().getId()).getValue(User.class);
-                    if (uid.equals(Profile.getCurrentProfile().getId())){
-                        u = currentProfile;
-
-                    }
-                    Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
-                    following.setText(u.numFollowing + " following");
-                    followers.setText(u.numFollowers + " followers");
-
-                    HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child(currentProfile.uid).child("following").getValue();
-                    if (followingList != null) {
-                        for (Object value : followingList.values()) {
-                            if (((String) (value)).equals(uid)) {
-                                isFollowing = true;
-                            }
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                currentProfile = dataSnapshot.child(Profile.getCurrentProfile().getId()).getValue(User.class);
+                if (uid.equals(Profile.getCurrentProfile().getId())){
+                    u = currentProfile;
+                }
+                Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
+                following.setText(u.numFollowing + " following");
+                followers.setText(u.numFollowers + " followers");
+                HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child(currentProfile.uid).child("following").getValue();
+                if (followingList != null) {
+                    for (Object value : followingList.values()) {
+                        if (((String) (value)).equals(uid)) {
+                            isFollowing = true;
                         }
                     }
                 }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
+        following.setText(u.numFollowing + " following");
+        followers.setText(u.numFollowers + " followers");
 
         DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
-
+        final DatabaseReference createdEvents = FirebaseDatabase.getInstance().getReference("CreatedEvents");
         final DatabaseReference evDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
 
         evDatabase.addValueEventListener(new ValueEventListener() {
@@ -143,11 +149,29 @@ public class ProfileActivity extends AppCompatActivity {
                             if (id.equals(evSnapshot.getKey())) {
                                 UserEvents e = evSnapshot.getValue(UserEvents.class);
                                 events.add(e);
-                                adapter.notifyItemInserted(events.size() - 1);
+                                dates.add(e.date);
+                                adapter.notifyItemInserted(events.size() -1);
                                 break;
                             }
                         }
                     }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        createdEvents.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
+                    if (uid.equals((String) evSnapshot.child("uid").getValue())){
+                        UserEvents e = evSnapshot.getValue(UserEvents.class);
+                        events.add(e);
+                        dates.add(e.date);
+                        adapter.notifyItemInserted(events.size() -1);                    }
                 }
             }
 

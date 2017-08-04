@@ -20,7 +20,7 @@ import okhttp3.Response;
 public class FcmNotificationBuilder {
     public static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
     private static final String TAG = "FcmNotificationBuilder";
-    private static final String SERVER_API_KEY = "YOUR_SERVER_API_KEY";
+    private static final String SERVER_API_KEY = "AIzaSyDdS0a3w6YehrynrHsUkB6PWI_e1U1-dzM";
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String APPLICATION_JSON = "application/json";
     private static final String AUTHORIZATION = "Authorization";
@@ -113,12 +113,15 @@ public class FcmNotificationBuilder {
     private JSONObject getValidJsonBody() throws JSONException {
         JSONObject jsonObjectBody = new JSONObject();
         jsonObjectBody.put(KEY_TO, mReceiverFirebaseToken);
-
+        jsonObjectBody.put("priority","normal");
+        JSONObject jsonObjectInfo = new JSONObject();
+        jsonObjectInfo.put(KEY_TITLE,mTitle);
+        jsonObjectInfo.put("body",mMessage);
+        jsonObjectInfo.put("sound","default");
+        jsonObjectBody.put("notification",jsonObjectInfo);
         JSONObject jsonObjectData = new JSONObject();
         jsonObjectData.put(KEY_TITLE, mTitle);
         jsonObjectData.put(KEY_TEXT, mMessage);
-        jsonObjectData.put(KEY_USERNAME, mUsername);
-        jsonObjectData.put(KEY_UID, mUid);
         jsonObjectData.put(KEY_FCM_TOKEN, mFirebaseToken);
         jsonObjectBody.put(KEY_DATA, jsonObjectData);
 
