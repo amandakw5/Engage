@@ -112,6 +112,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         c.set(Calendar.MONTH, monthOfYear);
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         mYear = "" + year;
+        monthOfYear = monthOfYear +1;
         if (monthOfYear > 9){
             mMonth = "" +monthOfYear;
         }
@@ -155,7 +156,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 createdEventID = dataSnapshot.getChildrenCount() + 1;
                                 Log.i("Info", String.valueOf(createdEventID));
-                                rootRef.child("CreatedEvents").child(String.valueOf(createdEventID)).setValue(newEv);
+                                rootRef.child("CreatedEvents").child(String.valueOf(createdEventID)).setValue(createdEvent);
                                 finishedAddingEvent = true;
                                 AlertDialog.Builder builder;
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -189,7 +190,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                         });
                     }
                     else{
-                        rootRef.child("CreatedEvents").child("1").setValue(newEv);
+                        rootRef.child("CreatedEvents").child("1").setValue(createdEvent);
                         AlertDialog.Builder builder;
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             builder = new AlertDialog.Builder(CreateEventActivity.this, android.R.style.Theme_Material_Dialog_Alert);
