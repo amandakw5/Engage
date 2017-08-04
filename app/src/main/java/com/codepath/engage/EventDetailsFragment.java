@@ -1,5 +1,6 @@
 package com.codepath.engage;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
@@ -43,6 +44,7 @@ import org.parceler.Parcels;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -51,6 +53,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.codepath.engage.R.id.btnSave;
+import static com.codepath.engage.R.id.fabSave;
 import static com.codepath.engage.R.id.tvHost;
 
 /**
@@ -63,9 +66,8 @@ public class EventDetailsFragment extends Fragment {
     @BindView(R.id.tvHost) TextView tvHost;
     @BindView(R.id.tvEventInfo) TextView tvEventInfo;
     @BindView(R.id.tvEventDescription) TextView tvEventDescription;
-//    @BindView(R.id.btnSave) Button btnSave;
     @BindView(R.id.tvEventName) TextView tvEventName;
-//    @BindView(R.id.btnMap) Button btnMap;
+    @BindView(R.id.fabSave) FloatingActionButton fabSave;
     YouTubePlayerSupportFragment youtubeFragment;
 
     ArrayList<String> createdEventInfo;
@@ -86,15 +88,20 @@ public class EventDetailsFragment extends Fragment {
     //Define a global variable that identifies the name of a file thatcontains the developer's API key.
     private static final long NUMBER_OF_VIDEOS_RETURNED = 25;
 
-    public static EventDetailsFragment newInstance(Event event){
+    public static EventDetailsFragment newInstance(ArrayList<String> createdEventInfo, UserEvents currentUpdate, Event event){
         EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
         Bundle args = new Bundle();
 
         if (event != null) {
             args.putParcelable("event", event);
-        } else {
-            args.putString("nothingE", "null");
         }
+        if (currentUpdate != null){
+            args.putParcelable("currentUpdate", currentUpdate);
+        }
+        if (createdEventInfo != null){
+            args.putStringArrayList("createdEventInfo", createdEventInfo);
+        }
+
         eventDetailsFragment.setArguments(args);
 
         return eventDetailsFragment;
@@ -122,6 +129,20 @@ public class EventDetailsFragment extends Fragment {
             event = null;
         }
 
+        try{
+            currentUpdate = bundle.getParcelable("currentUpdate");
+        } catch (Exception e){
+            e.printStackTrace();
+            currentUpdate = null;
+        }
+
+        try{
+            createdEventInfo = bundle.getStringArrayList("createdEventInfo");
+        } catch (Exception e){
+            e.printStackTrace();
+            createdEventInfo = null;
+        }
+
     }
 
     @Override
@@ -135,21 +156,59 @@ public class EventDetailsFragment extends Fragment {
 
         if (event != null){
             if (ivPicture != null) {
-                Glide.with(this)
-                        .load(event.ivEventImage)
-                        .centerCrop()
-                        .into(ivPicture);
-            } else {
-                Glide.with(this)
-                        .load(R.drawable.image_not_found)
-                        .centerCrop()
-                        .into(ivPicture);
+                if (!event.ivEventImage.equals("null")) {
+                    Glide.with(this)
+                            .load(event.ivEventImage)
+                            .centerCrop()
+                            .into(ivPicture);
+                } else {
+                    Glide.with(this)
+                            .load(R.drawable.image_not_found)
+                            .centerCrop()
+                            .into(ivPicture);
+                }
             }
             tvEventName.setText(event.tvEventName);
             tvEventDescription.setText(event.tvDescription);
             tvEventInfo.setText(event.tvEventInfo);
             tvHost.setText(event.organizer.name);
             queryTerm = event.getOrganizerName();
+            fabSave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (event.ivEventImage == null) {
+                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription);
+
+                    } else {
+                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
+                    }
+                    Toast.makeText(getActivity(), "Saved!", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        } else if (currentUpdate != null) {
+            if (ivPicture != null) {
+                if (!currentUpdate.eventImage.equals("null")) {
+                    Glide.with(this)
+                            .load(currentUpdate.eventImage)
+                            .centerCrop()
+                            .into(ivPicture);
+                } else {
+                    Glide.with(this)
+                            .load(R.drawable.image_not_found)
+                            .centerCrop()
+                            .into(ivPicture);
+                }
+            }
+            tvEventName.setText(currentUpdate.eventName);
+            tvEventDescription.setText(currentUpdate.eventDescription);
+            tvEventInfo.setText(currentUpdate.eventInfo);
+            tvHost.setText(currentUpdate.eventHost);
+            fabSave.setVisibility(View.GONE);
+        } else if (createdEventInfo != null) {
+            tvEventName.setText(createdEventInfo.get(0));
+            tvEventDescription.setText(createdEventInfo.get(2));
+            tvEventInfo.setText(createdEventInfo.get(1));
         }
 
         try {
@@ -218,15 +277,15 @@ public class EventDetailsFragment extends Fragment {
         return view;
     }
 
-    public void saveEvent(View view) {
-
-        if (event.ivEventImage == null) {
-            saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription);
-        } else {
-            saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
-        }
-        Toast.makeText(getActivity(), "Saved!", Toast.LENGTH_SHORT).show();
-    }
+//    public void saveEvent(View view) {
+//
+//        if (event.ivEventImage == null) {
+//            saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription);
+//        } else {
+//            saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
+//        }
+//        Toast.makeText(getActivity(), "Saved!", Toast.LENGTH_SHORT).show();
+//    }
 
     public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription) {
         savedEventsCreated = false;

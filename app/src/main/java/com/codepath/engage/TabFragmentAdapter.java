@@ -10,6 +10,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 
 import com.codepath.engage.models.Event;
+import com.codepath.engage.models.UserEvents;
+
+import java.util.ArrayList;
 
 import static com.codepath.engage.EventDetailsFragment.newInstance;
 
@@ -21,11 +24,15 @@ public class TabFragmentAdapter extends FragmentPagerAdapter {
     private Context context;
     private int numOfTabs;
     Event event;
+    ArrayList<String> createdEventsInfo;
+    UserEvents currentUpdate;
 
-    public TabFragmentAdapter(FragmentManager fm, Context context, Event event) {
+    public TabFragmentAdapter(FragmentManager fm, Context context, ArrayList<String> createdEventsInfo, UserEvents currentUpdate, Event event) {
         super(fm);
         this.context = context;
         this.event = event;
+        this.createdEventsInfo = createdEventsInfo;
+        this.currentUpdate = currentUpdate;
     }
 
     @Override
@@ -33,10 +40,10 @@ public class TabFragmentAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 new EventDetailsFragment();
-                return EventDetailsFragment.newInstance(event);
+                return EventDetailsFragment.newInstance(createdEventsInfo, currentUpdate, event);
             case 1:
                 new MapFragment();
-                return  MapFragment.newInstance(event);
+                return  MapFragment.newInstance(createdEventsInfo, currentUpdate, event);
             default:
                 return null;
         }

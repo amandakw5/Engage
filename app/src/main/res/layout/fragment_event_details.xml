@@ -10,7 +10,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -19,12 +21,9 @@
                 android:id="@+id/ivPicture"
                 android:layout_width="match_parent"
                 android:layout_height="175dp"
-                android:layout_below="@+id/tvEventName"
+                android:layout_alignParentTop="true"
                 app:srcCompat="@android:color/black"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
                 android:layout_alignParentStart="true" />
 
             <TextView
@@ -32,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:layout_below="@+id/ivPicture"
+                android:layout_below="@+id/line"
                 android:text="@string/host"
                 android:textAppearance="@android:style/TextAppearance.Large"
                 android:textSize="20sp"
@@ -48,25 +47,45 @@
                 android:textSize="16sp"
                 android:textStyle="italic"
                 android:layout_marginStart="10dp"/>
+
             <TextView
                 android:id="@+id/tvEventDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/event_description"
-                android:layout_below="@+id/tvEventInfo"
-                android:layout_alignStart="@+id/ivPicture" />
+                android:layout_below="@+id/line2"
+                android:layout_alignStart="@+id/tvEventName" />
 
             <TextView
                 android:id="@+id/tvEventName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignStart="@+id/ivPicture"
+                android:layout_marginStart="10dp"
+                android:layout_below="@+id/ivPicture"
                 android:layout_marginTop="10dp"
                 android:fontFamily="serif"
                 android:text="@string/event_name"
                 android:textSize="30sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"/>
+
+            <View
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_margin="5dp"
+                android:layout_below="@+id/tvEventName" />
+
+            <View
+                android:id="@+id/line2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_margin="5dp"
+                android:layout_below="@+id/tvEventInfo" />
+
             <fragment
                 android:id="@+id/youtubeFragment"
                 android:layout_below="@+id/tvEventDescription"
@@ -79,22 +98,17 @@
         </RelativeLayout>
     </ScrollView>
 
-    <!--android:layout_alignBottom="@+id/btnMap"-->
-    <!--<Button-->
-        <!--android:id="@+id/btnSave"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/save"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:layout_margin="5dp"-->
-        <!--android:onClick="saveEvent"/>-->
-    <!--<Button-->
-        <!--android:id="@+id/btnMap"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/map"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentStart="true"-->
-        <!--android:layout_margin="5dp" />-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabSave"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_gravity="center"
+        android:background="@color/colorPrimaryDark"
+        app:fabSize="mini"
+        app:borderWidth="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp" />
+
 </RelativeLayout>

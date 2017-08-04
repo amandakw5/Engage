@@ -33,6 +33,7 @@ import com.codepath.engage.models.DirectionFinder;
 import com.codepath.engage.models.DirectionFinderListener;
 import com.codepath.engage.models.Event;
 import com.codepath.engage.models.Route;
+import com.codepath.engage.models.UserEvents;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -66,7 +67,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import permissions.dispatcher.NeedsPermission;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
+import static android.location.LocationManager.NETWORK_PROVIDER;
 import static com.codepath.engage.R.id.btnGoogleMaps;
 import static com.codepath.engage.R.id.map;
 import static com.codepath.engage.R.id.mapView;
@@ -84,6 +85,8 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
     GoogleApiClient mGoogleApiClient;
     Marker mCurrLocationMarker;
 
+    ArrayList<String> createdEventInfo;
+    UserEvents currentUpdate;
     Event event;
     Double destLat;
     Double destLng;
@@ -95,7 +98,10 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
     @BindView(R.id.btnGoogleMaps)
     Button btnGoogleMaps;
 
-    private ProgressDialog progressDialog;
+    boolean isGPSEnabled = false;
+    boolean isNetworkEnabled = false;
+    boolean canGetLocation = false;
+
     private List<Marker> originMarkers = new ArrayList<>();
     private List<Marker> destinationMarkers = new ArrayList<>();
     private List<Polyline> polylinePaths = new ArrayList<>();
@@ -103,7 +109,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
     public static final int PERMISSIONS_REQUEST_LOCATION = 99;
     private static final int CONNECTION_RESOLUTION_REQUEST = 2;
 
-    public static MapFragment newInstance(Event event) {
+    public static MapFragment newInstance(ArrayList<String> createdEventInfo, UserEvents currentUpdate, Event event) {
         MapFragment mapFragment = new MapFragment();
 
         Bundle args = new Bundle();
@@ -112,6 +118,12 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
             args.putParcelable("event", event);
         } else {
             args.putString("nothingE", "null");
+        }
+        if (currentUpdate != null){
+            args.putParcelable("currentUpdate", currentUpdate);
+        }
+        if (createdEventInfo != null){
+            args.putStringArrayList("createdEventInfo", createdEventInfo);
         }
         mapFragment.setArguments(args);
 
@@ -131,9 +143,29 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
             event = null;
         }
 
+        try{
+            currentUpdate = bundle.getParcelable("currentUpdate");
+        } catch (Exception e){
+            e.printStackTrace();
+            currentUpdate = null;
+        }
+
+        try{
+            createdEventInfo = bundle.getStringArrayList("createdEventInfo");
+        } catch (Exception e){
+            e.printStackTrace();
+            createdEventInfo = null;
+        }
+
         if (event != null) {
             destLat = Double.parseDouble(event.venue.getLatitude());
             destLng = Double.parseDouble(event.venue.getLongitude());
+        } else if (currentUpdate!= null) {
+            destLat = null;
+            destLng = null;
+        } else if (createdEventInfo != null){
+            destLat = null;
+            destLng = null;
         }
 
         buildGoogleApiClient();
@@ -156,15 +188,17 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
             e.printStackTrace();
         }
 
-        btnGoogleMaps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + event.venue.getSimpleAddress());
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                startActivity(mapIntent);
-            }
-        });
+        if(event!= null) {
+            btnGoogleMaps.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + event.venue.getSimpleAddress());
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    startActivity(mapIntent);
+                }
+            });
+        }
 
         switch (GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity())) {
             case ConnectionResult.SUCCESS:
@@ -181,7 +215,11 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                                         == PackageManager.PERMISSION_GRANTED) {
                                     //Location Permission already granted
                                     googleMap.setMyLocationEnabled(true);
-                                    showMap(googleMap);
+                                    if (event != null) {
+                                        showMap(googleMap);
+                                    } else {
+                                        noInfo(googleMap);
+                                    }
                                 } else {
                                     //Request Location Permission
                                     checkLocationPermission();
@@ -234,14 +272,45 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
         mMapView.onLowMemory();
     }
 
-    public void showMap(GoogleMap googleMap){
+    public void showMap(GoogleMap googleMap) {
+
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        String bestProvider = locationManager.getBestProvider(criteria, true);
-        checkLocationPermission();
-        Location location = locationManager.getLastKnownLocation(bestProvider);
-        if (location != null) {
-            locationChanged(location, googleMap);
+        isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        isNetworkEnabled = locationManager.isProviderEnabled(NETWORK_PROVIDER);
+        Location location;
+
+        if (!isGPSEnabled && !isNetworkEnabled) {
+            // no network provider is enabled
+            Toast.makeText(getContext(), "Check GPS or Network", Toast.LENGTH_SHORT).show();
+        } else {
+            this.canGetLocation = true;
+            checkLocationPermission();
+            if (isNetworkEnabled) {
+//                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, this);
+                location = locationManager.getLastKnownLocation(NETWORK_PROVIDER);
+                if (location != null) {
+                    locationChanged(location, googleMap);
+                }
+            }
+            // if GPS Enabled get lat/long using GPS Services
+            if (isGPSEnabled) {
+                try {
+                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (location != null) {
+//                        locationChanged(location, googleMap);
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+//            Criteria criteria = new Criteria();
+//            String bestProvider = locationManager.getBestProvider(criteria, true);
+//            Location location = locationManager.getLastKnownLocation(bestProvider);
+//            if (location != null) {
+//                locationChanged(location, googleMap);
+//            }
         }
     }
 
@@ -305,11 +374,11 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
 
             originMarkers.add(googleMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
-                    .title(route.startAddress)
+                    .title("Current Location: " + route.startAddress)
                     .position(route.startLocation)));
             destinationMarkers.add(googleMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                    .title(route.endAddress)
+                    .title("Destination: " + route.endAddress)
                     .position(route.endLocation)));
 
             PolylineOptions polylineOptions = new PolylineOptions().geodesic(true).color(Color.BLUE).width(10);
@@ -445,5 +514,55 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
 
     @Override
     public void onLocationChanged(Location location) {
+    }
+
+    public void noInfo(GoogleMap googleMap) {
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        isNetworkEnabled = locationManager.isProviderEnabled(NETWORK_PROVIDER);
+        Location location;
+
+        if (!isGPSEnabled && !isNetworkEnabled) {
+            // no network provider is enabled
+            Toast.makeText(getContext(), "Check GPS or Network", Toast.LENGTH_SHORT).show();
+        } else {
+            this.canGetLocation = true;
+            checkLocationPermission();
+            if (isNetworkEnabled) {
+//                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, this);
+                location = locationManager.getLastKnownLocation(NETWORK_PROVIDER);
+                if (location != null) {
+                    changeLocation(location, googleMap);
+                }
+            }
+            // if GPS Enabled get lat/long using GPS Services
+            if (isGPSEnabled) {
+                try {
+                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (location != null) {
+//                        locationChanged(location, googleMap);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void changeLocation(Location location, GoogleMap googleMap) {
+
+        double latitude = location.getLatitude();
+        double longitude =location.getLongitude();
+
+        LatLng loc = new LatLng(latitude, longitude);
+
+        googleMap.addMarker(new MarkerOptions()
+                .position(loc)
+                .title("Current Location")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+
     }
 }

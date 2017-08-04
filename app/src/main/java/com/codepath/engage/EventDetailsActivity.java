@@ -92,7 +92,7 @@ public class EventDetailsActivity extends AppCompatActivity{
 
         vPager = (ViewPager) findViewById(R.id.viewpager);
 
-        vPager.setAdapter(new TabFragmentAdapter(getSupportFragmentManager(), EventDetailsActivity.this, event));
+        vPager.setAdapter(new TabFragmentAdapter(getSupportFragmentManager(), EventDetailsActivity.this, createdEventInfo, currentUpdate, event));
 
         tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
 
@@ -111,13 +111,13 @@ public class EventDetailsActivity extends AppCompatActivity{
                 fragment = null;
                 switch(position){
                     case 0:
-                        EventDetailsFragment eventDetailsFragment = EventDetailsFragment.newInstance(event);
+                        EventDetailsFragment eventDetailsFragment = EventDetailsFragment.newInstance(createdEventInfo, currentUpdate, event);
                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                         ft.replace(R.id.details_container, eventDetailsFragment);
                         ft.commit();
                         break;
                     case 1:
-                        MapFragment mapFragment= MapFragment.newInstance(event);
+                        MapFragment mapFragment= MapFragment.newInstance(createdEventInfo, currentUpdate, event);
                         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                         fragmentTransaction.replace(R.id.details_container, mapFragment);
                         fragmentTransaction.commit();
