@@ -250,4 +250,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    public void goHome(View view) {
+        Intent i = new Intent(ProfileActivity.this,HomePage.class);
+        startActivity(i);
+    }
 }
