@@ -3,12 +3,12 @@ package com.codepath.engage;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,7 +53,8 @@ public class EventDetailsFragment extends Fragment {
     @BindView(R.id.tvEventInfo) TextView tvEventInfo;
     @BindView(R.id.tvEventDescription) TextView tvEventDescription;
     @BindView(R.id.tvEventName) TextView tvEventName;
-    @BindView(R.id.fabSave) FloatingActionButton fabSave;
+    @BindView(R.id.fabSave)
+    Button fabSave;
     YouTubePlayerSupportFragment youtubeFragment;
 
     ArrayList<String> createdEventInfo;
@@ -188,9 +189,10 @@ public class EventDetailsFragment extends Fragment {
             }
             tvEventName.setText(currentUpdate.eventName);
             tvEventDescription.setText(currentUpdate.eventDescription);
-            tvEventInfo.setText(currentUpdate.eventInfo);
+            tvEventInfo.setText(currentUpdate.eventTime);
             tvHost.setText(currentUpdate.eventHost);
             fabSave.setVisibility(View.GONE);
+
         } else if (createdEventInfo != null) {
             tvEventName.setText(createdEventInfo.get(0));
             tvEventDescription.setText(createdEventInfo.get(2));
@@ -262,16 +264,6 @@ public class EventDetailsFragment extends Fragment {
 
         return view;
     }
-
-//    public void saveEvent(View view) {
-//
-//        if (event.ivEventImage == null) {
-//            saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription);
-//        } else {
-//            saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
-//        }
-//        Toast.makeText(getActivity(), "Saved!", Toast.LENGTH_SHORT).show();
-//    }
 
     public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription) {
         savedEventsCreated = false;

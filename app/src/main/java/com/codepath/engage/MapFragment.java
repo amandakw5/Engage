@@ -8,10 +8,13 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -59,23 +62,26 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import permissions.dispatcher.NeedsPermission;
 
 import static android.location.LocationManager.NETWORK_PROVIDER;
-import static com.codepath.engage.R.id.btnGoogleMaps;
-import static com.codepath.engage.R.id.map;
-import static com.codepath.engage.R.id.mapView;
-import static com.codepath.engage.R.id.tvDistance;
-import static com.codepath.engage.R.id.tvDuration;
-import static com.codepath.engage.R.id.view;
-import static com.codepath.engage.R.string.location;
-import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class MapFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, DirectionFinderListener {
 
@@ -86,6 +92,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
     Marker mCurrLocationMarker;
 
     ArrayList<String> createdEventInfo;
+    double[] addressLoc;
     UserEvents currentUpdate;
     Event event;
     Double destLat;
@@ -161,12 +168,12 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
             destLat = Double.parseDouble(event.venue.getLatitude());
             destLng = Double.parseDouble(event.venue.getLongitude());
         } else if (currentUpdate!= null) {
-            destLat = null;
-            destLng = null;
+            getLocationFromAddress(getContext(), currentUpdate.eventAddress);
         } else if (createdEventInfo != null){
-            destLat = null;
-            destLng = null;
+            getLocationFromAddress(getContext(), currentUpdate.eventAddress);
         }
+
+        addressLoc = new double[2];
 
         buildGoogleApiClient();
 
@@ -180,7 +187,8 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
         ButterKnife.bind(this, rootView);
         mMapView.onCreate(savedInstanceState);
 
-        mMapView.onResume(); // needed to get the map to display immediately
+        // needed to get the map to display immediately
+        mMapView.onResume();
 
         try {
             MapsInitializer.initialize(this.getActivity());
@@ -215,11 +223,11 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                                         == PackageManager.PERMISSION_GRANTED) {
                                     //Location Permission already granted
                                     googleMap.setMyLocationEnabled(true);
-                                    if (event != null) {
+//                                    if (event != null) {
                                         showMap(googleMap);
-                                    } else {
-                                        noInfo(googleMap);
-                                    }
+//                                    } else {
+//                                        noInfo(googleMap);
+//                                    }
                                 } else {
                                     //Request Location Permission
                                     checkLocationPermission();
@@ -286,7 +294,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
             this.canGetLocation = true;
             checkLocationPermission();
             if (isNetworkEnabled) {
-//                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, this);
                 location = locationManager.getLastKnownLocation(NETWORK_PROVIDER);
                 if (location != null) {
                     locationChanged(location, googleMap);
@@ -295,22 +302,11 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
             // if GPS Enabled get lat/long using GPS Services
             if (isGPSEnabled) {
                 try {
-                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    if (location != null) {
-//                        locationChanged(location, googleMap);
-                    }
+                    locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 } catch (Exception e){
                     e.printStackTrace();
                 }
             }
-
-//            Criteria criteria = new Criteria();
-//            String bestProvider = locationManager.getBestProvider(criteria, true);
-//            Location location = locationManager.getLastKnownLocation(bestProvider);
-//            if (location != null) {
-//                locationChanged(location, googleMap);
-//            }
         }
     }
 
@@ -357,7 +353,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
 
     @Override
     public void onDirectionFinderSuccess(List<Route> routes) {
-
 
     }
 
@@ -449,7 +444,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
         }
     }
 
-
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -509,7 +503,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(), getActivity(), 1);
             dialog.show();
         }
-
     }
 
     @Override
@@ -524,12 +517,11 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
 
         if (!isGPSEnabled && !isNetworkEnabled) {
             // no network provider is enabled
-            Toast.makeText(getContext(), "Check GPS or Network", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Check GPS and Network", Toast.LENGTH_SHORT).show();
         } else {
             this.canGetLocation = true;
             checkLocationPermission();
             if (isNetworkEnabled) {
-//                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, this);
                 location = locationManager.getLastKnownLocation(NETWORK_PROVIDER);
                 if (location != null) {
                     changeLocation(location, googleMap);
@@ -538,11 +530,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
             // if GPS Enabled get lat/long using GPS Services
             if (isGPSEnabled) {
                 try {
-                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    if (location != null) {
-//                        locationChanged(location, googleMap);
-                    }
+                    locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -565,4 +553,28 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
 
     }
+
+    public void getLocationFromAddress(Context context,String strAddress) {
+
+        Geocoder coder = new Geocoder(context);
+        List<Address> address;
+
+        try {
+            // May throw an IOException
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return;
+            }
+            Address location = address.get(0);
+
+            destLat = location.getLatitude();
+            destLng = location.getLongitude();
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+    }
+
+
 }

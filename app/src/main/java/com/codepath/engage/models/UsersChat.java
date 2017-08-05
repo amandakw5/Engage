@@ -3,7 +3,7 @@ package com.codepath.engage.models;
 /**
  * Created by calderond on 7/31/17.
  */
-
+//TODO model to be used for allowing chat rooms in implementation of this feature is reached.
 public class UsersChat {
 
     private String emailId;
