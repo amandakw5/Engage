@@ -159,7 +159,11 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
 
         if (event != null) {
             if (isUserCreated) {
-                getLocationFromAddress(getContext(), event.tvEventInfo);
+                if (event.tvEventInfo == null){
+                    noInfo(googleMap);
+                } else {
+                    getLocationFromAddress(getContext(), event.tvEventInfo);
+                }
             } else if (event.tvEventInfo == null) {
                 noInfo(googleMap);
             } else if (event.venue.getLatitude() == null || event.venue.getLongitude() == null){
@@ -513,6 +517,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
             if (address == null) {
                 return;
             }
+
             Address location = address.get(0);
 
             destLat = location.getLatitude();

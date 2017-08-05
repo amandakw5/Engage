@@ -115,16 +115,16 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         Log.i("Info",mYear);
         monthOfYear = monthOfYear +1;
         if (monthOfYear > 9){
-            mMonth = "" +monthOfYear;
+            mMonth = "" + monthOfYear;
         }
         else{
-            mMonth = "0" +monthOfYear;
+            mMonth = "0" + monthOfYear;
         }
         if (dayOfMonth > 9){
-            mDay = "" +dayOfMonth;
+            mDay = "" + dayOfMonth;
         }
         else{
-            mDay = "0" +dayOfMonth;
+            mDay = "0" + dayOfMonth;
         }
         eDate.setText(mMonth + "/" + mDay + "/" + mYear);
         selectedDate =true;
@@ -146,7 +146,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             createdEventInfo.add(String.valueOf(date));
             finishedAddingEvent = false;
             i.putExtra("createdEventInfo", Parcels.wrap(createdEventInfo));
-            final UserEvents newEv = new UserEvents(eventName, Profile.getCurrentProfile().getFirstName() + " "+ Profile.getCurrentProfile().getLastName(), mMonth + "-" +mDay + " " + mHour + ":" + mMinute + " " + half, eventLocation,  null, null, eventDescription, Profile.getCurrentProfile().getId());
+//            final UserEvents newEv = new UserEvents(eventName, Profile.getCurrentProfile().getFirstName() + " "+ Profile.getCurrentProfile().getLastName(), mMonth + "-" +mDay + " " + mHour + ":" + mMinute + " " + half, eventLocation,  null, null, eventDescription, Profile.getCurrentProfile().getId());
             final CreatedEvents createdEvent = new CreatedEvents(eventName,eventLocation,eventDescription,String.valueOf(mHour),String.valueOf(mMinute),String.valueOf(mDay),String.valueOf(mMonth),String.valueOf(mYear), Profile.getCurrentProfile().getId(), date);
             rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -167,7 +167,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                                     builder = new AlertDialog.Builder(CreateEventActivity.this);
                                 }
                                 builder.setTitle("Delete entry")
-                                        .setMessage("Want to upload an image?")
+                                        .setMessage("Upload Image?")
                                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 // continue with delete
@@ -177,6 +177,8 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 // do nothing
+                                                Intent intent = new Intent(CreateEventActivity.this, HomePage.class);
+                                                startActivity(intent);
                                                 finish();
                                             }
                                         })
@@ -197,7 +199,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                             builder = new AlertDialog.Builder(CreateEventActivity.this);
                         }
                         builder.setTitle("Delete entry")
-                                .setMessage("Want to upload an image?")
+                                .setMessage("Upload Image?")
                                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         // continue with delete
@@ -207,6 +209,8 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         // do nothing
+                                        Intent intent = new Intent(CreateEventActivity.this, HomePage.class);
+                                        startActivity(intent);
                                         finish();
                                     }
                                 })
@@ -226,6 +230,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
     // check the input field has any text or not
     // return true if it contains text otherwise false
     public static boolean hasText(EditText editText) {
+
         String text = editText.getText().toString().trim();
         editText.setError(null);
 
@@ -249,7 +254,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         }
         if (minute < 10){
             mMinute = "0" + minute;
-            eTime.setText(mHour + ":0" + mMinute);
+            eTime.setText(mHour + ":" + mMinute + " " + half);
         }
         else{
             mMinute = "" + minute;
@@ -274,17 +279,23 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             progress.show();
             Uri uri = data.getData();
             if(createdEventID == 0)
-                createdEventID =1;
+                createdEventID = 1;
             StorageReference path = storage.child("photos").child(String.valueOf(createdEventID));
             path.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     progress.dismiss();
-                    Toast.makeText(getApplicationContext(),"Successfully upladed image",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Successfully uploaded image",Toast.LENGTH_LONG).show();
                     finish();
 
                 }
             });
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent (this, HomePage.class);
+        startActivity(intent);
     }
 }
