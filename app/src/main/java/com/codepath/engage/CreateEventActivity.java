@@ -112,6 +112,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         c.set(Calendar.MONTH, monthOfYear);
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         mYear = "" + year;
+        Log.i("Info",mYear);
         if (monthOfYear > 9){
             mMonth = "" +monthOfYear;
         }
@@ -140,6 +141,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             createdEventInfo.add(eventDescription);
             createdEventInfo.add(Profile.getCurrentProfile().getId());
             Date date = new Date();
+
             createdEventInfo.add(String.valueOf(date));
             finishedAddingEvent = false;
             i.putExtra("createdEventInfo", Parcels.wrap(createdEventInfo));

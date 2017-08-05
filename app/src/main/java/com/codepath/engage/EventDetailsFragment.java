@@ -1,18 +1,14 @@
 package com.codepath.engage;
 
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +19,6 @@ import com.codepath.engage.models.UserEvents;
 import com.facebook.Profile;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -39,23 +34,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.json.JSONException;
-import org.parceler.Parcels;
-
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.codepath.engage.R.id.btnSave;
-import static com.codepath.engage.R.id.fabSave;
-import static com.codepath.engage.R.id.tvHost;
 
 /**
  * Created by emilyz on 7/31/17.
@@ -248,7 +233,7 @@ public class EventDetailsFragment extends Fragment {
                 final SearchResult singleVideo = searchResultList.get(0);
                 final ResourceId rId = singleVideo.getId();
                 Log.i("INFO",singleVideo.getSnippet().getTitle());
-                youtubeFragment = (YouTubePlayerSupportFragment) getFragmentManager().findFragmentById(R.id.youtubeFragment);
+                youtubeFragment = (YouTubePlayerSupportFragment) getChildFragmentManager().findFragmentById(R.id.youtubeFragment);
                 youtubeFragment.initialize("YOUR API KEY",
                         new YouTubePlayer.OnInitializedListener() {
                             @Override
