@@ -58,8 +58,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             User u = mUsers.get(position);
             holder.name.setText(u.firstName + " " + u.lastName);
             Glide.with(context).load(u.profilePicture).centerCrop().into(holder.profileImage);
-        }
-        else {
+        } else {
             position = holder.getAdapterPosition();
             Event event = mEvents.get(position);
             holder.tvHost.setText(event.organizerName);
@@ -102,6 +101,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         public TextView tvHost;
         public ImageView profileImage;
         public TextView name;
+
         public ViewHolder(View itemView){
             super(itemView);
             tvHost = (TextView) itemView.findViewById(R.id.tvHost);
@@ -129,7 +129,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
                 else {
                     final Event event = mEvents.get(position);
                     Intent intent = new Intent(context, EventDetailsActivity.class);
+                    boolean isCreated = event.isCreatedEvent();
                     intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
+                    intent.putExtra("isCreated", Parcels.wrap(isCreated));
                     context.startActivity(intent);
                 }
             }

@@ -144,7 +144,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             createdEventInfo.add(String.valueOf(date));
             finishedAddingEvent = false;
             i.putExtra("createdEventInfo", Parcels.wrap(createdEventInfo));
-            final UserEvents newEv = new UserEvents(eventName, Profile.getCurrentProfile().getFirstName() + " "+ Profile.getCurrentProfile().getLastName(), mMonth + "-" +mDay + " " + mHour + ":" + mMinute + " " + half, eventLocation,  null, null, eventDescription, Profile.getCurrentProfile().getId(), date);
+            final UserEvents newEv = new UserEvents(eventName, Profile.getCurrentProfile().getFirstName() + " "+ Profile.getCurrentProfile().getLastName(), mMonth + "-" +mDay + " " + mHour + ":" + mMinute + " " + half, eventLocation,  null, null, eventDescription, Profile.getCurrentProfile().getId());
             final CreatedEvents createdEvent = new CreatedEvents(eventName,eventLocation,eventDescription,String.valueOf(mHour),String.valueOf(mMinute),String.valueOf(mDay),String.valueOf(mMonth),String.valueOf(mYear), Profile.getCurrentProfile().getId(), date);
             rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -180,16 +180,13 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                                         })
                                         .setIcon(android.R.drawable.ic_dialog_alert)
                                         .show();
-
                             }
-
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
 
                             }
                         });
-                    }
-                    else{
+                    } else {
                         rootRef.child("CreatedEvents").child("1").setValue(createdEvent);
                         AlertDialog.Builder builder;
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -235,7 +232,6 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             editText.setError(REQUIRED_MSG);
             return false;
         }
-
         return true;
     }
 

@@ -21,8 +21,8 @@ public class DrawerMenuItem {
     public static final int DRAWER_MENU_ITEM_PROFILE = 1;
     public static final int DRAWER_MENU_ITEM_FEED = 2;
     public static final int DRAWER_MENU_ITEM_EVENTS = 3;
-    public static final int DRAWER_MENU_ITEM_CREATE = 4;
-    public static final int DRAWER_MENU_ITEM_MESSAGE = 5;
+    public static final int DRAWER_MENU_ITEM_MESSAGE = 4;
+    public static final int DRAWER_MENU_ITEM_CREATE = 5;
     public static final int DRAWER_MENU_ITEM_LOGOUT = 6;
 
 
@@ -55,7 +55,7 @@ public class DrawerMenuItem {
                 itemNameTxt.setText("Create an Event");
                 break;
             case DRAWER_MENU_ITEM_MESSAGE:
-                itemNameTxt.setText("Messaging");
+                itemNameTxt.setText("My Messages");
                 break;
             case DRAWER_MENU_ITEM_LOGOUT:
                 itemNameTxt.setText("Log Out");

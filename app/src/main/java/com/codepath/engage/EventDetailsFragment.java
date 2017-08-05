@@ -38,6 +38,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.json.JSONException;
 import org.parceler.Parcels;
@@ -55,6 +57,7 @@ import butterknife.ButterKnife;
 
 import static com.codepath.engage.R.id.btnSave;
 import static com.codepath.engage.R.id.fabSave;
+import static com.codepath.engage.R.id.ivProfileImage;
 import static com.codepath.engage.R.id.tvHost;
 
 /**
@@ -71,9 +74,9 @@ public class EventDetailsFragment extends Fragment {
     @BindView(R.id.fabSave) Button fabSave;
     YouTubePlayerSupportFragment youtubeFragment;
 
-    ArrayList<String> createdEventInfo;
     UserEvents currentUpdate;
     Event event;
+    Boolean isUserCreated;
 
     String uid;
     List<String> events;
@@ -89,7 +92,7 @@ public class EventDetailsFragment extends Fragment {
     //Define a global variable that identifies the name of a file thatcontains the developer's API key.
     private static final long NUMBER_OF_VIDEOS_RETURNED = 25;
 
-    public static EventDetailsFragment newInstance(ArrayList<String> createdEventInfo, UserEvents currentUpdate, Event event){
+    public static EventDetailsFragment newInstance(UserEvents currentUpdate, Event event, boolean isUserCreated){
         EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
         Bundle args = new Bundle();
 
@@ -99,9 +102,8 @@ public class EventDetailsFragment extends Fragment {
         if (currentUpdate != null){
             args.putParcelable("currentUpdate", currentUpdate);
         }
-        if (createdEventInfo != null){
-            args.putStringArrayList("createdEventInfo", createdEventInfo);
-        }
+
+        args.putBoolean("isUserCreated", isUserCreated);
 
         eventDetailsFragment.setArguments(args);
 
@@ -137,11 +139,11 @@ public class EventDetailsFragment extends Fragment {
             currentUpdate = null;
         }
 
-        try{
-            createdEventInfo = bundle.getStringArrayList("createdEventInfo");
+        try {
+            isUserCreated = bundle.getBoolean("isUserCreated");
         } catch (Exception e){
             e.printStackTrace();
-            createdEventInfo = null;
+            isUserCreated = false;
         }
 
     }
@@ -157,12 +159,19 @@ public class EventDetailsFragment extends Fragment {
 
         if (event != null){
             if (ivPicture != null) {
-                if (!event.ivEventImage.equals("null")) {
+                if (isUserCreated){
+                    StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(event.getEventId()));
+                    Glide.with(this)
+                            .using(new FirebaseImageLoader())
+                            .load(storageReference)
+                            .error(R.drawable.image_not_found)
+                            .into(ivPicture);
+                } else if (!event.ivEventImage.equals("null")) {
                     Glide.with(this)
                             .load(event.ivEventImage)
                             .centerCrop()
                             .into(ivPicture);
-                } else {
+                } else if (event.ivEventImage.equals("null")) {
                     Glide.with(this)
                             .load(R.drawable.image_not_found)
                             .centerCrop()
@@ -172,8 +181,10 @@ public class EventDetailsFragment extends Fragment {
             tvEventName.setText(event.tvEventName);
             tvEventDescription.setText(event.tvDescription);
             tvEventInfo.setText(event.tvEventInfo);
-            tvHost.setText(event.organizer.name);
+            tvHost.setText(event.organizerName);
+
             queryTerm = event.getOrganizerName();
+
             fabSave.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -207,10 +218,6 @@ public class EventDetailsFragment extends Fragment {
             tvHost.setText(currentUpdate.eventHost);
             fabSave.setVisibility(View.GONE);
 
-        } else if (createdEventInfo != null) {
-            tvEventName.setText(createdEventInfo.get(0));
-            tvEventDescription.setText(createdEventInfo.get(2));
-            tvEventInfo.setText(createdEventInfo.get(1));
         }
 
         try {
@@ -283,8 +290,9 @@ public class EventDetailsFragment extends Fragment {
         savedEventsCreated = false;
         events.clear();
         Date date = new Date();
-        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, date);
+        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null);
         savedEvents.child("savedEvents").child(eventId).setValue(info);
+        savedEvents.child("savedEvents").child(eventId).child("Date").child(uid).setValue(date);
         users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -91,8 +91,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
     GoogleApiClient mGoogleApiClient;
     Marker mCurrLocationMarker;
 
-    ArrayList<String> createdEventInfo;
-    double[] addressLoc;
     UserEvents currentUpdate;
     Event event;
     Double destLat;
@@ -105,6 +103,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
     @BindView(R.id.btnGoogleMaps)
     Button btnGoogleMaps;
 
+    boolean isUserCreated;
     boolean isGPSEnabled = false;
     boolean isNetworkEnabled = false;
     boolean canGetLocation = false;
@@ -116,7 +115,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
     public static final int PERMISSIONS_REQUEST_LOCATION = 99;
     private static final int CONNECTION_RESOLUTION_REQUEST = 2;
 
-    public static MapFragment newInstance(ArrayList<String> createdEventInfo, UserEvents currentUpdate, Event event) {
+    public static MapFragment newInstance(UserEvents currentUpdate, Event event, boolean isUserCreated) {
         MapFragment mapFragment = new MapFragment();
 
         Bundle args = new Bundle();
@@ -129,9 +128,8 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
         if (currentUpdate != null){
             args.putParcelable("currentUpdate", currentUpdate);
         }
-        if (createdEventInfo != null){
-            args.putStringArrayList("createdEventInfo", createdEventInfo);
-        }
+        args.putBoolean("isUserCreated", isUserCreated);
+
         mapFragment.setArguments(args);
 
         return mapFragment;
@@ -157,23 +155,22 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
             currentUpdate = null;
         }
 
-        try{
-            createdEventInfo = bundle.getStringArrayList("createdEventInfo");
-        } catch (Exception e){
-            e.printStackTrace();
-            createdEventInfo = null;
-        }
+        isUserCreated = bundle.getBoolean("isUserCreated");
 
         if (event != null) {
-            destLat = Double.parseDouble(event.venue.getLatitude());
-            destLng = Double.parseDouble(event.venue.getLongitude());
+            if (isUserCreated) {
+                getLocationFromAddress(getContext(), event.tvEventInfo);
+            } else if (event.tvEventInfo == null) {
+                noInfo(googleMap);
+            } else if (event.venue.getLatitude() == null || event.venue.getLongitude() == null){
+                getLocationFromAddress(getContext(), event.tvEventInfo);
+            } else {
+                destLat = Double.parseDouble(event.venue.getLatitude());
+                destLng = Double.parseDouble(event.venue.getLongitude());
+            }
         } else if (currentUpdate!= null) {
             getLocationFromAddress(getContext(), currentUpdate.eventAddress);
-        } else if (createdEventInfo != null){
-            getLocationFromAddress(getContext(), currentUpdate.eventAddress);
         }
-
-        addressLoc = new double[2];
 
         buildGoogleApiClient();
 
@@ -223,11 +220,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                                         == PackageManager.PERMISSION_GRANTED) {
                                     //Location Permission already granted
                                     googleMap.setMyLocationEnabled(true);
-//                                    if (event != null) {
                                         showMap(googleMap);
-//                                    } else {
-//                                        noInfo(googleMap);
-//                                    }
                                 } else {
                                     //Request Location Permission
                                     checkLocationPermission();
@@ -509,6 +502,28 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
     public void onLocationChanged(Location location) {
     }
 
+    public void getLocationFromAddress(Context context,String strAddress) {
+
+        Geocoder coder = new Geocoder(context);
+        List<Address> address;
+
+        try {
+            // May throw an IOException
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return;
+            }
+            Address location = address.get(0);
+
+            destLat = location.getLatitude();
+            destLng = location.getLongitude();
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+    }
+
     public void noInfo(GoogleMap googleMap) {
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -552,28 +567,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
 
-    }
-
-    public void getLocationFromAddress(Context context,String strAddress) {
-
-        Geocoder coder = new Geocoder(context);
-        List<Address> address;
-
-        try {
-            // May throw an IOException
-            address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
-                return;
-            }
-            Address location = address.get(0);
-
-            destLat = location.getLatitude();
-            destLng = location.getLongitude();
-
-        } catch (IOException ex) {
-
-            ex.printStackTrace();
-        }
     }
 
 

@@ -14,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v13.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +23,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -47,7 +45,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.mindorks.placeholderview.PlaceHolderView;
 
 import org.json.JSONArray;
@@ -361,13 +358,13 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     //Retrieve the venue for the event
                     if (eventRequestCompleted) {
                         for (int i = 0; i < events.size(); i++) {
-                            client.getVenue(events.get(i).getVeneuId(), new JsonHttpResponseHandler() {
+                            client.getVenue(events.get(i).getVenueId(), new JsonHttpResponseHandler() {
                                 @Override
                                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                                     try {
                                         Venue venue = Venue.fromJSON(response);
                                         for(int i = 0; i  < events.size();i++) {
-                                            if(events.get(i).getVeneuId().equals(venue.getId())) {
+                                            if(events.get(i).getVenueId().equals(venue.getId())) {
                                                 venues.add(venue);
                                                 events.get(i).setVenue(venue);
                                                 String address = "";

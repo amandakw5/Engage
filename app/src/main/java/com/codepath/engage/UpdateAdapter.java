@@ -57,13 +57,6 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
             Collections.sort(dates, Collections.reverseOrder());
 
         }
-//            for(Date d: dates){
-//                for (UserEvents ue: mEvents){
-//                    if ((ue.date.equals(d)) && (!finalEvents.contains(ue))){
-//                        finalEvents.add(ue);
-//                    }
-//                }
-//            }
 
         return viewHolder;
     }

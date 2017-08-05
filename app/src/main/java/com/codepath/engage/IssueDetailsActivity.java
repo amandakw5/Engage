@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -218,7 +217,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
                 finally {
                     for (int i = 0; i < events.size(); i++) {
                         if (eventRequestCompleted) {
-                            client.getVenue(events.get(i).getVeneuId(), new JsonHttpResponseHandler() {
+                            client.getVenue(events.get(i).getVenueId(), new JsonHttpResponseHandler() {
                                 @Override
                                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                                     try {
