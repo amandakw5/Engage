@@ -231,12 +231,12 @@ public class EventDetailsFragment extends Fragment {
             // Call the API and print results.
             SearchListResponse searchResponse = search.execute();
             List<SearchResult> searchResultList = searchResponse.getItems();
-            if (searchResultList != null) {
+            if (searchResultList != null && searchResultList.size() != 0) {
                 final SearchResult singleVideo = searchResultList.get(0);
                 final ResourceId rId = singleVideo.getId();
                 Log.i("INFO",singleVideo.getSnippet().getTitle());
                 youtubeFragment = (YouTubePlayerSupportFragment) getChildFragmentManager().findFragmentById(R.id.youtubeFragment);
-                youtubeFragment.initialize("YOUR API KEY",
+                youtubeFragment.initialize(apiKey,
                         new YouTubePlayer.OnInitializedListener() {
                             @Override
                             public void onInitializationSuccess(YouTubePlayer.Provider provider,
@@ -251,7 +251,8 @@ public class EventDetailsFragment extends Fragment {
                             }
                         });
             } else {
-                //TODO SET YOUTUBE TO INVIS PLS
+                youtubeFragment = (YouTubePlayerSupportFragment) getChildFragmentManager().findFragmentById(R.id.youtubeFragment);
+                youtubeFragment.getView().setVisibility(View.INVISIBLE);
             }
         } catch (GoogleJsonResponseException e) {
             System.err.println("There was a service error: " + e.getDetails().getCode() + " : "
