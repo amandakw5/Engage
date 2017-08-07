@@ -94,7 +94,7 @@ public class UserEvents implements Parcelable {
 
     public void setDate(Date date) {
         this.date = date;
-    }
+}
 
     public String getEventId() {
         return eventId;
