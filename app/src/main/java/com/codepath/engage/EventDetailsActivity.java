@@ -41,7 +41,7 @@ public class EventDetailsActivity extends AppCompatActivity{
     private Toolbar toolbar;
     private ImageView ivBackdrop;
     private CollapsingToolbarLayout collapsingToolbar;
-    private TextView tvTitle;
+    private TextView tvEventName;
     UserEvents currentUpdate;
     Event event;
     ViewPager vPager;
@@ -61,11 +61,12 @@ public class EventDetailsActivity extends AppCompatActivity{
         isUserCreated = Parcels.unwrap(getIntent().getParcelableExtra("isCreated"));
 
         setContentView(R.layout.activity_event_details);
-        collapsingToolbar=(CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+
         setToolbar();
 
         ivBackdrop = (ImageView) findViewById(R.id.ivBackdrop);
-        tvTitle = (TextView) findViewById(R.id.tvTitle);
+        tvEventName = (TextView) findViewById(R.id.tvEventName);
 
         vPager = (ViewPager) findViewById(R.id.viewpager);
         vPager.setAdapter(new TabFragmentAdapter(getSupportFragmentManager(), EventDetailsActivity.this, currentUpdate, event, isUserCreated));
@@ -74,7 +75,8 @@ public class EventDetailsActivity extends AppCompatActivity{
         tabLayout.setupWithViewPager(vPager);
 
         if(event!=null){
-            tvTitle.setText(event.tvEventName);
+//            collapsingToolbar.setTitle(event.tvEventName);
+            tvEventName.setText(event.tvEventName);
             if (isUserCreated){
                     StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(event.getEventId()));
                     Glide.with(this)
@@ -94,7 +96,8 @@ public class EventDetailsActivity extends AppCompatActivity{
                             .into(ivBackdrop);
                 }
         } else if (currentUpdate!=null){
-            tvTitle.setText(currentUpdate.eventName);
+            tvEventName.setText(currentUpdate.eventName);
+//            collapsingToolbar.setTitle(currentUpdate.eventName);
             if (!currentUpdate.eventImage.equals("null")) {
                     Glide.with(this)
                             .load(currentUpdate.eventImage)

@@ -163,20 +163,6 @@ public class EventDetailsFragment extends Fragment {
             });
 
         } else if (currentUpdate != null) {
-//            if (ivPicture != null) {
-//                if (!currentUpdate.eventImage.equals("null")) {
-//                    Glide.with(this)
-//                            .load(currentUpdate.eventImage)
-//                            .centerCrop()
-//                            .into(ivPicture);
-//                } else {
-//                    Glide.with(this)
-//                            .load(R.drawable.image_not_found)
-//                            .centerCrop()
-//                            .into(ivPicture);
-//                }
-//            }
-//            tvEventName.setText(currentUpdate.eventName);
             tvEventDescription.setText(currentUpdate.eventDescription);
             tvEventInfo.setText(currentUpdate.eventTime);
             tvHost.setText(currentUpdate.eventHost);
