@@ -396,7 +396,9 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                         }
                     }
                 }
-                progress.dismiss();
+                if (!ViewEvents.this.isFinishing() && progress != null) {
+                    progress.dismiss();
+                }
 
             }
             @Override

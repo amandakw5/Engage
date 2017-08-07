@@ -43,7 +43,7 @@ public class CreatedEvents {
         eventDay = String.valueOf(date.getDay());
         eventHour = String.valueOf(date.getHours());
         eventMinute = String.valueOf(date.getMinutes());
-        eventMonth =String.valueOf(date.getMonth());
+        eventMonth = String.valueOf(date.getMonth());
         eventYear = String.valueOf(date.getYear());
         eventLocation = eventAddress;
 
