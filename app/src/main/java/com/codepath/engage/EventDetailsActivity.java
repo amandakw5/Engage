@@ -36,7 +36,7 @@ public class EventDetailsActivity extends AppCompatActivity{
     private Toolbar toolbar;
     private ImageView ivBackdrop;
     private CollapsingToolbarLayout collapsingToolbar;
-//    private TextView tvTitle;
+    private TextView tvTitle;
     UserEvents currentUpdate;
     Event event;
     ViewPager vPager;
@@ -60,7 +60,7 @@ public class EventDetailsActivity extends AppCompatActivity{
         setToolbar();
 
         ivBackdrop = (ImageView) findViewById(R.id.ivBackdrop);
-//        tvTitle = (TextView) findViewById(R.id.tvTitle);
+        tvTitle = (TextView) findViewById(R.id.tvTitle);
 
         vPager = (ViewPager) findViewById(R.id.viewpager);
         vPager.setAdapter(new TabFragmentAdapter(getSupportFragmentManager(), EventDetailsActivity.this, currentUpdate, event, isUserCreated));
@@ -69,13 +69,13 @@ public class EventDetailsActivity extends AppCompatActivity{
         tabLayout.setupWithViewPager(vPager);
 
         if(event!=null){
-//            tvTitle.setText(event.tvEventName);
+            tvTitle.setText(event.tvEventName);
             Glide.with(this)
                     .load(event.ivEventImage)
                     .centerCrop()
                     .into(ivBackdrop);
         } else if (currentUpdate!=null){
-//            tvTitle.setText(currentUpdate.eventName);
+            tvTitle.setText(currentUpdate.eventName);
             Glide.with(this)
                     .load(currentUpdate.eventImage)
                     .centerCrop()
@@ -123,6 +123,7 @@ public class EventDetailsActivity extends AppCompatActivity{
         toolbar= (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
     }
 

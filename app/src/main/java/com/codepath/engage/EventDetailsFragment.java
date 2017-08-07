@@ -50,11 +50,11 @@ import butterknife.ButterKnife;
 
 public class EventDetailsFragment extends Fragment {
 
-    @BindView(R.id.ivPicture) ImageView ivPicture;
+//    @BindView(R.id.ivPicture) ImageView ivPicture;
     @BindView(R.id.tvHost) TextView tvHost;
     @BindView(R.id.tvEventInfo) TextView tvEventInfo;
     @BindView(R.id.tvEventDescription) TextView tvEventDescription;
-    @BindView(R.id.tvEventName) TextView tvEventName;
+//    @BindView(R.id.tvEventName) TextView tvEventName;
     @BindView(R.id.fabSave)
     Button fabSave;
     YouTubePlayerSupportFragment youtubeFragment;
@@ -143,27 +143,27 @@ public class EventDetailsFragment extends Fragment {
         ButterKnife.bind(this,view);
 
         if (event != null){
-            if (ivPicture != null) {
-                if (isUserCreated){
-                    StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(event.getEventId()));
-                    Glide.with(this)
-                            .using(new FirebaseImageLoader())
-                            .load(storageReference)
-                            .error(R.drawable.image_not_found)
-                            .into(ivPicture);
-                } else if (!event.ivEventImage.equals("null")) {
-                    Glide.with(this)
-                            .load(event.ivEventImage)
-                            .centerCrop()
-                            .into(ivPicture);
-                } else if (event.ivEventImage.equals("null")) {
-                    Glide.with(this)
-                            .load(R.drawable.image_not_found)
-                            .centerCrop()
-                            .into(ivPicture);
-                }
-            }
-            tvEventName.setText(event.tvEventName);
+//            if (ivPicture != null) {
+//                if (isUserCreated){
+//                    StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(event.getEventId()));
+//                    Glide.with(this)
+//                            .using(new FirebaseImageLoader())
+//                            .load(storageReference)
+//                            .error(R.drawable.image_not_found)
+//                            .into(ivPicture);
+//                } else if (!event.ivEventImage.equals("null")) {
+//                    Glide.with(this)
+//                            .load(event.ivEventImage)
+//                            .centerCrop()
+//                            .into(ivPicture);
+//                } else if (event.ivEventImage.equals("null")) {
+//                    Glide.with(this)
+//                            .load(R.drawable.image_not_found)
+//                            .centerCrop()
+//                            .into(ivPicture);
+//                }
+//            }
+//            tvEventName.setText(event.tvEventName);
             tvEventDescription.setText(event.tvDescription);
             tvEventInfo.setText(event.tvEventInfo);
             tvHost.setText(event.organizerName);
@@ -184,20 +184,20 @@ public class EventDetailsFragment extends Fragment {
             });
 
         } else if (currentUpdate != null) {
-            if (ivPicture != null) {
-                if (!currentUpdate.eventImage.equals("null")) {
-                    Glide.with(this)
-                            .load(currentUpdate.eventImage)
-                            .centerCrop()
-                            .into(ivPicture);
-                } else {
-                    Glide.with(this)
-                            .load(R.drawable.image_not_found)
-                            .centerCrop()
-                            .into(ivPicture);
-                }
-            }
-            tvEventName.setText(currentUpdate.eventName);
+//            if (ivPicture != null) {
+//                if (!currentUpdate.eventImage.equals("null")) {
+//                    Glide.with(this)
+//                            .load(currentUpdate.eventImage)
+//                            .centerCrop()
+//                            .into(ivPicture);
+//                } else {
+//                    Glide.with(this)
+//                            .load(R.drawable.image_not_found)
+//                            .centerCrop()
+//                            .into(ivPicture);
+//                }
+//            }
+//            tvEventName.setText(currentUpdate.eventName);
             tvEventDescription.setText(currentUpdate.eventDescription);
             tvEventInfo.setText(currentUpdate.eventTime);
             tvHost.setText(currentUpdate.eventHost);
