@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.engage.models.CreatedEvents;
+import com.codepath.engage.models.DateProgram;
 import com.codepath.engage.models.User;
 import com.codepath.engage.models.UserEvents;
 import com.facebook.Profile;
@@ -33,7 +34,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -145,12 +145,23 @@ public class ProfileActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (eventIDs != null) {
                     for (String id : eventIDs) {
-                        for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
+                        for (final DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
                             if (id.equals(evSnapshot.getKey())) {
-                                UserEvents e = evSnapshot.getValue(UserEvents.class);
-                                events.add(e);
-                                dates.add(e.date);
-                                adapter.notifyItemInserted(events.size() -1);
+                                savedEvents.child(Profile.getCurrentProfile().getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        UserEvents e = evSnapshot.getValue(UserEvents.class);
+                                        events.add(e);
+                                        DateProgram date = dataSnapshot.getValue(DateProgram.class);
+                                        e.setDate(date.getDate());
+                                        dates.add(e.date);
+                                        adapter.notifyItemInserted(events.size() -1);
+                                    }
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
                                 break;
                             }
                         }
