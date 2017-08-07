@@ -47,7 +47,7 @@ public class NotificationsActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child(Profile.getCurrentProfile().getId()).hasChild("notifList")){
                     currentProfile = dataSnapshot.child(Profile.getCurrentProfile().getId()).getValue(User.class);
-                    for (String n : currentProfile.notifList){
+                    for (String n : currentProfile.notifList.values()){
                         notifs.add(n);
                         adapter.notifyItemInserted(notifs.size() -1);
                     }

@@ -25,14 +25,15 @@ public class User {
     public int numFollowing;
     public HashMap<String,String> followers;
     public HashMap<String,String>  following;
+    public HashMap<String,String> notifList;
     public List<String> eventsList;
-    public ArrayList<String> notifList;
+    public ArrayList<String> notList;
 
 
     public User(){
     }
 
-    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String,String> followers, HashMap<String,String> following) {
+    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String,String> followers, HashMap<String,String> following, HashMap<String,String> notList) {
         this.uid = uid;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -42,15 +43,25 @@ public class User {
         this.numFollowing = numFollowing;
         this.following = following;
         this.followers = followers;
+        this.notifList = notList;
     }
 
-    public ArrayList<String> getNotifList() {
+    public HashMap<String, String> getNotifList() {
         return notifList;
     }
 
-    public void setNotifList(ArrayList<String> notifList) {
+    public void setNotifList(HashMap<String, String> notifList) {
         this.notifList = notifList;
     }
+
+//
+//    public ArrayList<String> getNotifList() {
+//        return notifList;
+//    }
+//
+//    public void setNotifList(ArrayList<String> notifList) {
+//        this.notifList = notifList;
+//    }
 
     public List<String> getEventsList() {
         return eventsList;
