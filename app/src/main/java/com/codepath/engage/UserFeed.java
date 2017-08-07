@@ -3,15 +3,18 @@ package com.codepath.engage;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mindorks.placeholderview.PlaceHolderView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -34,13 +38,16 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.Date;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class UserFeed extends AppCompatActivity {
     FeedAdapter adapter;
     public ArrayList<UserEvents> events;
     RecyclerView rvEvents;
     User currentProfile;
     ImageView profileImage;
-    TextView feed;
+//    TextView feed;
     Context context;
     String uid;
     String whichprofile;
@@ -51,10 +58,20 @@ public class UserFeed extends AppCompatActivity {
     ProgressDialog progress;
     StorageReference storage;
 
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
+    @BindView(R.id.toolbar_userfeed)
+    Toolbar toolbar;
+    @BindView(R.id.drawer_view)
+    PlaceHolderView mDrawerView;
+    @BindView(R.id.tvMyFeed) TextView tvMyFeed;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_feed);
+        ButterKnife.bind(this);
+        setUpDrawer();
         events = new ArrayList<>();
         feedUsers = new ArrayList<>();
         dates = new ArrayList<>();
@@ -62,11 +79,11 @@ public class UserFeed extends AppCompatActivity {
         storage = FirebaseStorage.getInstance().getReference();
         context = this;
         Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
-        feed = (TextView) findViewById(R.id.feed);
-        feed.setTypeface(font);
+        tvMyFeed.setTypeface(font);
+//        feed = (TextView) findViewById(R.id.feed);
+//        feed.setTypeface(font);
         header = (ImageView) findViewById(R.id.header);
         profileImage = (ImageView) findViewById(R.id.profileImage);
-        feed = (TextView) findViewById(R.id.feed);
         rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.addValueEventListener(new ValueEventListener() {
@@ -107,7 +124,7 @@ public class UserFeed extends AppCompatActivity {
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
         rvEvents.setAdapter(adapter);
         Glide.with(context).using(new FirebaseImageLoader())
-                .load(storage.child("headers").child(Profile.getCurrentProfile().getId())).error(R.drawable.image_not_found).centerCrop().into(header);
+                .load(storage.child("headers").child(Profile.getCurrentProfile().getId())).error(R.drawable.search_gradient).centerCrop().into(header);
         header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,5 +177,40 @@ public class UserFeed extends AppCompatActivity {
                 }
             });
         }
+    }
+    private void setUpDrawer(){
+        mDrawerView
+                .addView(new DrawerHeader(this.getApplicationContext()))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_FEED))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_EVENTS))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_CREATE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(),DrawerMenuItem.DRAWER_MENU_ITEM_MESSAGE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT));
+
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer){
+
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent (this, HomePage.class);
+        startActivity(intent);
+    }
+
+    public void goHome(View view) {
+        Intent i = new Intent(UserFeed.this,HomePage.class);
+        startActivity(i);
     }
 }

@@ -6,67 +6,89 @@
     android:layout_height="match_parent"
     tools:context="com.codepath.engage.CreateEventActivity">
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/visible"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/masked"/>
+
+    <TextView
         android:id="@+id/createEventTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="22dp"
         android:text="Create an Event"
-        android:textColor="#000000"
-        android:textSize="30sp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:textColor="@color/black"
+        android:textSize="30sp" />
+
     <android.support.design.widget.TextInputLayout
         android:id="@+id/event_name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/createEventTitle">
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/createEventTitle"
+        android:layout_toEndOf="@+id/visible"
+        android:layout_marginTop="10dp">
 
         <EditText
             android:id="@+id/eName"
+            android:layout_width="match_parent"
             android:textColor="#000000"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
             android:ems="10"
             android:hint="Event Name"
             android:inputType="textPersonName"
-            android:textColorLink="@color/common_google_signin_btn_text_dark_focused"
-            />
+            android:backgroundTint="#F03A18"
+            android:textColorLink="@color/common_google_signin_btn_text_dark_focused" />
 
     </android.support.design.widget.TextInputLayout>
+
     <android.support.design.widget.TextInputLayout
         android:id="@+id/event_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/event_name">
+        android:layout_below="@id/event_name"
+        android:layout_gravity="center">
+
         <EditText
             android:id="@+id/eLocation"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
             android:ems="10"
             android:hint="Event Location"
+            android:backgroundTint="#F03A18"
             android:textColor="#000000"
             android:inputType="textPersonName" />
 
     </android.support.design.widget.TextInputLayout>
+
     <android.support.design.widget.TextInputLayout
         android:id="@+id/events_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/event_location">
 
-
         <EditText
             android:id="@+id/eDescription"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/eLocation"
+            android:layout_below="@+id/eLocation"
             android:ems="10"
+            android:backgroundTint="#F03A18"
             android:textColor="#000000"
             android:hint="Event Description"
-            android:inputType="textPersonName"
-            android:layout_below="@+id/eLocation"
-            android:layout_alignStart="@+id/eLocation" />
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:inputType="textPersonName" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -74,33 +96,55 @@
         android:id="@+id/submitEvent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create Event"
-        android:layout_marginEnd="15dp"
-        android:layout_alignTop="@+id/eDate"
-        android:layout_alignParentEnd="true" />
+        android:text="Create"
+        android:layout_below="@+id/eTime"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp" />
 
     <TextView
         android:id="@+id/eDate"
         android:textColor="#000000"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="23dp"
-        android:text="Event Date"
-        android:textSize="18sp"
-        android:layout_below="@+id/events_description"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="58dp" />
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="30dp"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:text="mm/dd/yyyy"
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/eTime"
         android:textColor="#000000"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
-        android:text="Event Time"
+        android:layout_height="50dp"
+        android:layout_marginTop="14dp"
+        android:gravity="center"
+        android:text="hh:mm"
         android:textSize="18sp"
         android:layout_below="@+id/eDate"
-        android:layout_alignStart="@+id/eDate" />
+        android:layout_alignEnd="@+id/eDate" />
+
+    <TextView
+        android:id="@+id/tv_event_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/eDate"
+        android:layout_alignBottom="@+id/eDate"
+        android:layout_marginEnd="26dp"
+        android:text="Event Date:"
+        android:textSize="20sp"
+        android:layout_marginStart="20dp"/>
+
+    <TextView
+        android:id="@+id/tv_event_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Time: "
+        android:textSize="20sp"
+        android:layout_alignBaseline="@+id/eTime"
+        android:layout_alignBottom="@+id/eTime"
+        android:layout_alignStart="@+id/tv_event_date" />
 
 
 </RelativeLayout>

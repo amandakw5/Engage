@@ -53,12 +53,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class HomePage extends AppCompatActivity implements View.OnClickListener, LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class HomePage extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     IssueAdapter adapter;
     ArrayList<String> issues;
-
-    DatabaseReference mDatabase;
 
     @BindView(R.id.rvIssues) RecyclerView rvIssues;
     @BindView(R.id.drawerView) PlaceHolderView mDrawerView;
@@ -107,6 +105,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 .addApi(LocationServices.API)
                 .build();
 
+        String[] strs = {"Women", "Food Insecurity", "Climate Change", "Human Rights", "Poverty"};
         ActionBar actionbar = getSupportActionBar();
 
         setSupportActionBar(toolbar);
@@ -121,8 +120,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
             e.printStackTrace();
         }
 
-
-        String[] strs = {"Women", "Food", "Climate Change", "Human Rights", "Poverty"};
         issues = new ArrayList<>();
         issues.addAll(Arrays.asList(strs));
 
@@ -156,18 +153,13 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                             }
                         }
                         return true;
-
                     }
                 });
                 //show popup menu
                 popup.show();
-
             }
         });
-
     }
-
-
 
     private void setUpDrawer(){
         mDrawerView
@@ -221,11 +213,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 return true;
             }
         });
-    }
-
-    @Override
-    public void onClick(View v) {
-
     }
 
     //Functions that deal with user location
@@ -298,7 +285,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(HomePage.this, "onConnectionFailed: \n" + connectionResult.toString(),
                 Toast.LENGTH_LONG).show();
-        Log.d("DDD", connectionResult.toString());
+        Log.d("Connection", connectionResult.toString());
     }
 
     private void updateUI(Location loc) {
@@ -332,7 +319,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         Log.d(TAG, "This device is supported.");
         return true;
     }
-
 
     private void showAlert() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);

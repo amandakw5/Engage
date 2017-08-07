@@ -24,7 +24,7 @@ public class Event implements Parcelable {
     public String ivEventImage;
     public String organizerName;
     public String eventId;
-    public String veneuId;
+    public String venueId;
     public String organizerId;
     public Venue venue;
     public Organizer organizer;
@@ -46,7 +46,7 @@ public class Event implements Parcelable {
         this.ivEventImage = ivEventImage;
         this.eventId = eventId;
         this.organizerName = "";
-        veneuId = "";
+        venueId = "";
         organizerId="";
         venue = null;
         organizer = null;
@@ -59,7 +59,7 @@ public class Event implements Parcelable {
         this.tvDescription = tvDescription;
         this.ivEventImage = ivEventImage;
         this.eventId = eventId;
-        this.veneuId = veneuId;
+        this.venueId = veneuId;
         this.timeStart = timeStart;
     }
 
@@ -73,7 +73,7 @@ public class Event implements Parcelable {
         ivEventImage = in.readString();
         organizerName = in.readString();
         eventId = in.readString();
-        veneuId = in.readString();
+        venueId = in.readString();
         organizerId = in.readString();
         venue = in.readParcelable(Venue.class.getClassLoader());
         organizer = in.readParcelable(Organizer.class.getClassLoader());
@@ -128,7 +128,7 @@ public class Event implements Parcelable {
             event.ivEventImage = "null";
             Log.d("Ingo", "null");
         }
-        event.veneuId = jsonObject.getString("venue_id");
+        event.venueId = jsonObject.getString("venue_id");
         event.organizerId = jsonObject.getString("organizer_id");
         return event;
     }
@@ -189,12 +189,12 @@ public class Event implements Parcelable {
         this.ivEventImage = ivEventImage;
     }
 
-    public String getVeneuId() {
-        return veneuId;
+    public String getVenueId() {
+        return venueId;
     }
 
-    public void setVeneuId(String veneuId) {
-        this.veneuId = veneuId;
+    public void setVenueId(String venueId) {
+        this.venueId = venueId;
     }
 
     public String getOrganizerName() {
@@ -230,7 +230,7 @@ public class Event implements Parcelable {
         dest.writeString(ivEventImage);
         dest.writeString(organizerName);
         dest.writeString(eventId);
-        dest.writeString(veneuId);
+        dest.writeString(venueId);
         dest.writeString(organizerId);
         dest.writeParcelable( this.venue,flags);
         dest.writeParcelable(this.organizer,flags);
