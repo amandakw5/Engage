@@ -13,6 +13,7 @@ import com.codepath.engage.models.CreatedEvents;
 import com.codepath.engage.models.UserEvents;
 import com.facebook.Profile;
 
+import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -87,10 +88,13 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
                     int position = getAdapterPosition();
                     // fire the listener callback
                     if (position != RecyclerView.NO_POSITION) {
-                        UserEvents currentUpdate = mEvents.get(position);
+                        ArrayList<UserEvents> helpme = new ArrayList<UserEvents>(mEvents);
+                        Collections.reverse(helpme);
+                        UserEvents currentUpdate = helpme.get(position);
                         // create intent for the new activity
                         Intent intent = new Intent(context, EventDetailsActivity.class);
                         intent.putExtra("current", Parcels.wrap(currentUpdate));
+                        intent.putExtra("isCreated", Parcels.wrap(currentUpdate.isCreatedByUser()));
                         // serialize the update using parceler, use its short name as a key
                         // show the activity
                         context.startActivity(intent);
