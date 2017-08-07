@@ -147,13 +147,14 @@ public class ProfileActivity extends AppCompatActivity {
                     for (String id : eventIDs) {
                         for (final DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
                             if (id.equals(evSnapshot.getKey())) {
-                                savedEvents.child(Profile.getCurrentProfile().getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                savedEvents.child(id).child("date").child(Profile.getCurrentProfile().getId()).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                    public void onDataChange(DataSnapshot dataSnapshot2) {
                                         UserEvents e = evSnapshot.getValue(UserEvents.class);
+                                        DateProgram date = dataSnapshot2.getValue(DateProgram.class);
+                                        date.setDateConstructed(date.getYear(),date.getMonth(),date.getTimezoneOffset(),date.getTime(),date.getMinutes(),date.getSeconds(),date.getHours(),date.getDay(),date.getDate());
+                                        e.setDate(date.getDateConstructed());
                                         events.add(e);
-                                        DateProgram date = dataSnapshot.getValue(DateProgram.class);
-                                        e.setDate(date.getDate());
                                         dates.add(e.date);
                                         adapter.notifyItemInserted(events.size() -1);
                                     }
