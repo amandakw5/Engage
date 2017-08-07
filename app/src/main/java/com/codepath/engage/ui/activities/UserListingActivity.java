@@ -42,10 +42,8 @@ public class UserListingActivity extends AppCompatActivity  {
 
     private void bindViews() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        //TODO sets the color for the toolbar background
-        mToolbar.setBackgroundColor(Color.parseColor("#EEEEEE"));
         //TODO sets the color for the text title of the toolbar
-        mToolbar.setTitleTextColor(Color.BLACK);
+        mToolbar.setTitleTextColor(Color.WHITE);
         mTabLayoutUserListing = (TabLayout) findViewById(R.id.tab_layout_user_listing);
         mViewPagerUserListing = (ViewPager) findViewById(R.id.view_pager_user_listing);
     }
