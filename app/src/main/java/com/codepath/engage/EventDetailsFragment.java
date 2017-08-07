@@ -33,6 +33,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,40 +44,30 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+
 /**
  * Created by emilyz on 7/31/17.
  */
 
 public class EventDetailsFragment extends Fragment {
 
-    @BindView(R.id.ivPicture) ImageView ivPicture;
     @BindView(R.id.tvHost) TextView tvHost;
     @BindView(R.id.tvEventInfo) TextView tvEventInfo;
     @BindView(R.id.tvEventDescription) TextView tvEventDescription;
-    @BindView(R.id.tvEventName) TextView tvEventName;
-    @BindView(R.id.fabSave)
-    Button fabSave;
     YouTubePlayerSupportFragment youtubeFragment;
 
-    ArrayList<String> createdEventInfo;
     UserEvents currentUpdate;
     Event event;
+    Boolean isUserCreated;
 
-    String uid;
     List<String> events;
     String queryTerm;
 
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference users;
-    DatabaseReference savedEvents;
-
-    boolean savedEventsCreated;
-
     //Define a global variable that identifies the name of a file thatcontains the developer's API key.
     private static final long NUMBER_OF_VIDEOS_RETURNED = 25;
 
-    public static EventDetailsFragment newInstance(ArrayList<String> createdEventInfo, UserEvents currentUpdate, Event event){
+    public static EventDetailsFragment newInstance(UserEvents currentUpdate, Event event, boolean isUserCreated){
         EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
         Bundle args = new Bundle();
 
@@ -85,9 +77,8 @@ public class EventDetailsFragment extends Fragment {
         if (currentUpdate != null){
             args.putParcelable("currentUpdate", currentUpdate);
         }
-        if (createdEventInfo != null){
-            args.putStringArrayList("createdEventInfo", createdEventInfo);
-        }
+
+        args.putBoolean("isUserCreated", isUserCreated);
 
         eventDetailsFragment.setArguments(args);
 
@@ -102,11 +93,6 @@ public class EventDetailsFragment extends Fragment {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        users = firebaseDatabase.getReference("users");
-        savedEvents = firebaseDatabase.getReference();
-        uid = Profile.getCurrentProfile().getId();
 
         Bundle bundle = getArguments();
         try {
@@ -123,11 +109,11 @@ public class EventDetailsFragment extends Fragment {
             currentUpdate = null;
         }
 
-        try{
-            createdEventInfo = bundle.getStringArrayList("createdEventInfo");
+        try {
+            isUserCreated = bundle.getBoolean("isUserCreated");
         } catch (Exception e){
             e.printStackTrace();
-            createdEventInfo = null;
+            isUserCreated = false;
         }
 
     }
@@ -142,61 +128,17 @@ public class EventDetailsFragment extends Fragment {
         ButterKnife.bind(this,view);
 
         if (event != null){
-            if (ivPicture != null) {
-                if (!event.ivEventImage.equals("null")) {
-                    Glide.with(this)
-                            .load(event.ivEventImage)
-                            .centerCrop()
-                            .into(ivPicture);
-                } else {
-                    Glide.with(this)
-                            .load(R.drawable.image_not_found)
-                            .centerCrop()
-                            .into(ivPicture);
-                }
-            }
-            tvEventName.setText(event.tvEventName);
             tvEventDescription.setText(event.tvDescription);
             tvEventInfo.setText(event.tvEventInfo);
-            tvHost.setText(event.organizer.name);
-            queryTerm = event.getOrganizerName();
-            fabSave.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (event.ivEventImage == null) {
-                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription);
+            tvHost.setText(event.organizerName);
 
-                    } else {
-                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
-                    }
-                    Toast.makeText(getActivity(), "Saved!", Toast.LENGTH_SHORT).show();
-                }
-            });
+            queryTerm = event.getOrganizerName();
 
         } else if (currentUpdate != null) {
-            if (ivPicture != null) {
-                if (!currentUpdate.eventImage.equals("null")) {
-                    Glide.with(this)
-                            .load(currentUpdate.eventImage)
-                            .centerCrop()
-                            .into(ivPicture);
-                } else {
-                    Glide.with(this)
-                            .load(R.drawable.image_not_found)
-                            .centerCrop()
-                            .into(ivPicture);
-                }
-            }
-            tvEventName.setText(currentUpdate.eventName);
             tvEventDescription.setText(currentUpdate.eventDescription);
             tvEventInfo.setText(currentUpdate.eventTime);
             tvHost.setText(currentUpdate.eventHost);
-            fabSave.setVisibility(View.GONE);
 
-        } else if (createdEventInfo != null) {
-            tvEventName.setText(createdEventInfo.get(0));
-            tvEventDescription.setText(createdEventInfo.get(2));
-            tvEventInfo.setText(createdEventInfo.get(1));
         }
 
         try {
@@ -264,39 +206,6 @@ public class EventDetailsFragment extends Fragment {
         }
 
         return view;
-    }
-
-    public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription) {
-        savedEventsCreated = false;
-        events.clear();
-        Date date = new Date();
-        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, date);
-        savedEvents.child("savedEvents").child(eventId).setValue(info);
-        users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    events.add(postSnapshot.getValue().toString());
-                }
-                if(!events.contains(eventId))
-                    events.add(eventId);
-                users.child(uid).child("eventsList").setValue(events, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        if (databaseError != null) {
-                            System.out.println("Data could not be saved " + databaseError.getMessage());
-                        } else {
-                            System.out.println("Data saved successfully.");
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
 }

@@ -6,7 +6,7 @@
         <color name="colorPrimary2">#3F51B5</color>
         <color name="colorPrimaryDark2">#303F9F</color>
         <color name="colorAccent2">#FF4081</color>
-
+        <color name ="red_user">#E10028</color>
         <color name="red_50">#FFEBEE</color>
         <color name="red_100">#FFCDD2</color>
         <color name="red_200">#EF9A9A</color>
@@ -282,4 +282,5 @@
 
         <color name="black">#000000</color>
         <color name="white">#FFFFFF</color>
+        <color name="smalt">#002C9E</color>
 </resources>

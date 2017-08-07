@@ -7,24 +7,21 @@
     android:layout_height="match_parent"
     tools:context="com.codepath.engage.EventDetailsActivity"
     android:background="@color/white">
-    <ScrollView
+
+    <!--<ScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignParentStart="true">-->
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/ivPicture"
-                android:layout_width="match_parent"
-                android:layout_height="175dp"
-                android:layout_alignParentTop="true"
-                app:srcCompat="@android:color/black"
-                android:layout_marginTop="10dp"
-                android:layout_alignParentStart="true" />
 
             <TextView
                 android:id="@+id/tvHost"
@@ -34,7 +31,7 @@
                 android:layout_below="@+id/line"
                 android:text="@string/host"
                 android:textAppearance="@android:style/TextAppearance.Large"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:layout_marginStart="10dp"/>
 
             <TextView
@@ -55,21 +52,8 @@
                 android:text="@string/event_description"
                 android:layout_below="@+id/line2"
                 android:layout_marginBottom="5dp"
-                android:layout_alignStart="@+id/tvEventName" />
-
-            <TextView
-                android:id="@+id/tvEventName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_below="@+id/ivPicture"
-                android:layout_marginTop="10dp"
-                android:fontFamily="serif"
-                android:text="@string/event_name"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentStart="true"/>
+                android:layout_alignStart="@+id/tvEventName" />
 
             <View
                 android:id="@+id/line"
@@ -107,17 +91,17 @@
                 android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment">
             </fragment>
         </RelativeLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
-    <Button
-        android:id="@+id/fabSave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="5dp"
-        android:layout_marginEnd="5dp"
-        android:text="Save"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+    <!--<Button-->
+        <!--android:id="@+id/fabSave"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_marginBottom="5dp"-->
+        <!--android:layout_marginEnd="5dp"-->
+        <!--android:text="Save"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentEnd="true" />-->
 
 </RelativeLayout>

@@ -46,10 +46,8 @@ public class ChatActivity extends AppCompatActivity {
     private void init() {
         // set the toolbar
         setSupportActionBar(mToolbar);
-//        TODO sets the color of the chat toolbar
-        mToolbar.setBackgroundColor(Color.parseColor("#EEEEEE"));
 //        TODO sets the color of the text for the toolbar title
-        mToolbar.setTitleTextColor(Color.BLACK);
+        mToolbar.setTitleTextColor(Color.WHITE);
 
         // set toolbar title
         mToolbar.setTitle(getIntent().getExtras().getString(Constants.ARG_RECEIVER));

@@ -14,7 +14,8 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:text="Specific Issues"
-        android:textSize="17sp" />
+        android:textSize="17sp"
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/issueList"
@@ -22,8 +23,13 @@
         android:layout_height="118dp"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/subTitle"
+        android:layout_marginEnd="15dp"
         android:layout_marginStart="10dp"
-        android:layout_marginEnd="15dp" />
+        android:scrollbarSize="3dp"
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbars="vertical"
+        android:scrollingCache="true"
+        android:smoothScrollbar="true" />
 
     <TextView
         android:id="@+id/readmore"
