@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -79,6 +80,8 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue_details);
         progress  = new ProgressDialog(IssueDetailsActivity.this);
+        Typeface font = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Medium.ttf");
+
         String[] strs = {"Specific Issues", "Organizations", "Upcoming Events"}; //, "Past events"
         String[] womenSpecificIssues = new String[] {"Sexual and Reproductive Rights","Freedom from violence", "Economic and Political Empowerment"};
         String[] womenOrganizations = new String[] {"National Organization for Women","Planned Parenthood", "Association of Women's Rights in Development", "American Association of University Women"};
@@ -158,6 +161,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
         }
 
         ButterKnife.bind(this);
+        issueTitle.setTypeface(font);
         issueTitle.setText(issue);
         issueSubsectionTitles = new ArrayList<>();
         upcomingEvents = new String[3];

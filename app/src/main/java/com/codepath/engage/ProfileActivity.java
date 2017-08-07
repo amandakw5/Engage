@@ -114,10 +114,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         setUpDrawer();
 
+        profileHeader.setTypeface(font);
+
         if (Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName())) != null) {
             u = Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
             uid = u.getUid();
-            profileHeader.setTypeface(font);
             profileHeader.setText(u.firstName + " " + u.lastName);
 
         }

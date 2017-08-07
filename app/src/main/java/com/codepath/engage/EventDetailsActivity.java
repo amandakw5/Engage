@@ -66,7 +66,7 @@ public class EventDetailsActivity extends AppCompatActivity{
     DatabaseReference users;
     DatabaseReference savedEvents;
 
-    boolean isUserCreated;
+    boolean isUserCreated = false;
     boolean savedEventsCreated;
 
     @Override
