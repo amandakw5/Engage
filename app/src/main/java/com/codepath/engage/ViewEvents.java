@@ -294,7 +294,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
 
                     CreatedEvents userEvents = snapshot.getValue(CreatedEvents.class);
-                    Event event = new Event(userEvents.getEventName(),userEvents.getEventLocation() + "\n" +userEvents.getEventMonth() +"/"+  userEvents.getEventDay() + " " + userEvents.getEventHour()+":"+userEvents.getEventMinute(),userEvents.getEventDescription(),"null",String.valueOf(i));
+                    userEvents.setDateByValues();
+                    Event event = new Event(userEvents.getEventName(),userEvents.getEventAddress() + "\n" +userEvents.getEventMonth() +"/"+  userEvents.getEventDay() + " " + userEvents.getEventHour()+":"+userEvents.getEventMinute(),userEvents.getEventDescription(),"null",String.valueOf(i));
                     if( userEvents.getEventName().toLowerCase().contains(valueOfQuery.toLowerCase())) {
                         event.setCreatedEvent(true);
                         events.add(event);
@@ -318,10 +319,10 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         //End getting data from stored firebase database
         //Retrieving events from firebase if they match the search query
         counterToGetPositionOfEvent=0;
-        eventRequestCompleted = false;
         client.getInfoByQuery(valueOfQuery,tvLatitude,tvLongitude,distance,new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                eventRequestCompleted = false;
                 try {
                     //Retrieving all the events that are related to the search query
                     JSONArray eventsObject = response.getJSONArray("events");
@@ -432,7 +433,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     String f = (String) evSnapshot.child("firstName").getValue();
                     String l = (String) evSnapshot.child("lastName").getValue();
                     if (f != null && l != null) {
-                        if (f.toLowerCase().contains(first.toLowerCase()) && l.toLowerCase().contains(last.toLowerCase())) {
+                        if(first.toLowerCase().contains(f.toLowerCase()) && last.toLowerCase().contains(l.toLowerCase())) {
                             User u = evSnapshot.getValue(User.class);
                             if (u != null) {
                                 u.setUid(evSnapshot.getKey());
