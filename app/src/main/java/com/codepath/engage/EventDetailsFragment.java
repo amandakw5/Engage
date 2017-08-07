@@ -143,27 +143,6 @@ public class EventDetailsFragment extends Fragment {
         ButterKnife.bind(this,view);
 
         if (event != null){
-//            if (ivPicture != null) {
-//                if (isUserCreated){
-//                    StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(event.getEventId()));
-//                    Glide.with(this)
-//                            .using(new FirebaseImageLoader())
-//                            .load(storageReference)
-//                            .error(R.drawable.image_not_found)
-//                            .into(ivPicture);
-//                } else if (!event.ivEventImage.equals("null")) {
-//                    Glide.with(this)
-//                            .load(event.ivEventImage)
-//                            .centerCrop()
-//                            .into(ivPicture);
-//                } else if (event.ivEventImage.equals("null")) {
-//                    Glide.with(this)
-//                            .load(R.drawable.image_not_found)
-//                            .centerCrop()
-//                            .into(ivPicture);
-//                }
-//            }
-//            tvEventName.setText(event.tvEventName);
             tvEventDescription.setText(event.tvDescription);
             tvEventInfo.setText(event.tvEventInfo);
             tvHost.setText(event.organizerName);

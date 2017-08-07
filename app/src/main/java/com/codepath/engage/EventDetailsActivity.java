@@ -2,6 +2,7 @@ package com.codepath.engage;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -18,7 +19,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -26,6 +29,8 @@ import com.codepath.engage.models.Event;
 import com.codepath.engage.models.UserEvents;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.parceler.Parcels;
 import org.w3c.dom.Text;
@@ -70,52 +75,48 @@ public class EventDetailsActivity extends AppCompatActivity{
 
         if(event!=null){
             tvTitle.setText(event.tvEventName);
-            Glide.with(this)
-                    .load(event.ivEventImage)
-                    .centerCrop()
-                    .into(ivBackdrop);
+            if (isUserCreated){
+                    StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(event.getEventId()));
+                    Glide.with(this)
+                            .using(new FirebaseImageLoader())
+                            .load(storageReference)
+                            .error(R.drawable.image_not_found)
+                            .into(ivBackdrop);
+                } else if (!event.ivEventImage.equals("null")) {
+                    Glide.with(this)
+                            .load(event.ivEventImage)
+                            .centerCrop()
+                            .into(ivBackdrop);
+                } else if (event.ivEventImage.equals("null")) {
+                    Glide.with(this)
+                            .load(R.drawable.image_not_found)
+                            .centerCrop()
+                            .into(ivBackdrop);
+                }
         } else if (currentUpdate!=null){
             tvTitle.setText(currentUpdate.eventName);
-            Glide.with(this)
-                    .load(currentUpdate.eventImage)
-                    .centerCrop()
-                    .into(ivBackdrop);
+            if (!currentUpdate.eventImage.equals("null")) {
+                    Glide.with(this)
+                            .load(currentUpdate.eventImage)
+                            .centerCrop()
+                            .into(ivBackdrop);
+                } else if (currentUpdate.eventImage.equals("null")) {
+                    Glide.with(this)
+                            .load(R.drawable.image_not_found)
+                            .centerCrop()
+                            .into(ivBackdrop);
+                }
         }
 
-
-        final ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener(){
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-            @Override
-            public void onPageSelected(int position) {
-                Log.d("position","position = " + position);
-                switch(position){
-                    case 0:
-                        EventDetailsFragment eventDetailsFragment = EventDetailsFragment.newInstance(currentUpdate, event, isUserCreated);
-                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.details_container, eventDetailsFragment);
-                        ft.commit();
-                        break;
-                    case 1:
-                        MapFragment mapFragment= MapFragment.newInstance(currentUpdate, event, isUserCreated);
-                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.details_container, mapFragment);
-                        fragmentTransaction.commit();
-                        break;
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        };
-
-        vPager.addOnPageChangeListener(pageChangeListener);
-
-        pageChangeListener.onPageSelected(vPager.getCurrentItem());
+        View root = tabLayout.getChildAt(0);
+        if (root instanceof LinearLayout) {
+            ((LinearLayout) root).setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+            GradientDrawable drawable = new GradientDrawable();
+            drawable.setColor(getResources().getColor(R.color.white));
+            drawable.setSize(2, 1);
+            ((LinearLayout) root).setDividerPadding(0);
+            ((LinearLayout) root).setDividerDrawable(drawable);
+        }
 
     }
 

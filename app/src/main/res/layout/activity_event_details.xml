@@ -38,8 +38,9 @@
                     android:id="@+id/tvTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="serif"
                     android:text="Application Title"
-                    android:textColor="#fff"
+                    android:textColor="#000"
                     android:textSize="18sp" />
             </android.support.v7.widget.Toolbar>
 
@@ -61,15 +62,14 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="bottom"
-            android:background="#00000000"
+            android:background="#000000"
             app:layout_anchor="@+id/appbar"
             app:layout_anchorGravity="bottom"
             app:layout_collapseMode="none"
             app:tabGravity="fill"
-            app:tabIndicatorColor="#fff"
-            app:tabIndicatorHeight="2dp"
-            app:tabMode="scrollable"
-            app:tabSelectedTextColor="#fff"
+            app:tabIndicatorColor="#F03A18"
+            app:tabIndicatorHeight="5dp"
+            app:tabSelectedTextColor="#F03A18"
             app:tabTextColor="#fff" />
 
     </FrameLayout>
@@ -78,7 +78,7 @@
         android:id="@+id/details_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize">
+        android:layout_marginTop="256dp">
     </FrameLayout>
 
     <android.support.v4.view.ViewPager
