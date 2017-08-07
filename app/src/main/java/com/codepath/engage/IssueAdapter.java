@@ -2,6 +2,7 @@ package com.codepath.engage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -56,6 +57,9 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         String issue = issues.get(position);
+        Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Medium.ttf");
+        holder.issueTitle.setTypeface(font);
+        holder.issueTitle.setTextColor(Color.BLACK);
         holder.issueTitle.setText(issue);
     }
 
@@ -65,14 +69,12 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.issueTitle)
-        TextView issueTitle;
+        @BindView(R.id.issueTitle) TextView issueTitle;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
-            issueTitle.setTypeface(font);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

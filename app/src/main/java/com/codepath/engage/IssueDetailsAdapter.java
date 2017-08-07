@@ -81,10 +81,8 @@ public class IssueDetailsAdapter extends RecyclerView.Adapter<IssueDetailsAdapte
         } else {
             listAdapter = new ArrayAdapter<String>(context, R.layout.simplerow, upEvents);
         }
-        // Add more planets. If you passed a String[] instead of a List<String> into the ArrayAdapter constructor, you must not add more items.
-        // Otherwise an exception will occur.
-        // Set the ArrayAdapter as the ListView's adapter.
 
+        // Set the ArrayAdapter as the ListView's adapter.
         holder.issueList.setAdapter(listAdapter);
     }
 
@@ -92,6 +90,8 @@ public class IssueDetailsAdapter extends RecyclerView.Adapter<IssueDetailsAdapte
     public int getItemCount() {
         return issueSubsectionTitles.size();
     }
+
+
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.subTitle) TextView subTitle;
@@ -101,6 +101,8 @@ public class IssueDetailsAdapter extends RecyclerView.Adapter<IssueDetailsAdapte
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
+            readMore.setTypeface(font);
             issueList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
