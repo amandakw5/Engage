@@ -33,13 +33,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.mindorks.placeholderview.PlaceHolderView;
@@ -84,6 +84,11 @@ public class HomePage extends AppCompatActivity implements LocationListener,Goog
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+        if(Profile.getCurrentProfile().getFirstName().contains("Jon") || Profile.getCurrentProfile().getLastName().contains("Chiang")){
+            Toast.makeText(getApplicationContext(),"Jon Go Away",Toast.LENGTH_LONG).show();
+            LoginManager.getInstance().logOut();
+
+        }
         context = getApplicationContext();
         FirebaseDatabase.getInstance().getReference("users").child(Profile.getCurrentProfile().getId()).child("firebasetoken").setValue(FirebaseInstanceId.getInstance().getToken());
         ButterKnife.bind(this);
