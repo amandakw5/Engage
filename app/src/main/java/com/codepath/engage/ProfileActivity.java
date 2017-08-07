@@ -250,6 +250,7 @@ public class ProfileActivity extends AppCompatActivity {
                 for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
                     if (uid.equals((String) evSnapshot.child("uid").getValue())){
                         UserEvents e = evSnapshot.getValue(UserEvents.class);
+                        e.setCreatedByUser(true);
                         events.add(e);
                         dates.add(e.date);
                         adapter.notifyItemInserted(events.size() -1);
