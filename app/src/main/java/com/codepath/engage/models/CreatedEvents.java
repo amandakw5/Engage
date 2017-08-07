@@ -7,16 +7,21 @@ import java.util.Date;
  */
 
 public class CreatedEvents {
-    private String eventName;
-    private String eventLocation;
+
+    private String eventAddress;
     private String eventDescription;
+    private String eventHost;
+    private String eventName;
+    private String eventTime;
+    private String uid;
+
+    private String eventLocation;
     private String eventHour;
     private String eventMinute;
     private String eventDay;
     private String eventMonth;
     private String eventYear;
-    private String uid;
-    private Date dateCreated;
+    private Date date;
 
 
     public CreatedEvents() {
@@ -32,15 +37,23 @@ public class CreatedEvents {
         this.eventMonth = eventMonth;
         this.eventYear = eventYear;
         this.uid = uid;
-        this.dateCreated = dateCreated;
+        this.date = dateCreated;
+    }
+    public void setDateByValues(){
+        eventDay = String.valueOf(date.getDay());
+        eventHour = String.valueOf(date.getHours());
+        eventMinute = String.valueOf(date.getMinutes());
+        eventMonth =String.valueOf(date.getMonth());
+        eventYear = String.valueOf(date.getYear());
+        eventLocation = eventAddress;
+
+    }
+    public Date getDate() {
+        return date;
     }
 
-    public Date getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public String getUid() {
@@ -113,5 +126,29 @@ public class CreatedEvents {
 
     public void setEventYear(String eventYear) {
         this.eventYear = eventYear;
+    }
+
+    public String getEventAddress() {
+        return eventAddress;
+    }
+
+    public void setEventAddress(String eventAddress) {
+        this.eventAddress = eventAddress;
+    }
+
+    public String getEventHost() {
+        return eventHost;
+    }
+
+    public void setEventHost(String eventHost) {
+        this.eventHost = eventHost;
+    }
+
+    public String getEventTime() {
+        return eventTime;
+    }
+
+    public void setEventTime(String eventTime) {
+        this.eventTime = eventTime;
     }
 }
