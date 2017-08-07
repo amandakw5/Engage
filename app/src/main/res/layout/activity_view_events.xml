@@ -15,8 +15,6 @@
 
         <include
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             layout="@layout/navigational" />
 
         <android.support.v7.widget.RecyclerView
@@ -24,12 +22,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/toolbar"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteX="2dp"
-            tools:layout_editor_absoluteY="65dp"
-            android:layout_alignParentEnd="true" />
+            tools:layout_editor_absoluteY="65dp" />
 
     </RelativeLayout>
 

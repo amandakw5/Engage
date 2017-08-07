@@ -1,23 +1,33 @@
 package com.codepath.engage.models;
 
+import java.util.Date;
+
 /**
  * Created by calderond on 7/26/17.
  */
 
 public class CreatedEvents {
-    private String eventName;
-    private String eventLocation;
+
+    private String eventAddress;
     private String eventDescription;
+    private String eventHost;
+    private String eventName;
+    private String eventTime;
+    private String uid;
+
+    private String eventLocation;
     private String eventHour;
     private String eventMinute;
     private String eventDay;
     private String eventMonth;
     private String eventYear;
+    private Date date;
+
 
     public CreatedEvents() {
     }
 
-    public CreatedEvents(String eventName, String eventLocation, String eventDescription, String eventHour, String eventMinute, String eventDay, String eventMonth, String eventYear) {
+    public CreatedEvents(String eventName, String eventLocation, String eventDescription, String eventHour, String eventMinute, String eventDay, String eventMonth, String eventYear, String uid, Date dateCreated) {
         this.eventName = eventName;
         this.eventLocation = eventLocation;
         this.eventDescription = eventDescription;
@@ -26,6 +36,32 @@ public class CreatedEvents {
         this.eventDay = eventDay;
         this.eventMonth = eventMonth;
         this.eventYear = eventYear;
+        this.uid = uid;
+        this.date = dateCreated;
+    }
+    public void setDateByValues(){
+        eventDay = String.valueOf(date.getDay());
+        eventHour = String.valueOf(date.getHours());
+        eventMinute = String.valueOf(date.getMinutes());
+        eventMonth =String.valueOf(date.getMonth());
+        eventYear = String.valueOf(date.getYear());
+        eventAddress =eventLocation;
+
+    }
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getEventName() {
@@ -90,5 +126,29 @@ public class CreatedEvents {
 
     public void setEventYear(String eventYear) {
         this.eventYear = eventYear;
+    }
+
+    public String getEventAddress() {
+        return eventAddress;
+    }
+
+    public void setEventAddress(String eventAddress) {
+        this.eventAddress = eventAddress;
+    }
+
+    public String getEventHost() {
+        return eventHost;
+    }
+
+    public void setEventHost(String eventHost) {
+        this.eventHost = eventHost;
+    }
+
+    public String getEventTime() {
+        return eventTime;
+    }
+
+    public void setEventTime(String eventTime) {
+        this.eventTime = eventTime;
     }
 }

@@ -11,7 +11,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="SearchViewTheme" >
+    <style name="SearchViewTheme">
         <item name="colorControlActivated">@android:color/black</item>
         <item name="colorControlNormal">@android:color/holo_blue_dark</item>
         <item name="android:textColorPrimary">@android:color/black</item>
@@ -21,10 +21,20 @@
 
     <style name="MyAppTheme" parent="@style/AppTheme" />
 
-    <style name="MaterialDrawer.DrawerArrowStyle"
-        parent="Widget.AppCompat.DrawerArrowToggle">
+    <style name="MaterialDrawer.DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">false</item>
         <item name="color">@android:color/holo_red_dark</item>
     </style>
 
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name = "AppTheme.NoActionBar.Splash">image
+        <item name="android:background" >@drawable/scaled_splash</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

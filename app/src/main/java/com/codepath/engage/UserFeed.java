@@ -1,22 +1,38 @@
 package com.codepath.engage;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.codepath.engage.models.User;
 import com.codepath.engage.models.UserEvents;
 import com.facebook.Profile;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class UserFeed extends AppCompatActivity {
     FeedAdapter adapter;
@@ -24,10 +40,16 @@ public class UserFeed extends AppCompatActivity {
     RecyclerView rvEvents;
     User currentProfile;
     ImageView profileImage;
+    TextView feed;
     Context context;
     String uid;
     String whichprofile;
     public ArrayList<String> feedUsers;
+    public ArrayList<Date> dates;
+    ImageView header;
+    final int REQUEST_CODE = 1;
+    ProgressDialog progress;
+    StorageReference storage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +57,16 @@ public class UserFeed extends AppCompatActivity {
         setContentView(R.layout.activity_user_feed);
         events = new ArrayList<>();
         feedUsers = new ArrayList<>();
+        dates = new ArrayList<>();
+        progress = new ProgressDialog(this);
+        storage = FirebaseStorage.getInstance().getReference();
+        context = this;
+        Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
+        feed = (TextView) findViewById(R.id.feed);
+        feed.setTypeface(font);
+        header = (ImageView) findViewById(R.id.header);
         profileImage = (ImageView) findViewById(R.id.profileImage);
+        feed = (TextView) findViewById(R.id.feed);
         rvEvents = (RecyclerView) findViewById(R.id.rvEvents);
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.addValueEventListener(new ValueEventListener() {
@@ -54,8 +85,10 @@ public class UserFeed extends AppCompatActivity {
                                 String e = (String) followersEvents.getValue();
                                 for (DataSnapshot findEvent : dataSnapshot.child("savedEvents").getChildren()) {
                                     if ((findEvent.getKey()).equals(e)) {
-                                        events.add(findEvent.getValue(UserEvents.class));
+                                        UserEvents currente = findEvent.getValue(UserEvents.class);
+                                        events.add(currente);
                                         feedUsers.add((dataSnapshot.child("users").child(ids).child("firstName").getValue() + " " + (dataSnapshot.child("users").child(ids).child("lastName").getValue())));
+                                        dates.add(currente.date);
                                         adapter.notifyDataSetChanged();
                                     }
                                 }
@@ -69,10 +102,63 @@ public class UserFeed extends AppCompatActivity {
 
             }
         });
-        adapter = new FeedAdapter(events, feedUsers);
+        adapter = new FeedAdapter(events, feedUsers, dates);
 
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
         rvEvents.setAdapter(adapter);
+        Glide.with(context).using(new FirebaseImageLoader())
+                .load(storage.child("headers").child(Profile.getCurrentProfile().getId())).error(R.drawable.image_not_found).centerCrop().into(header);
+        header.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder = new AlertDialog.Builder(UserFeed.this, android.R.style.Theme_Material_Dialog_Alert);
+                } else {
+                    builder = new AlertDialog.Builder(UserFeed.this);
+                }
+                builder.setTitle("Upload image")
+                        .setMessage("Do you want to upload a header?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with delete
+                                pick();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                                finish();
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+        });
     }
-
+    public void pick(){
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE && resultCode == RESULT_OK){
+            progress.setMessage("uploading");
+            progress.show();
+            Uri uri = data.getData();
+            final StorageReference path = storage.child("headers").child(uid);
+            path.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    progress.dismiss();
+                    Toast.makeText(getApplicationContext(),"Successfully uploaded image",Toast.LENGTH_LONG).show();
+                    Glide.with(context).using(new FirebaseImageLoader())
+                            .load(path).centerCrop().into(header);
+                }
+            });
+        }
+    }
 }

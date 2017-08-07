@@ -19,11 +19,10 @@
                 android:title="Create an Event" />
             <item
                 android:id="@+id/myEvents"
-                android:title="My Events"/>
+                android:title="Messaging"/>
             <item
                 android:id="@+id/logOut"
                 android:title="Log Out"
                 />
-
         </group>
 </menu>

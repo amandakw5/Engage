@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.codepath.engage.models.CreatedEvents;
+import com.codepath.engage.models.UserEvents;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -35,6 +37,7 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,7 +50,6 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
     @BindView(R.id.eLocation) EditText eLocation;
     @BindView(R.id.eDescription) EditText eDescription;
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference createdEvents;
     DatabaseReference rootRef;
     final int REQUEST_CODE = 1;
     StorageReference storage;
@@ -55,7 +57,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
     private static final String REQUIRED_MSG = "required";
     private boolean selectedTime = false;
     private boolean selectedDate = false;
-    private int mYear, mMonth, mDay, mHour, mMinute;
+    private String mYear, mMonth, mDay, mHour, mMinute, half;
     private boolean finishedAddingEvent = false;
     String uid;
     long createdEventID;
@@ -68,6 +70,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         firebaseDatabase = FirebaseDatabase.getInstance();
         rootRef = FirebaseDatabase.getInstance().getReference();
         uid = Profile.getCurrentProfile().getId();
+        Typeface font = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Light.ttf");
 
         submitEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +92,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         });
         storage = FirebaseStorage.getInstance().getReference();
         progress = new ProgressDialog(this);
+
     }
     public void showTimePickerDialog(View v){
         TimePickerFragment newFragment = new TimePickerFragment();
@@ -108,9 +112,22 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, monthOfYear);
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        mYear = year;
-        mMonth = monthOfYear;
-        mDay = dayOfMonth;
+        mYear = "" + year;
+        Log.i("Info",mYear);
+        monthOfYear = monthOfYear +1;
+        if (monthOfYear > 9){
+            mMonth = "" +monthOfYear;
+        }
+        else{
+            mMonth = "0" +monthOfYear;
+        }
+        if (dayOfMonth > 9){
+            mDay = "" +dayOfMonth;
+        }
+        else{
+            mDay = "0" +dayOfMonth;
+        }
+        eDate.setText(mMonth + "/" + mDay + "/" + mYear);
         selectedDate =true;
     }
 
@@ -124,9 +141,14 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             createdEventInfo.add(eventName);
             createdEventInfo.add(eventLocation);
             createdEventInfo.add(eventDescription);
+            createdEventInfo.add(Profile.getCurrentProfile().getId());
+            Date date = new Date();
+
+            createdEventInfo.add(String.valueOf(date));
             finishedAddingEvent = false;
             i.putExtra("createdEventInfo", Parcels.wrap(createdEventInfo));
-            final CreatedEvents createdEvent = new CreatedEvents(eventName,eventLocation,eventDescription,String.valueOf(mHour),String.valueOf(mMinute),String.valueOf(mDay),String.valueOf(mMonth),String.valueOf(mYear));
+            final UserEvents newEv = new UserEvents(eventName, Profile.getCurrentProfile().getFirstName() + " "+ Profile.getCurrentProfile().getLastName(), mMonth + "-" +mDay + " " + mHour + ":" + mMinute + " " + half, eventLocation,  null, null, eventDescription, Profile.getCurrentProfile().getId(), date);
+            final CreatedEvents createdEvent = new CreatedEvents(eventName,eventLocation,eventDescription,String.valueOf(mHour),String.valueOf(mMinute),String.valueOf(mDay),String.valueOf(mMonth),String.valueOf(mYear), Profile.getCurrentProfile().getId(), date);
             rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
@@ -138,22 +160,22 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                                 createdEventID = dataSnapshot.getChildrenCount() + 1;
                                 Log.i("Info", String.valueOf(createdEventID));
                                 rootRef.child("CreatedEvents").child(String.valueOf(createdEventID)).setValue(createdEvent);
-                                finishedAddingEvent =true;
+                                finishedAddingEvent = true;
                                 AlertDialog.Builder builder;
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                     builder = new AlertDialog.Builder(CreateEventActivity.this, android.R.style.Theme_Material_Dialog_Alert);
                                 } else {
                                     builder = new AlertDialog.Builder(CreateEventActivity.this);
                                 }
-                                builder.setTitle("Delete entry")
+                                builder.setTitle("Media Upload")
                                         .setMessage("Want to upload an image?")
-                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 // continue with delete
                                                 pick();
                                             }
                                         })
-                                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                        .setNegativeButton("no", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 // do nothing
                                                 finish();
@@ -169,7 +191,8 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
 
                             }
                         });
-                    }else{
+                    }
+                    else{
                         rootRef.child("CreatedEvents").child("1").setValue(createdEvent);
                         AlertDialog.Builder builder;
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -177,8 +200,8 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                         } else {
                             builder = new AlertDialog.Builder(CreateEventActivity.this);
                         }
-                        builder.setTitle("Delete entry")
-                                .setMessage("Want to upload an image?")
+                        builder.setTitle("Upload image")
+                                .setMessage("Do you want to upload an image?")
                                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         // continue with delete
@@ -221,9 +244,24 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        mHour =hourOfDay;
-        mMinute = minute;
+        if (hourOfDay > 12){
+            half = "PM";
+            mHour = "" + hourOfDay % 12;
+        }
+        else{
+            half = "AM";
+            mHour = "0" + hourOfDay;
+        }
+        if (minute < 10){
+            mMinute = "0" + minute;
+            eTime.setText(mHour + ":0" + mMinute);
+        }
+        else{
+            mMinute = "" + minute;
+            eTime.setText(mHour + ":" + mMinute + " " + half);
+        }
         selectedTime = true;
+
     }
     //User TO upload image
     public void pick(){
@@ -247,7 +285,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     progress.dismiss();
-                    Toast.makeText(getApplicationContext(),"Successfully upladed image",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Successfully uploaded image",Toast.LENGTH_LONG).show();
                     finish();
 
                 }

@@ -1,15 +1,26 @@
 package com.codepath.engage;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,44 +48,33 @@ import com.google.firebase.database.ValueEventListener;
 import org.parceler.Parcels;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.codepath.engage.R.id.btnMap;
+import static com.codepath.engage.R.id.ivPicture;
+import static com.codepath.engage.R.id.map;
+import static com.codepath.engage.R.id.start;
+import static com.codepath.engage.R.id.tvEventDescription;
+import static com.codepath.engage.R.id.tvEventInfo;
+import static com.codepath.engage.R.id.tvEventName;
+import static com.codepath.engage.R.id.view;
+
 
 public class EventDetailsActivity extends AppCompatActivity{
 
-    @Nullable
-    @BindView(R.id.ivPicture) ImageView ivPicture;
-    @BindView(R.id.tvHost) TextView tvHost;
-    @BindView(R.id.tvEventInfo) TextView tvEventInfo;
-    @BindView(R.id.tvEventDescription) TextView tvEventDescription;
-    @BindView(R.id.btnSave) Button btnSave;
-    @BindView(R.id.tvEventName) TextView tvEventName;
-    @BindView(R.id.btnMap) Button btnMap;
-
-    Event event;
-    UserEvents currentUpdate;
-    String uid;
-    List<String> events;
-    String queryTerm;
     ArrayList<String> createdEventInfo;
+    UserEvents currentUpdate;
+    Event event;
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference users;
-    DatabaseReference savedEvents;
+    ViewPager vPager;
+    TabLayout tabLayout;
 
-    boolean savedEventsCreated;
-
-    /**
-     * Define a global variable that identifies the name of a file that
-     * contains the developer's API key.
-     */
-    private static final long NUMBER_OF_VIDEOS_RETURNED = 25;
-
+    Fragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,205 +86,52 @@ public class EventDetailsActivity extends AppCompatActivity{
 
         event = Parcels.unwrap(getIntent().getParcelableExtra(Event.class.getSimpleName()));
 
-        if (currentUpdate != null) {
-            if (currentUpdate.eventImage.equals("null")){
-                setContentView(R.layout.event_details_activity);
-            } else {
-                setContentView(R.layout.activity_event_details);
-            }
-        } else if (createdEventInfo != null){
-            setContentView(R.layout.no_youtube);
-        } else {
-            if (event.ivEventImage.equals("null")) {
-                setContentView(R.layout.event_details_activity);
-            } else {
-                setContentView(R.layout.activity_event_details);
-            }
-        }
+        setContentView(R.layout.activity_event_details);
 
+        vPager = (ViewPager) findViewById(R.id.viewpager);
 
-        ButterKnife.bind(this);
-        events = new ArrayList<String>();
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        users = firebaseDatabase.getReference("users");
-        savedEvents = firebaseDatabase.getReference();
-        uid = Profile.getCurrentProfile().getId();
+        vPager.setAdapter(new TabFragmentAdapter(getSupportFragmentManager(), EventDetailsActivity.this, createdEventInfo, currentUpdate, event));
 
-        if (currentUpdate != null) {
-            if (ivPicture != null) {
-                Glide.with(this)
-                        .load(currentUpdate.eventImage)
-                        .centerCrop()
-                        .into(ivPicture);
-            }
-            tvEventName.setText(currentUpdate.eventName);
-            tvEventDescription.setText(currentUpdate.eventDescription);
-            tvEventInfo.setText(currentUpdate.eventInfo);
-            tvHost.setText(currentUpdate.eventHost);
-            btnSave.setVisibility(View.GONE);
-            btnMap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + currentUpdate.eventAddress);
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                    mapIntent.setPackage("com.google.android.apps.maps");
-                    if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                        startActivity(mapIntent);
-                    }
-                }
-            });
-            queryTerm = currentUpdate.eventHost;
-        } else if (createdEventInfo != null) {
-            tvEventName.setText(createdEventInfo.get(0));
-            tvEventDescription.setText(createdEventInfo.get(2));
-            tvEventInfo.setText(createdEventInfo.get(1));
-            btnMap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + createdEventInfo.get(1));
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                    mapIntent.setPackage("com.google.android.apps.maps");
-                    if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                        startActivity(mapIntent);
-                    }
-                }
-            });
-            btnSave.setVisibility(View.GONE);
-        } else {
-            if (ivPicture != null) {
-                Glide.with(this)
-                        .load(event.ivEventImage)
-                        .centerCrop()
-                        .into(ivPicture);
-            }
-            tvEventName.setText(event.tvEventName);
-            tvEventDescription.setText(event.tvDescription);
-            tvEventInfo.setText(event.tvEventInfo);
-            tvHost.setText(event.organizer.name);
-            btnMap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(EventDetailsActivity.this, MapActivity.class);
-                    intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
-                    startActivity(intent);
-                }
-            });
-            queryTerm = event.getOrganizerName();
-        }
+        tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
 
-        try {
-            // This object is used to make YouTube Data API requests. The last
-            // argument is required, but since we don't need anything
-            // initialized when the HttpRequest is initialized, we override
-            // the interface and provide a no-op function.
+        tabLayout.setupWithViewPager(vPager);
+        vPager.setCurrentItem(0);
 
-            //Define a global instance of a Youtube object, which will be used to make YouTube Data API requests.
-            YouTube youtube = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), new HttpRequestInitializer() {
-                @Override
-                public void initialize(com.google.api.client.http.HttpRequest request) throws IOException {
-
-                }
-            }).setApplicationName("youtube-cmdline-search-sample").build();
-
-            // Define the API request for retrieving search results.
-            YouTube.Search.List search = youtube.search().list("id,snippet");
-
-            // Set your developer key from the {{ Google Cloud Console }} for
-            // non-authenticated requests. See:
-            // {{ https://cloud.google.com/console }}
-            String apiKey = "AIzaSyBf2t2bQwGPJqMF9O0XyQZgz8q77e-Kgz8";
-            search.setKey(apiKey);
-            search.setQ(queryTerm);
-            Log.i("INFO",queryTerm);
-
-            // Restrict the search results to only include videos. See:
-            // https://developers.google.com/youtube/v3/docs/search/list#type
-            search.setType("video");
-
-            // To increase efficiency, only retrieve the fields that the
-            // application uses.
-            search.setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url)");
-            search.setMaxResults(NUMBER_OF_VIDEOS_RETURNED);
-
-            // Call the API and print results.
-            SearchListResponse searchResponse = search.execute();
-            List<SearchResult> searchResultList = searchResponse.getItems();
-            if (searchResultList != null) {
-                final SearchResult singleVideo = searchResultList.get(0);
-                final ResourceId rId = singleVideo.getId();
-               Log.i("INFO",singleVideo.getSnippet().getTitle());
-                YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
-                        getFragmentManager().findFragmentById(R.id.youtubeFragment);
-                youtubeFragment.initialize("YOUR API KEY",
-                        new YouTubePlayer.OnInitializedListener() {
-                            @Override
-                            public void onInitializationSuccess(YouTubePlayer.Provider provider,
-                                                                YouTubePlayer youTubePlayer, boolean b) {
-                                // do any work here to cue video, play video, etc.
-                                youTubePlayer.cueVideo(rId.getVideoId());
-                            }
-                            @Override
-                            public void onInitializationFailure(YouTubePlayer.Provider provider,
-                                                                YouTubeInitializationResult youTubeInitializationResult) {
-
-                            }
-                        });
-            }
-        } catch (GoogleJsonResponseException e) {
-            System.err.println("There was a service error: " + e.getDetails().getCode() + " : "
-                    + e.getDetails().getMessage());
-        } catch (IOException e) {
-            System.err.println("There was an IO error: " + e.getCause() + " : " + e.getMessage());
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-    }
-
-
-    public void saveEvent(View view) {
-
-        if (event.ivEventImage == null) {
-            saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription);
-        } else {
-            saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
-        }
-        Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
-    }
-
-    public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription) {
-        savedEventsCreated = false;
-        events.clear();
-
-        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription);
-        savedEvents.child("savedEvents").child(eventId).setValue(info);
-        users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener() {
+        final ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener(){
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    events.add(postSnapshot.getValue().toString());
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+            @Override
+            public void onPageSelected(int position) {
+                Log.d("position","position = " + position);
+                fragment = null;
+                switch(position){
+                    case 0:
+                        EventDetailsFragment eventDetailsFragment = EventDetailsFragment.newInstance(createdEventInfo, currentUpdate, event);
+                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                        ft.replace(R.id.details_container, eventDetailsFragment);
+                        ft.commit();
+                        break;
+                    case 1:
+                        MapFragment mapFragment= MapFragment.newInstance(createdEventInfo, currentUpdate, event);
+                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.details_container, mapFragment);
+                        fragmentTransaction.commit();
+                        break;
                 }
-                if(!events.contains(eventId))
-                    events.add(eventId);
-                users.child(uid).child("eventsList").setValue(events, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        if (databaseError != null) {
-                            System.out.println("Data could not be saved " + databaseError.getMessage());
-                        } else {
-                            System.out.println("Data saved successfully.");
-                        }
-                    }
-                });
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onPageScrollStateChanged(int state) {
 
             }
-        });
+        };
+
+        vPager.addOnPageChangeListener(pageChangeListener);
+
+        pageChangeListener.onPageSelected(vPager.getCurrentItem());
+
     }
 
 }

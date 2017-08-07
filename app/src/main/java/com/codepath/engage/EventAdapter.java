@@ -2,6 +2,7 @@ package com.codepath.engage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.codepath.engage.models.Event;
 import com.codepath.engage.models.User;
+import com.facebook.Profile;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -60,19 +62,25 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             Glide.with(context).load(u.profilePicture).centerCrop().into(holder.profileImage);
         }
         else {
+            Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
+            holder.tvHost.setTypeface(font);
+            holder.tvEventName.setTypeface(font);
+            holder.tvEventInfo.setTypeface(font);
             position = holder.getAdapterPosition();
             Event event = mEvents.get(position);
             holder.tvHost.setText(event.organizerName);
             holder.tvEventName.setText(event.tvEventName);
             holder.tvEventInfo.setText(event.tvEventInfo);
-            holder.tvDescription.setText(event.tvDescription);
+           // holder.tvDescription.setText(event.tvDescription);
             if(event.isCreatedEvent()){
                 Log.i("Ingo","Goes here");
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(event.getEventId()));
                 Glide.with(context)
                         .using(new FirebaseImageLoader())
                         .load(storageReference)
+                        .error(R.drawable.image_not_found)
                         .into(holder.ivProfileImage);
+                holder.tvHost.setText(Profile.getCurrentProfile().getName());
             }else {
                 if (event.ivEventImage.equals("null")) {
                     Glide.with(context).load(R.drawable.image_not_found).centerCrop().into(holder.ivProfileImage);
@@ -103,11 +111,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         public TextView name;
         public ViewHolder(View itemView){
             super(itemView);
-            tvHost = (TextView) itemView.findViewById(R.id.tvHost);
             ivProfileImage = (ImageView) itemView.findViewById(R.id.ivProfileImage);
             tvEventName = (TextView) itemView.findViewById(R.id.tvEventName);
             tvEventInfo = (TextView) itemView.findViewById(R.id.tvLocationInfo);
-            tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
+           // tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
             tvHost = (TextView) itemView.findViewById(R.id.tvHost);
             profileImage = (ImageView) itemView.findViewById(R.id.profileImage);
             name = (TextView) itemView.findViewById(R.id.name);

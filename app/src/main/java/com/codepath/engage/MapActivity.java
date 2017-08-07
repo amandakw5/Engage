@@ -171,7 +171,7 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("MapDemoActivity", "Error trying to get last GPS location");
+                        Log.d("MapActivity", "Error trying to get last GPS location");
                         e.printStackTrace();
                     }
                 });
@@ -254,11 +254,11 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
     }
 
     private void sendRequest(double originLat, double originLong, double destLat, double destLong) {
-        try {
-            new DirectionFinder(this, originLat, originLong, destLat, destLong).execute();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+//        try {
+////            new DirectionFinder(this, originLat, originLong, destLat, destLong).execute();
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -318,13 +318,9 @@ public class MapActivity extends AppCompatActivity implements DirectionFinderLis
         }
     }
 
-    public void openGoogleMaps (View view){
-        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + event.venue.getSimpleAddress());
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-        mapIntent.setPackage("com.google.android.apps.maps");
-        if (mapIntent.resolveActivity(getPackageManager()) != null) {
-            startActivity(mapIntent);
-        }
+    @Override
+    public void onDirectionFinderSuccess(List<Route> routes, GoogleMap googleMap) {
+
     }
 
     @Override

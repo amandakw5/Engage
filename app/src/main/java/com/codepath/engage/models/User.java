@@ -4,6 +4,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import org.parceler.Parcel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @Parcel
 public class User {
     public String uid;
+
     public String firstName;
     public String lastName;
     public String email;
@@ -23,12 +25,16 @@ public class User {
     public int numFollowing;
     public HashMap<String,String> followers;
     public HashMap<String,String>  following;
+    public HashMap<String,String> notifList;
     public List<String> eventsList;
+    public ArrayList<String> notList;
+
+    public String firebaseToken;
 
     public User(){
     }
 
-    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String,String> followers, HashMap<String,String> following) {
+    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String,String> followers, HashMap<String,String> following, String firebaseToken, HashMap<String,String> notList) {
         this.uid = uid;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -38,7 +44,27 @@ public class User {
         this.numFollowing = numFollowing;
         this.following = following;
         this.followers = followers;
+        this.notifList = notList;
+        this.firebaseToken = firebaseToken;
+
     }
+
+    public HashMap<String, String> getNotifList() {
+        return notifList;
+    }
+
+    public void setNotifList(HashMap<String, String> notifList) {
+        this.notifList = notifList;
+    }
+
+//
+//    public ArrayList<String> getNotifList() {
+//        return notifList;
+//    }
+//
+//    public void setNotifList(ArrayList<String> notifList) {
+//        this.notifList = notifList;
+//    }
 
     public List<String> getEventsList() {
         return eventsList;

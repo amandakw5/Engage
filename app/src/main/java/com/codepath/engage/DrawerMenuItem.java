@@ -2,8 +2,10 @@ package com.codepath.engage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.widget.TextView;
 
+import com.codepath.engage.ui.activities.SplashActivity;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mindorks.placeholderview.annotations.Click;
@@ -21,11 +23,12 @@ public class DrawerMenuItem {
     public static final int DRAWER_MENU_ITEM_FEED = 2;
     public static final int DRAWER_MENU_ITEM_EVENTS = 3;
     public static final int DRAWER_MENU_ITEM_CREATE = 4;
-    public static final int DRAWER_MENU_ITEM_LOGOUT = 5;
+    public static final int DRAWER_MENU_ITEM_MESSAGE = 5;
+    public static final int DRAWER_MENU_ITEM_NOTIF = 6;
+    public static final int DRAWER_MENU_ITEM_LOGOUT = 7;
 
     private int mMenuPosition;
     private Context mContext;
-    private DrawerCallBack mCallBack;
 
     @View(R.id.itemNameTxt)
     private TextView itemNameTxt;
@@ -35,33 +38,60 @@ public class DrawerMenuItem {
     public DrawerMenuItem(Context context, int menuPosition) {
         mContext = context;
         mMenuPosition = menuPosition;
+
     }
 
     @Resolve
     private void onResolved() {
+
+        Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fonts/Roboto-Light.ttf");
+
         switch (mMenuPosition) {
             case DRAWER_MENU_ITEM_PROFILE:
                 itemNameTxt.setText("My Profile");
+                itemNameTxt.setTypeface(font);
+                itemNameTxt.setTextSize((float) 19.0);
                 break;
             case DRAWER_MENU_ITEM_FEED:
                 itemNameTxt.setText("My Feed");
+                itemNameTxt.setTypeface(font);
+                itemNameTxt.setTextSize((float) 19.0);
                 break;
             case DRAWER_MENU_ITEM_EVENTS:
                 itemNameTxt.setText("My Events");
+                itemNameTxt.setTypeface(font);
+                itemNameTxt.setTextSize((float) 19.0);
                 break;
             case DRAWER_MENU_ITEM_CREATE:
                 itemNameTxt.setText("Create an Event");
+                itemNameTxt.setTypeface(font);
+                itemNameTxt.setTextSize((float) 19.0);
+                break;
+            case DRAWER_MENU_ITEM_MESSAGE:
+                itemNameTxt.setTextSize((float) 19.0);
+                itemNameTxt.setTypeface(font);
+                itemNameTxt.setText("Messaging");
+                break;
+            case DRAWER_MENU_ITEM_NOTIF:
+                itemNameTxt.setText("Notifications");
+                itemNameTxt.setTextSize((float) 19.0);
+                itemNameTxt.setTypeface(font);
                 break;
             case DRAWER_MENU_ITEM_LOGOUT:
-                itemNameTxt.setText("Log Out");
-        }
+                itemNameTxt.setText("Log out");
+                itemNameTxt.setTypeface(font);
+                itemNameTxt.setTextSize((float) 19.0);
+                break;
+
+  }
     }
     @Click(R.id.mainView)
     private void onMenuItemClick(){
         switch (mMenuPosition){
             case DRAWER_MENU_ITEM_PROFILE:
                 Intent i = new Intent (mContext, ProfileActivity.class);
-                i.putExtra("whichProfile", "You are ");
+                i.putExtra("whichProfile", "You");
+                i.putExtra("verb", " are ");
                 mContext.startActivity(i);
                 break;
             case DRAWER_MENU_ITEM_FEED:
@@ -69,11 +99,20 @@ public class DrawerMenuItem {
                 mContext.startActivity(feedInt);
                 break;
             case DRAWER_MENU_ITEM_EVENTS:
-
+                Intent myEv = new Intent(mContext, MyEventsActivity.class);
+                mContext.startActivity(myEv);
                 break;
             case DRAWER_MENU_ITEM_CREATE:
                 Intent in = new Intent(mContext, CreateEventActivity.class);
                 mContext.startActivity(in);
+                break;
+            case DRAWER_MENU_ITEM_MESSAGE:
+                Intent intent1 = new Intent(mContext, SplashActivity.class);
+                mContext.startActivity(intent1);
+                break;
+            case DRAWER_MENU_ITEM_NOTIF:
+                Intent not = new Intent(mContext, NotificationsActivity.class);
+                mContext.startActivity(not);
                 break;
             case DRAWER_MENU_ITEM_LOGOUT:
                 mAuth.signOut();
@@ -82,19 +121,6 @@ public class DrawerMenuItem {
                 mContext.startActivity(intent);
                 break;
         }
-    }
-
-
-    public void setDrawerCallBack(DrawerCallBack callBack) {
-        mCallBack = callBack;
-    }
-
-    public interface DrawerCallBack{
-        void onProfileMenuSelected();
-        void onFeedMenuSelected();
-        void onEventMenuSelected();
-        void onCreatedMenuSelected();
-        void onLogoutMenuSelected();
     }
 }
 

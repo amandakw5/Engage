@@ -14,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v13.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -57,8 +56,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
-
-import static com.codepath.engage.R.string.location;
 
 public class  ViewEvents extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
 
@@ -151,6 +148,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         locationRequest.setFastestInterval(FASTEST_INTERVAL);
 
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
         gac = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -158,7 +156,9 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 .build();
         if(!isLocationEnabled())
             showAlert();
+
         Intent intentQuery = getIntent();
+
         if(intentQuery != null && intentQuery.getStringExtra("Query") != null ){
             if(intentQuery.getStringExtra("distance") != null){
                 distance = intentQuery.getStringExtra("distance");
@@ -166,7 +166,6 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             callSearchFromIntent(intentQuery);
         }
         //Referencing the variables to their respective I.Ds for the xml style sheet
-        ActionBar actionbar = getSupportActionBar();
         setSupportActionBar(toolbar);
         setUpDrawer();
 
@@ -188,8 +187,10 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
             }
         });
+
         searchView.setQuery(query, false);
     }
+
 
     private void setUpDrawer(){
         mDrawerView
@@ -198,6 +199,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_FEED))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_EVENTS))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_CREATE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(),DrawerMenuItem.DRAWER_MENU_ITEM_MESSAGE))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT));
 
         ActionBarDrawerToggle  drawerToggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open_drawer, R.string.close_drawer){
@@ -227,8 +229,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             userAdapter = new UserAdapter(users,0);
             rvEvents.setAdapter(userAdapter);
             populateUsers(query);
-        }
-        else{
+        } else {
             eventAdapter = new EventAdapter(events, users, 1);
             rvEvents.setAdapter(eventAdapter);
             populateEvents(query);
@@ -243,10 +244,9 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
     //Initializes all necessary values that will hold all the search view values.
     private void setUpSearchView(){
         // Sets searchable configuration defined in searchable.xml for this SearchView
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() { //searchView, SearchView
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //ON a successful query submission the query is passed and api request call is made
@@ -269,7 +269,9 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             }
         });
     }
-
+    /*
+        Deal with the retrieval of events from firabase that include the various storages, for now serach is included to our personal databse and event brites events.
+     */
     private void populateEvents(String query){
         progress.setMessage("Retrieving Events");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -279,7 +281,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         events.clear();
         venues.clear();
         valueOfQuery = query;
-        //Getting events stored from in firabse database
+        //Getting events stored from in firabse database created by user on our own app
         createdEvents.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -288,8 +290,9 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
 
                     CreatedEvents userEvents = snapshot.getValue(CreatedEvents.class);
-                    Event event = new Event(userEvents.getEventName(),userEvents.getEventLocation() + "\n" +userEvents.getEventMonth() +"/"+  userEvents.getEventDay() + " " + userEvents.getEventHour()+":"+userEvents.getEventMinute(),userEvents.getEventDescription(),"null",String.valueOf(i));
-                    if(userEvents.getEventName().contains(valueOfQuery)) {
+                    userEvents.setDateByValues();
+                    Event event = new Event(userEvents.getEventName(),userEvents.getEventAddress() + "\n" +userEvents.getEventMonth() +"/"+  userEvents.getEventDay() + " " + userEvents.getEventHour()+":"+userEvents.getEventMinute(),userEvents.getEventDescription(),"null",String.valueOf(i));
+                    if( userEvents.getEventName().toLowerCase().contains(valueOfQuery.toLowerCase())) {
                         event.setCreatedEvent(true);
                         events.add(event);
                         eventAdapter.notifyItemInserted(events.size() - 1);
@@ -299,6 +302,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                         if (aSplit.contains(valueOfQuery))
                             includeEvent++;
                     }
+                    i++;
                 }
             }
 
@@ -307,12 +311,14 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
 
             }
         });
+
         //End getting data from stored firebase database
+        //Retrieving events from firebase if they match the search query
         counterToGetPositionOfEvent=0;
-        eventRequestCompleted = false;
         client.getInfoByQuery(valueOfQuery,tvLatitude,tvLongitude,distance,new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                eventRequestCompleted = false;
                 try {
                     //Retrieving all the events that are related to the search query
                     JSONArray eventsObject = response.getJSONArray("events");
@@ -386,6 +392,8 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                         }
                     }
                 }
+                progress.dismiss();
+
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -421,7 +429,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     String f = (String) evSnapshot.child("firstName").getValue();
                     String l = (String) evSnapshot.child("lastName").getValue();
                     if (f != null && l != null) {
-                        if (f.equals(first) && l.equals(last)) {
+                        if(first.toLowerCase().contains(f.toLowerCase()) && last.toLowerCase().contains(l.toLowerCase())) {
                             User u = evSnapshot.getValue(User.class);
                             if (u != null) {
                                 u.setUid(evSnapshot.getKey());
@@ -477,8 +485,7 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
         LocationServices.FusedLocationApi.requestLocationUpdates(gac, locationRequest, this);
     }
     @Override
-    public void onRequestPermissionsResult(
-            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
