@@ -167,15 +167,15 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                                 } else {
                                     builder = new AlertDialog.Builder(CreateEventActivity.this);
                                 }
-                                builder.setTitle("Delete entry")
+                                builder.setTitle("Media Upload")
                                         .setMessage("Want to upload an image?")
-                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 // continue with delete
                                                 pick();
                                             }
                                         })
-                                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                        .setNegativeButton("no", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 // do nothing
                                                 finish();
