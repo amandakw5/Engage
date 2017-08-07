@@ -208,4 +208,9 @@ public class UserFeed extends AppCompatActivity {
         Intent intent = new Intent (this, HomePage.class);
         startActivity(intent);
     }
+
+    public void goHome(View view) {
+        Intent i = new Intent(UserFeed.this,HomePage.class);
+        startActivity(i);
+    }
 }

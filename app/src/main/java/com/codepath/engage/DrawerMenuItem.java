@@ -41,14 +41,11 @@ public class DrawerMenuItem {
     public DrawerMenuItem(Context context, int menuPosition) {
         mContext = context;
         mMenuPosition = menuPosition;
-
     }
 
     @Resolve
     private void onResolved() {
-
         Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fonts/Roboto-Light.ttf");
-
         switch (mMenuPosition) {
             case DRAWER_MENU_ITEM_PROFILE:
                 itemNameTxt.setText("My Profile");

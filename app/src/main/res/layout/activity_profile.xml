@@ -37,7 +37,7 @@
                     android:layout_marginTop="10dp"
                     app:srcCompat="@drawable/home"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="20dp"/>
+                    android:layout_marginEnd="10dp"/>
             </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>
@@ -129,19 +129,20 @@
 
         </android.support.design.widget.CoordinatorLayout>
 
-        <FrameLayout
-            android:layout_width="250dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:background="@android:color/white">
-
-            <com.mindorks.placeholderview.PlaceHolderView
-                android:id="@+id/drawer_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="vertical"/>
-
-        </FrameLayout>
-
     </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@android:color/white">
+
+        <com.mindorks.placeholderview.PlaceHolderView
+            android:id="@+id/drawer_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"/>
+
+    </FrameLayout>
+
 </android.support.v4.widget.DrawerLayout>
