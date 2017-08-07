@@ -44,35 +44,25 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+
 /**
  * Created by emilyz on 7/31/17.
  */
 
 public class EventDetailsFragment extends Fragment {
 
-//    @BindView(R.id.ivPicture) ImageView ivPicture;
     @BindView(R.id.tvHost) TextView tvHost;
     @BindView(R.id.tvEventInfo) TextView tvEventInfo;
     @BindView(R.id.tvEventDescription) TextView tvEventDescription;
-//    @BindView(R.id.tvEventName) TextView tvEventName;
-    @BindView(R.id.fabSave)
-    Button fabSave;
     YouTubePlayerSupportFragment youtubeFragment;
 
     UserEvents currentUpdate;
     Event event;
     Boolean isUserCreated;
 
-    String uid;
     List<String> events;
     String queryTerm;
 
-
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference users;
-    DatabaseReference savedEvents;
-
-    boolean savedEventsCreated;
 
     //Define a global variable that identifies the name of a file thatcontains the developer's API key.
     private static final long NUMBER_OF_VIDEOS_RETURNED = 25;
@@ -103,11 +93,6 @@ public class EventDetailsFragment extends Fragment {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        users = firebaseDatabase.getReference("users");
-        savedEvents = firebaseDatabase.getReference();
-        uid = Profile.getCurrentProfile().getId();
 
         Bundle bundle = getArguments();
         try {
@@ -149,24 +134,10 @@ public class EventDetailsFragment extends Fragment {
 
             queryTerm = event.getOrganizerName();
 
-            fabSave.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (event.ivEventImage == null) {
-                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription);
-
-                    } else {
-                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
-                    }
-                    Toast.makeText(getActivity(), "Saved!", Toast.LENGTH_SHORT).show();
-                }
-            });
-
         } else if (currentUpdate != null) {
             tvEventDescription.setText(currentUpdate.eventDescription);
             tvEventInfo.setText(currentUpdate.eventTime);
             tvHost.setText(currentUpdate.eventHost);
-            fabSave.setVisibility(View.GONE);
 
         }
 
@@ -235,41 +206,6 @@ public class EventDetailsFragment extends Fragment {
         }
 
         return view;
-    }
-
-    public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription) {
-        savedEventsCreated = false;
-        events.clear();
-        Date date = new Date();
-        Log.i("indo", date.toString());
-        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null);
-        savedEvents.child("savedEvents").child(eventId).setValue(info);
-        savedEvents.child("savedEvents").child(eventId).child("date").child(uid).setValue(date);
-        users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    events.add(postSnapshot.getValue().toString());
-                }
-                if(!events.contains(eventId))
-                    events.add(eventId);
-                users.child(uid).child("eventsList").setValue(events, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        if (databaseError != null) {
-                            System.out.println("Data could not be saved " + databaseError.getMessage());
-                        } else {
-                            System.out.println("Data saved successfully.");
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
 }

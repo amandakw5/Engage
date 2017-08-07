@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,17 +24,28 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.codepath.engage.models.Event;
 import com.codepath.engage.models.UserEvents;
+import com.facebook.Profile;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import org.parceler.Parcels;
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static com.codepath.engage.R.id.fab;
 
 
 public class EventDetailsActivity extends AppCompatActivity{
@@ -42,13 +54,20 @@ public class EventDetailsActivity extends AppCompatActivity{
     private ImageView ivBackdrop;
     private CollapsingToolbarLayout collapsingToolbar;
     private TextView tvEventName;
+    private FloatingActionButton fab;
     UserEvents currentUpdate;
     Event event;
     ViewPager vPager;
     TabLayout tabLayout;
 
+    String uid;
+    List<String> events;
+
+    DatabaseReference users;
+    DatabaseReference savedEvents;
 
     boolean isUserCreated;
+    boolean savedEventsCreated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +86,12 @@ public class EventDetailsActivity extends AppCompatActivity{
 
         ivBackdrop = (ImageView) findViewById(R.id.ivBackdrop);
         tvEventName = (TextView) findViewById(R.id.tvEventName);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        events = new ArrayList<String>();
+        users = FirebaseDatabase.getInstance().getReference("users");
+        savedEvents = FirebaseDatabase.getInstance().getReference();
+        uid = Profile.getCurrentProfile().getId();
 
         vPager = (ViewPager) findViewById(R.id.viewpager);
         vPager.setAdapter(new TabFragmentAdapter(getSupportFragmentManager(), EventDetailsActivity.this, currentUpdate, event, isUserCreated));
@@ -75,7 +100,6 @@ public class EventDetailsActivity extends AppCompatActivity{
         tabLayout.setupWithViewPager(vPager);
 
         if(event!=null){
-//            collapsingToolbar.setTitle(event.tvEventName);
             tvEventName.setText(event.tvEventName);
             if (isUserCreated){
                     StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(event.getEventId()));
@@ -97,7 +121,6 @@ public class EventDetailsActivity extends AppCompatActivity{
                 }
         } else if (currentUpdate!=null){
             tvEventName.setText(currentUpdate.eventName);
-//            collapsingToolbar.setTitle(currentUpdate.eventName);
             if (!currentUpdate.eventImage.equals("null")) {
                     Glide.with(this)
                             .load(currentUpdate.eventImage)
@@ -121,6 +144,57 @@ public class EventDetailsActivity extends AppCompatActivity{
             ((LinearLayout) root).setDividerDrawable(drawable);
         }
 
+        if (event!=null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (event.ivEventImage == null) {
+                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription);
+
+                    } else {
+                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
+                    }
+                    Toast.makeText(EventDetailsActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else if (currentUpdate!= null){
+            fab.setVisibility(View.GONE);
+        }
+    }
+
+    public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription) {
+        savedEventsCreated = false;
+        events.clear();
+        Date date = new Date();
+        Log.i("indo", date.toString());
+        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null);
+        savedEvents.child("savedEvents").child(eventId).setValue(info);
+        savedEvents.child("savedEvents").child(eventId).child("date").child(uid).setValue(date);
+        users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    events.add(postSnapshot.getValue().toString());
+                }
+                if(!events.contains(eventId))
+                    events.add(eventId);
+                users.child(uid).child("eventsList").setValue(events, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError != null) {
+                            System.out.println("Data could not be saved " + databaseError.getMessage());
+                        } else {
+                            System.out.println("Data saved successfully.");
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void setToolbar() {
