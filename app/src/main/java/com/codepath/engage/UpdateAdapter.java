@@ -35,7 +35,6 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
     public ArrayList<Date> dates;
     public ArrayList<UserEvents> finalEvents;
 
-
     public UpdateAdapter(ArrayList<UserEvents> events, String who, String v, ArrayList<Date> dates) {
         this.dates = dates;
         finalEvents = new ArrayList<>();
@@ -43,7 +42,6 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
         profilePage = who;
         verb = v;
     }
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -55,9 +53,7 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
         uid = Profile.getCurrentProfile().getId();
         if (!(dates.equals(null))) {
             Collections.sort(dates, Collections.reverseOrder());
-
         }
-
         return viewHolder;
     }
     @Override
@@ -66,16 +62,15 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
         for (UserEvents ue: mEvents) {
             if ((ue.date.equals(d))) {
                 UserEvents e = ue;
-                if (
-                        e.uid != null){
+                if (e.uid != null){
                     holder.update.setText(profilePage + " created the event " + e.eventName);
-                }
-                else{
+                } else {
                     holder.update.setText(profilePage + verb + "interested in " + e.eventName);
                 }
             }
         }
     }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.notification) TextView update;
 
@@ -93,7 +88,7 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
                         // create intent for the new activity
                         Intent intent = new Intent(context, EventDetailsActivity.class);
                         intent.putExtra("current", Parcels.wrap(currentUpdate));
-                        // serialize the movie using parceler, use its short name as a key
+                        // serialize the update using parceler, use its short name as a key
                         // show the activity
                         context.startActivity(intent);
                     }

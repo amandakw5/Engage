@@ -118,7 +118,7 @@ public class ProfileActivity extends AppCompatActivity {
         following.setText(u.numFollowing + " following");
         followers.setText(u.numFollowers + " followers");
 
-        DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
+        final DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
         final DatabaseReference createdEvents = FirebaseDatabase.getInstance().getReference("CreatedEvents");
         final DatabaseReference evDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
 
@@ -171,7 +171,8 @@ public class ProfileActivity extends AppCompatActivity {
                         UserEvents e = evSnapshot.getValue(UserEvents.class);
                         events.add(e);
                         dates.add(e.date);
-                        adapter.notifyItemInserted(events.size() -1);                    }
+                        adapter.notifyItemInserted(events.size() -1);
+                    }
                 }
             }
 

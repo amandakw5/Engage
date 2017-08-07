@@ -66,7 +66,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             holder.tvEventInfo.setText(event.tvEventInfo);
             holder.tvDescription.setText(event.tvDescription);
             if(event.isCreatedEvent()){
-                Log.i("Ingo","Goes here");
+                Log.i("EventAdapter", "Event is created:" + String.valueOf(event.isCreatedEvent()));
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(event.getEventId()));
                 Glide.with(context)
                         .using(new FirebaseImageLoader())

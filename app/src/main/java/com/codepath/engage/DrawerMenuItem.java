@@ -2,6 +2,7 @@ package com.codepath.engage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.engage.ui.activities.SplashActivity;
@@ -31,6 +32,8 @@ public class DrawerMenuItem {
 
     @View(R.id.itemNameTxt)
     private TextView itemNameTxt;
+    @View(R.id.ivIcon)
+    private ImageView ivIcon;
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
@@ -44,21 +47,27 @@ public class DrawerMenuItem {
         switch (mMenuPosition) {
             case DRAWER_MENU_ITEM_PROFILE:
                 itemNameTxt.setText("My Profile");
+                ivIcon.setImageResource(R.drawable.userprof);
                 break;
             case DRAWER_MENU_ITEM_FEED:
                 itemNameTxt.setText("My Feed");
+                ivIcon.setImageResource(R.drawable.rss);
                 break;
             case DRAWER_MENU_ITEM_EVENTS:
                 itemNameTxt.setText("My Events");
+                ivIcon.setImageResource(R.drawable.calendar);
                 break;
             case DRAWER_MENU_ITEM_CREATE:
                 itemNameTxt.setText("Create an Event");
+                ivIcon.setImageResource(R.drawable.calendaradd);
                 break;
             case DRAWER_MENU_ITEM_MESSAGE:
                 itemNameTxt.setText("My Messages");
+                ivIcon.setImageResource(R.drawable.speech_bubble);
                 break;
             case DRAWER_MENU_ITEM_LOGOUT:
                 itemNameTxt.setText("Log Out");
+                ivIcon.setImageResource(R.drawable.logout);
                 break;
         }
     }

@@ -36,13 +36,13 @@
             android:id="@+id/btnFilter"
             android:layout_width="25dp"
             android:layout_height="51dp"
-            android:visibility="visible"
-            android:background="@android:color/transparent"
-            app:srcCompat="@drawable/filter_image"
-            android:scaleType="fitCenter"
-            android:layout_marginStart="5dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            />
+            android:layout_marginStart="5dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            android:visibility="visible"
+            app:srcCompat="@drawable/filter_image" />
+
     </RelativeLayout>
 </android.support.v7.widget.Toolbar>

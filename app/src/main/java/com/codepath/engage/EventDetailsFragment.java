@@ -276,9 +276,9 @@ public class EventDetailsFragment extends Fragment {
         savedEventsCreated = false;
         events.clear();
         Date date = new Date();
-        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null);
+        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null);
         savedEvents.child("savedEvents").child(eventId).setValue(info);
-        savedEvents.child("savedEvents").child(eventId).child("Date").child(uid).setValue(date);
+        savedEvents.child("savedEvents").child(eventId).child("date").child(uid).setValue(date);
         users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

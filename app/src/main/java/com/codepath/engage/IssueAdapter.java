@@ -43,7 +43,6 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
         View issueView = inflater.inflate(R.layout.item_issue, parent, false);
         ViewHolder viewHolder = new ViewHolder(issueView);
 
-
         return viewHolder;
     }
 
@@ -107,7 +106,6 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
                 // show the activity
                 context.startActivity(intent);
             }
-
         }
     }
 }

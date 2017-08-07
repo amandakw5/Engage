@@ -7,11 +7,17 @@
     android:layout_height="match_parent"
     tools:context="com.codepath.engage.EventDetailsActivity"
     android:background="@color/white">
-    <ScrollView
+
+    <!--<ScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignParentStart="true">-->
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -107,7 +113,8 @@
                 android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment">
             </fragment>
         </RelativeLayout>
-    </ScrollView>
+    <!--</ScrollView>-->
+    </android.support.v4.widget.NestedScrollView>
 
     <Button
         android:id="@+id/fabSave"

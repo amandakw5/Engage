@@ -27,7 +27,7 @@
             android:layout_marginTop="66dp"
             android:text="@string/issues"
             android:textAllCaps="true"
-            android:textSize="30sp"
+            android:textSize="52sp"
             android:textStyle="bold" />
 
         <android.support.v7.widget.RecyclerView

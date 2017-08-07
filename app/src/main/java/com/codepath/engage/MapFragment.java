@@ -219,9 +219,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                         @Override
                         public void onMapReady(GoogleMap googleMap) {
                             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                if (ContextCompat.checkSelfPermission(getActivity(),
-                                        Manifest.permission.ACCESS_FINE_LOCATION)
-                                        == PackageManager.PERMISSION_GRANTED) {
+                                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                                     //Location Permission already granted
                                     googleMap.setMyLocationEnabled(true);
                                         showMap(googleMap);

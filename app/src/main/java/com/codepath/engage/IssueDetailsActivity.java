@@ -82,7 +82,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
         String[] strs = {"Specific Issues", "Organizations", "Upcoming Events"}; //, "Past events"
         String[] womenSpecificIssues = new String[] {"Sexual and Reproductive Rights","Freedom from violence", "Economic and Political Empowerment"};
         String[] womenOrganizations = new String[] {"National Organization for Women","Planned Parenthood", "Association of Women's Rights in Development", "American Association of University Women"};
-        String[] foodSpecificIssues = new String[] {"World Hunger", "Malnutrition"};
+        String[] foodSpecificIssues = new String[] {"World Hunger", "Malnutrition", "Food Contamination and Disease"};
         String[] foodOrganizations = new String[] {"World Food Program", "Action Against Hunger", "The Food and Agriculture Organization of the United Nations"};
         String[] climateSpecificIssues = new String[] {"Global Warming/Climate Change", "Rising Sea Levels", "More Frequent Extreme Weather"};
         String[] climateOrganizations = new String[] {"350.org", "GreenPeace","Climate Reality Project", "iMatter"};
@@ -92,7 +92,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
         String[] povertyOrganizations = new String[] {"ONE Campaign", "UNICEF", "Partners in Health"};
         String[] wSpecificIssues = new String[] {"http://www.ohchr.org/EN/Issues/Women/WRGS/Pages/HealthRights.aspx", "http://www.ohchr.org/EN/Issues/Women/WRGS/Pages/VAW.aspx", "http://www.unwomen.org/en/what-we-do/economic-empowerment", "http://www.unwomen.org/en"};
         String[] wOrganizations = new String[] {"http://now.org/about/", "https://www.plannedparenthood.org/learn", "https://www.awid.org/about-us", "http://salsa4.salsalabs.com/o/50796/p/dia/action4/common/public/?action_KEY=22954", "https://en.wikipedia.org/wiki/List_of_women%27s_organizations"};
-        String[] fSpecificIssues = new String[] {"http://www.worldhunger.org/learn-about-hunger/", "https://data.unicef.org/topic/nutrition/malnutrition/", "http://www.un.org/en/sections/issues-depth/food/index.html"};
+        String[] fSpecificIssues = new String[] {"http://www.worldhunger.org/learn-about-hunger/", "https://data.unicef.org/topic/nutrition/malnutrition/", "http://www.who.int/foodsafety/about/FOSSP-En.pdf?ua=1", "http://www.un.org/en/sections/issues-depth/food/index.html"};
         String[] fOrganizations = new String[] {"http://www1.wfp.org/overview", "http://www.actionagainsthunger.org/about", "http://www.fao.org/about/en/", "https://mswonlineprograms.org/poverty-hunger/"};
         String[] cSpecificIssues = new String[] {"http://www.un.org/en/sections/issues-depth/climate-change/", "http://www.nationalgeographic.com/environment/global-warming/sea-level-rise/", "http://nca2014.globalchange.gov/highlights/report-findings/extreme-weather", "http://www.un.org/sustainabledevelopment/climatechange/"};
         String[] cOrganizations = new String[] {"https://350.org/about/", "http://greenpeacefund.org/our-projects/", "https://www.climaterealityproject.org/our-mission", "http://www.imatteryouth.org/about-us/", "https://en.wikipedia.org/wiki/Category:Climate_change_organizations"};
@@ -131,7 +131,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
                 urlIssues = wSpecificIssues;
                 urlOrgs = wOrganizations;
                 break;
-            case "Food":
+            case "Food Insecurity":
                 specificIssues = foodSpecificIssues;
                 organizations = foodOrganizations;
                 urlIssues = fSpecificIssues;
@@ -179,6 +179,9 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
         progress.setIndeterminate(true);
         progress.show();
         counterToGetPositionOfEvent = 0;
+        if (issue.equals("Food Insecurity")){
+            issue = "Food";
+        }
         client.getInfoByQuery(issue,tvLatitude,tvLongitude,distance,new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

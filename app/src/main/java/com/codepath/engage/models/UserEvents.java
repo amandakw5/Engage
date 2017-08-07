@@ -47,7 +47,7 @@ public class UserEvents implements Parcelable {
         this.eventImage = eventImage;
     }
 
-    public UserEvents(String eventName, String eventHost, String eventTime, String eventAddress, String eventId, String eventImage, String eventDescription, String uid){
+    public UserEvents(String eventName, String eventHost, String eventTime, String eventAddress, String eventId, String eventImage, String eventDescription, String uid, Date date){
         this.eventName = eventName;
         this.eventTime = eventTime;
         this.eventAddress = eventAddress;
@@ -56,7 +56,7 @@ public class UserEvents implements Parcelable {
         this.eventImage = eventImage;
         this.eventDescription = eventDescription;
         this.uid = uid;
-//        this.date = date;
+        this.date = date;
 
     }
 

@@ -89,11 +89,10 @@
             android:layout_gravity="bottom|end"
             android:layout_marginBottom="20dp"
             android:layout_marginEnd="21dp"
-            android:src="@drawable/follow3"
-            app:backgroundTint="@android:color/white"
-            app:rippleColor="@android:color/darker_gray"
+            android:src="@drawable/user"
+            app:backgroundTint="@color/white"
             app:fabSize="mini"
-            />
+            app:rippleColor="#000000" />
 
     </android.support.design.widget.CoordinatorLayout>
 

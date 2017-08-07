@@ -4,12 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar_home"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="?attr/actionBarSize"
+    android:layout_height="?attr/actionBarSize"
     android:fitsSystemWindows="true"
     android:layout_alignParentTop="true"
     android:layout_alignParentStart="true"
-    android:contentInsetStartWithNavigation="0dp">
+    app:contentInsetLeft="0dp"
+    app:contentInsetStart="0dp"
+    android:contentInsetStartWithNavigation="0dp"
+    android:background= "@drawable/search_gradient">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,23 +20,23 @@
         android:layout_alignBottom="@+id/toolbar_home">
         <android.support.v7.widget.SearchView
             android:id="@+id/search"
-            android:layout_width="294dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
             android:actionViewClass="android.support.v7.widget.SearchView"
             android:gravity="start"
             android:theme="@style/SearchViewTheme"
             app:iconifiedByDefault="false"
-            app:queryHint="Search Events"
-            android:layout_toStartOf="@+id/btnFilter"/>
+            android:layout_toStartOf="@+id/btnFilter"
+            app:queryHint="Search Events" />
         <ImageButton
             android:id="@+id/btnFilter"
             android:layout_width="25dp"
             android:layout_height="51dp"
             android:visibility="visible"
             android:background="@android:color/transparent"
-            app:srcCompat="@drawable/filter_image"
+            app:srcCompat="@drawable/filter"
             android:scaleType="fitCenter"
             android:layout_marginStart="5dp"
             android:layout_alignParentEnd="true"

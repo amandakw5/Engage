@@ -13,15 +13,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/masked"/>
+
     <TextView
         android:id="@+id/createEventTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="22dp"
         android:text="Create an Event"
-        android:textSize="30sp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:textColor="@color/black"
+        android:textSize="30sp" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/event_name"
@@ -41,6 +43,7 @@
             android:ems="10"
             android:hint="Event Name"
             android:inputType="textPersonName"
+            android:backgroundTint="#F03A18"
             android:textColorLink="@color/common_google_signin_btn_text_dark_focused" />
 
     </android.support.design.widget.TextInputLayout>
@@ -60,6 +63,7 @@
             android:layout_marginStart="10dp"
             android:ems="10"
             android:hint="Event Location"
+            android:backgroundTint="#F03A18"
             android:inputType="textPersonName" />
 
     </android.support.design.widget.TextInputLayout>
@@ -77,6 +81,7 @@
             android:layout_alignStart="@+id/eLocation"
             android:layout_below="@+id/eLocation"
             android:ems="10"
+            android:backgroundTint="#F03A18"
             android:hint="Event Description"
             android:layout_marginEnd="10dp"
             android:layout_marginStart="10dp"
@@ -89,9 +94,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create"
-        android:layout_marginBottom="67dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/eTime"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp" />
 
     <TextView
         android:id="@+id/eDate"
