@@ -21,7 +21,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.codepath.engage.models.CreatedEvents;
-import com.codepath.engage.models.UserEvents;
 import com.facebook.Profile;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -148,7 +147,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             finishedAddingEvent = false;
             i.putExtra("createdEventInfo", Parcels.wrap(createdEventInfo));
 //            final UserEvents newEv = new UserEvents(eventName, Profile.getCurrentProfile().getFirstName() + " "+ Profile.getCurrentProfile().getLastName(), mMonth + "-" +mDay + " " + mHour + ":" + mMinute + " " + half, eventLocation,  null, null, eventDescription, Profile.getCurrentProfile().getId());
-            final CreatedEvents createdEvent = new CreatedEvents(eventName,eventLocation,eventDescription,String.valueOf(mHour),String.valueOf(mMinute),String.valueOf(mDay),String.valueOf(mMonth),String.valueOf(mYear), Profile.getCurrentProfile().getId(), date);
+            final CreatedEvents createdEvent = new CreatedEvents(eventName,eventLocation,eventDescription,String.valueOf(mHour),String.valueOf(mMinute),String.valueOf(mDay),String.valueOf(mMonth),String.valueOf(mYear), Profile.getCurrentProfile().getId(), date,Profile.getCurrentProfile().getName());
             rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {

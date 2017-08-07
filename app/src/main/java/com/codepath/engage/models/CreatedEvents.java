@@ -27,7 +27,7 @@ public class CreatedEvents {
     public CreatedEvents() {
     }
 
-    public CreatedEvents(String eventName, String eventLocation, String eventDescription, String eventHour, String eventMinute, String eventDay, String eventMonth, String eventYear, String uid, Date dateCreated) {
+    public CreatedEvents(String eventName, String eventLocation, String eventDescription, String eventHour, String eventMinute, String eventDay, String eventMonth, String eventYear, String uid, Date dateCreated,String host) {
         this.eventName = eventName;
         this.eventLocation = eventLocation;
         this.eventDescription = eventDescription;
@@ -38,6 +38,7 @@ public class CreatedEvents {
         this.eventYear = eventYear;
         this.uid = uid;
         this.date = dateCreated;
+        this.eventHost = host;
     }
     public void setDateByValues(){
         eventDay = String.valueOf(date.getDay());
