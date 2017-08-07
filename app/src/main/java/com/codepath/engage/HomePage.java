@@ -25,10 +25,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -53,10 +51,6 @@ import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.codepath.engage.R.id.search;
-
-import static com.codepath.engage.R.string.location;
 
 
 public class HomePage extends AppCompatActivity implements View.OnClickListener, LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -97,7 +91,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         ButterKnife.bind(this);
         Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Medium.ttf");
         setSupportActionBar(toolbar);
-
         hpIssues.setTypeface(font);
 
         //Getting user location and setting location in google maps

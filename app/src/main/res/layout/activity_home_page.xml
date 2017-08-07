@@ -28,7 +28,7 @@
             android:textAllCaps="true"
             android:textSize="52sp"
             android:textStyle="bold"
-            android:textColor="#000000"/>
+            android:textColor="#000000" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvIssues"
