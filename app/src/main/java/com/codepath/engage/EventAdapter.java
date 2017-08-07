@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.codepath.engage.models.Event;
 import com.codepath.engage.models.User;
+import com.facebook.Profile;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -79,6 +80,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
                         .load(storageReference)
                         .error(R.drawable.image_not_found)
                         .into(holder.ivProfileImage);
+                holder.tvHost.setText(Profile.getCurrentProfile().getName());
             }else {
                 if (event.ivEventImage.equals("null")) {
                     Glide.with(context).load(R.drawable.image_not_found).centerCrop().into(holder.ivProfileImage);
