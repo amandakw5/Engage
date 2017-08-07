@@ -2,6 +2,7 @@ package com.codepath.engage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,14 +71,16 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Date d = dates.get(position);
+        Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
         for (UserEvents ue: mEvents) {
             if ((ue.date.equals(d))) {
                 UserEvents e = ue;
-                if (
-                        e.uid != null){
+                if (e.uid != null){
                     holder.update.setText(profilePage + " created the event " + e.eventName);
+                    holder.update.setTypeface(font);
                 }
                 else{
+                    holder.update.setTypeface(font);
                     holder.update.setText(profilePage + verb + "interested in " + e.eventName);
                 }
             }

@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,7 +50,6 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
     @BindView(R.id.eLocation) EditText eLocation;
     @BindView(R.id.eDescription) EditText eDescription;
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference createdEvents;
     DatabaseReference rootRef;
     final int REQUEST_CODE = 1;
     StorageReference storage;
@@ -70,6 +70,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         firebaseDatabase = FirebaseDatabase.getInstance();
         rootRef = FirebaseDatabase.getInstance().getReference();
         uid = Profile.getCurrentProfile().getId();
+        Typeface font = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Light.ttf");
 
         submitEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,8 +197,8 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                         } else {
                             builder = new AlertDialog.Builder(CreateEventActivity.this);
                         }
-                        builder.setTitle("Delete entry")
-                                .setMessage("Want to upload an image?")
+                        builder.setTitle("Upload image")
+                                .setMessage("Do you want to upload an image?")
                                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         // continue with delete
@@ -281,7 +282,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     progress.dismiss();
-                    Toast.makeText(getApplicationContext(),"Successfully upladed image",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Successfully uploaded image",Toast.LENGTH_LONG).show();
                     finish();
 
                 }

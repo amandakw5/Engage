@@ -11,7 +11,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.codepath.engage.HomePage">
+        tools:context="com.codepath.engage.HomePage"
+        android:background="#FFFFFF">
 
         <include
             android:id="@+id/toolbar"
@@ -33,10 +34,14 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvIssues"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/hpIssues"
-            android:layout_marginTop="13dp" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="13dp"
+            android:background="@drawable/issue_recyclerview_border"
+            />
 
     </RelativeLayout>
 

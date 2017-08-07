@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
@@ -27,6 +28,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +51,8 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.codepath.engage.R.id.search;
+
 public class HomePage extends AppCompatActivity implements View.OnClickListener, LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     IssueAdapter adapter;
@@ -61,7 +65,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
     @BindView(R.id.toolbar) Toolbar toolbar;
     //Variable that will reference the Search view/Search bar icon
-    @BindView(R.id.search) SearchView searchView;
+    @BindView(search) SearchView searchView;
     @BindView(R.id.btnFilter) ImageButton btnFilter;
     @BindView(R.id.hpIssues) TextView hpIssues;
     String distance;
@@ -89,9 +93,9 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         context = getApplicationContext();
 
         ButterKnife.bind(this);
-        Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Molengo-Regular.ttf");
-
+        Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Medium.ttf");
         hpIssues.setTypeface(font);
+
         //Getting user location and setting location in google maps
         isGooglePlayServicesAvailable();
         locationRequest = new LocationRequest();
@@ -105,10 +109,13 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 .build();
 
         ActionBar actionbar = getSupportActionBar();
-
+//        searchView.setTextColor(Color.WHITE);
+//        searchView.setHintTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         URL profile_picture = null;
-
+        EditText searchEditText = (EditText)searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchEditText.setTextColor(Color.WHITE);
+        searchEditText.setHintTextColor(Color.WHITE);
 
         try {
             profile_picture = new URL("https://graph.facebook.com/" + Profile.getCurrentProfile().getId() + "/picture?width=200&height=200");
@@ -157,6 +164,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
 
             }
         });
+
     }
 
     private void setUpDrawer(){
@@ -167,8 +175,8 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_EVENTS))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_CREATE))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT))
-                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_MESSAGE));
-
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_MESSAGE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_NOTIF));
         ActionBarDrawerToggle  drawerToggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open_drawer, R.string.close_drawer){
 
             public void onDrawerOpened(View drawerView) {

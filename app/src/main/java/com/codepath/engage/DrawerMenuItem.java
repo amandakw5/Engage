@@ -2,6 +2,7 @@ package com.codepath.engage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.widget.TextView;
 
 import com.codepath.engage.ui.activities.SplashActivity;
@@ -24,7 +25,7 @@ public class DrawerMenuItem {
     public static final int DRAWER_MENU_ITEM_CREATE = 4;
     public static final int DRAWER_MENU_ITEM_LOGOUT = 5;
     public static final int DRAWER_MENU_ITEM_MESSAGE = 6;
-
+    public static final int DRAWER_MENU_ITEM_NOTIF = 7;
 
     private int mMenuPosition;
     private Context mContext;
@@ -38,28 +39,49 @@ public class DrawerMenuItem {
     public DrawerMenuItem(Context context, int menuPosition) {
         mContext = context;
         mMenuPosition = menuPosition;
+
     }
 
     @Resolve
     private void onResolved() {
+
+        Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fonts/Roboto-Light.ttf");
+
         switch (mMenuPosition) {
             case DRAWER_MENU_ITEM_PROFILE:
                 itemNameTxt.setText("My Profile");
+                itemNameTxt.setTypeface(font);
+                itemNameTxt.setTextSize((float) 19.0);
                 break;
             case DRAWER_MENU_ITEM_FEED:
                 itemNameTxt.setText("My Feed");
+                itemNameTxt.setTypeface(font);
+                itemNameTxt.setTextSize((float) 19.0);
                 break;
             case DRAWER_MENU_ITEM_EVENTS:
                 itemNameTxt.setText("My Events");
+                itemNameTxt.setTypeface(font);
+                itemNameTxt.setTextSize((float) 19.0);
                 break;
             case DRAWER_MENU_ITEM_CREATE:
                 itemNameTxt.setText("Create an Event");
+                itemNameTxt.setTypeface(font);
+                itemNameTxt.setTextSize((float) 19.0);
                 break;
             case DRAWER_MENU_ITEM_LOGOUT:
                 itemNameTxt.setText("Log Out");
+                itemNameTxt.setTypeface(font);
+                itemNameTxt.setTextSize((float) 19.0);
                 break;
             case DRAWER_MENU_ITEM_MESSAGE:
                 itemNameTxt.setText("Message");
+                itemNameTxt.setTextSize((float) 19.0);
+                itemNameTxt.setTypeface(font);
+                break;
+            case DRAWER_MENU_ITEM_NOTIF:
+                itemNameTxt.setText("Notifications");
+                itemNameTxt.setTextSize((float) 19.0);
+                itemNameTxt.setTypeface(font);
         }
     }
     @Click(R.id.mainView)
@@ -92,6 +114,10 @@ public class DrawerMenuItem {
             case DRAWER_MENU_ITEM_MESSAGE:
                 Intent intent1 = new Intent(mContext, SplashActivity.class);
                 mContext.startActivity(intent1);
+                break;
+            case DRAWER_MENU_ITEM_NOTIF:
+                Intent not = new Intent(mContext, NotificationsActivity.class);
+                mContext.startActivity(not);
                 break;
         }
     }

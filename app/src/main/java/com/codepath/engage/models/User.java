@@ -4,6 +4,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import org.parceler.Parcel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,6 +26,8 @@ public class User {
     public HashMap<String,String> followers;
     public HashMap<String,String>  following;
     public List<String> eventsList;
+    public ArrayList<String> notifList;
+
 
     public User(){
     }
@@ -39,6 +42,14 @@ public class User {
         this.numFollowing = numFollowing;
         this.following = following;
         this.followers = followers;
+    }
+
+    public ArrayList<String> getNotifList() {
+        return notifList;
+    }
+
+    public void setNotifList(ArrayList<String> notifList) {
+        this.notifList = notifList;
     }
 
     public List<String> getEventsList() {

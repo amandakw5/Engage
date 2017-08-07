@@ -102,7 +102,7 @@ public class Event implements Parcelable {
         JSONObject eventInfo = jsonObject.getJSONObject("start");
         event.tvEventInfo = eventInfo.getString("utc");
         SimpleDateFormat existingUTCFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        SimpleDateFormat requiredFormat = new SimpleDateFormat("MM-dd hh:mm a");
+        SimpleDateFormat requiredFormat = new SimpleDateFormat("EEE, d MMM yyyy hh:mm aaa");
         event.eventId = jsonObject.getString("id");
         try{
             Date getDate = existingUTCFormat.parse(event.tvEventInfo);
