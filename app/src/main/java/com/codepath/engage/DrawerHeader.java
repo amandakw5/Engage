@@ -18,6 +18,13 @@ import com.mindorks.placeholderview.annotations.NonReusable;
 import com.mindorks.placeholderview.annotations.Resolve;
 import com.mindorks.placeholderview.annotations.View;
 
+import com.facebook.Profile;
+
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
+import static com.codepath.engage.R.id.emailTxt;
+import static com.codepath.engage.R.id.nameTxt;
+
 /**
  * Created by emilyz on 7/27/17.
  */
@@ -52,9 +59,12 @@ public class DrawerHeader{
                     Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fonts/Roboto-Light.ttf");
                     nameTxt.setTypeface(font);
                     nameTxt.setText(user.getFirstName()+ " "+ user.getLastName());
-                    emailTxt.setText(user.getEmail());
                     emailTxt.setTypeface(font);
-                    Glide.with(mContext).load(user.getProfilePicture()).into(profileImage);
+                    emailTxt.setText(user.getEmail());
+                    Glide.with(mContext)
+                            .load(user.getProfilePicture())
+                            .bitmapTransform(new RoundedCornersTransformation(mContext, 100, 0))
+                            .into(profileImage);
                 }
             }
 

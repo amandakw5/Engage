@@ -2,6 +2,7 @@ package com.codepath.engage.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +46,10 @@ public class ChatActivity extends AppCompatActivity {
     private void init() {
         // set the toolbar
         setSupportActionBar(mToolbar);
+//        TODO sets the color of the chat toolbar
+        mToolbar.setBackgroundColor(Color.parseColor("#EEEEEE"));
+//        TODO sets the color of the text for the toolbar title
+        mToolbar.setTitleTextColor(Color.BLACK);
 
         // set toolbar title
         mToolbar.setTitle(getIntent().getExtras().getString(Constants.ARG_RECEIVER));

@@ -27,11 +27,11 @@
 
     <TextView
         android:id="@+id/readmore"
-        android:layout_width="84dp"
+        android:layout_width="96dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_below="@+id/issueList"
-        android:layout_marginBottom="10dp"
-        android:layout_marginEnd="10dp"
-        android:text="Read more!" />
+        android:padding="8dp"
+        android:text="Read more!"
+        android:layout_alignEnd="@+id/issueList" />
+
 </RelativeLayout>

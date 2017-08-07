@@ -29,11 +29,12 @@ public class User {
     public List<String> eventsList;
     public ArrayList<String> notList;
 
+    public String firebaseToken;
 
     public User(){
     }
 
-    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String,String> followers, HashMap<String,String> following, HashMap<String,String> notList) {
+    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String,String> followers, HashMap<String,String> following, String firebaseToken, HashMap<String,String> notList) {
         this.uid = uid;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -44,6 +45,8 @@ public class User {
         this.following = following;
         this.followers = followers;
         this.notifList = notList;
+        this.firebaseToken = firebaseToken;
+
     }
 
     public HashMap<String, String> getNotifList() {

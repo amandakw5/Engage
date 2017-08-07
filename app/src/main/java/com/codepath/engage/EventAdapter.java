@@ -77,6 +77,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
                 Glide.with(context)
                         .using(new FirebaseImageLoader())
                         .load(storageReference)
+                        .error(R.drawable.image_not_found)
                         .into(holder.ivProfileImage);
             }else {
                 if (event.ivEventImage.equals("null")) {

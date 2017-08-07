@@ -2,6 +2,7 @@ package com.codepath.engage.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -41,6 +42,10 @@ public class UserListingActivity extends AppCompatActivity  {
 
     private void bindViews() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        //TODO sets the color for the toolbar background
+        mToolbar.setBackgroundColor(Color.parseColor("#EEEEEE"));
+        //TODO sets the color for the text title of the toolbar
+        mToolbar.setTitleTextColor(Color.BLACK);
         mTabLayoutUserListing = (TabLayout) findViewById(R.id.tab_layout_user_listing);
         mViewPagerUserListing = (ViewPager) findViewById(R.id.view_pager_user_listing);
     }
@@ -68,7 +73,7 @@ public class UserListingActivity extends AppCompatActivity  {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_home:
-                logout();
+                finish();
                 break;
         }
         return super.onOptionsItemSelected(item);

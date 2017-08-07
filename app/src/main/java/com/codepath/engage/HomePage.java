@@ -25,6 +25,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -41,6 +42,8 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.mindorks.placeholderview.PlaceHolderView;
 
 import java.net.MalformedURLException;
@@ -52,6 +55,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.codepath.engage.R.id.search;
+
+import static com.codepath.engage.R.string.location;
+
 
 public class HomePage extends AppCompatActivity implements View.OnClickListener, LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -65,21 +71,17 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
     @BindView(R.id.toolbar) Toolbar toolbar;
     //Variable that will reference the Search view/Search bar icon
-    @BindView(search) SearchView searchView;
+    @BindView(R.id.search) SearchView searchView;
     @BindView(R.id.btnFilter) ImageButton btnFilter;
     @BindView(R.id.hpIssues) TextView hpIssues;
     String distance;
     String query;
     Context context;
-    //Will hold the text that the user inputs to the search view
-    private String valueOfQuery;
 
-    private ArrayAdapter<String> mAdapter;
+    //Will hold the text that the user inputs to the search view
 
     //Following variables are for maps
     final String TAG = "GPS";
-    private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
-    private long FASTEST_INTERVAL = 2000; /* 2 sec */
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     GoogleApiClient gac;
@@ -91,15 +93,19 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         context = getApplicationContext();
-
+        FirebaseDatabase.getInstance().getReference("users").child(Profile.getCurrentProfile().getId()).child("firebasetoken").setValue(FirebaseInstanceId.getInstance().getToken());
         ButterKnife.bind(this);
         Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Medium.ttf");
+        setSupportActionBar(toolbar);
+
         hpIssues.setTypeface(font);
 
         //Getting user location and setting location in google maps
         isGooglePlayServicesAvailable();
         locationRequest = new LocationRequest();
+        long UPDATE_INTERVAL = 2 * 1000;
         locationRequest.setInterval(UPDATE_INTERVAL);
+        long FASTEST_INTERVAL = 2000;
         locationRequest.setFastestInterval(FASTEST_INTERVAL);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         gac = new GoogleApiClient.Builder(this)
@@ -109,8 +115,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 .build();
 
         ActionBar actionbar = getSupportActionBar();
-//        searchView.setTextColor(Color.WHITE);
-//        searchView.setHintTextColor(Color.WHITE);
+
         setSupportActionBar(toolbar);
         URL profile_picture = null;
         EditText searchEditText = (EditText)searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
@@ -122,6 +127,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+
 
         String[] strs = {"Women", "Food", "Climate Change", "Human Rights", "Poverty"};
         issues = new ArrayList<>();
@@ -160,12 +166,15 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
 
                     }
                 });
-                popup.show(); //show popup menu
+                //show popup menu
+                popup.show();
 
             }
         });
 
     }
+
+
 
     private void setUpDrawer(){
         mDrawerView
@@ -174,14 +183,12 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_FEED))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_EVENTS))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_CREATE))
-                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_MESSAGE))
-                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_NOTIF));
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_NOTIF))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT));
+
         ActionBarDrawerToggle  drawerToggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open_drawer, R.string.close_drawer){
 
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -191,12 +198,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         mDrawer.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
     }
-
-    //Performs the Searching Of Desired Event Category
-    //TODO finish this function
-    private void searchFor(String query){ }
-
-
 
     private void closeSearchView(SearchView searchView){
         searchView.setIconified(true);
@@ -208,7 +209,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() { //searchView, SearchView
             @Override
             public boolean onQueryTextSubmit(String query) {
                Intent i = new Intent(HomePage.this, ViewEvents.class);
@@ -218,7 +219,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 i.putExtra("distance", distance);
                 startActivity(i);
                 overridePendingTransition(0, 0);
-
                 return true;
             }
 
@@ -294,7 +294,6 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
                 } else {
                     Toast.makeText(HomePage.this, "Permission denied!", Toast.LENGTH_LONG).show();
                 }
-                return;
             }
         }
     }
@@ -341,6 +340,7 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         return true;
     }
 
+
     private void showAlert() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Enable Location")
@@ -363,5 +363,8 @@ public class HomePage extends AppCompatActivity implements View.OnClickListener,
         dialog.show();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        overridePendingTransition(0, 0);
+    }
 }

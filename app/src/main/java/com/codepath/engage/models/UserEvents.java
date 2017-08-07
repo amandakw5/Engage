@@ -1,5 +1,7 @@
 package com.codepath.engage.models;
 
+import android.os.Parcelable;
+
 import org.parceler.Parcel;
 
 import java.util.Date;
@@ -8,7 +10,7 @@ import java.util.Date;
  * Created by emilyz on 7/19/17.
  */
 @Parcel
-public class UserEvents {
+public class UserEvents implements Parcelable {
     public String eventName;
     public String eventHost;
     public String eventDescription;
@@ -27,9 +29,7 @@ public class UserEvents {
         return eventDescription;
     }
 
-    public void setEventDescription(String eventDescription) {
-        this.eventDescription = eventDescription;
-    }
+    public void setEventDescription(String eventDescription) { this.eventDescription = eventDescription; }
 
     public String getEventVenue() {
         return eventVenue;
@@ -111,4 +111,46 @@ public class UserEvents {
     public String getEventInfo() { return eventInfo; }
 
     public void setEventInfo(String eventInfo) { this.eventInfo = eventInfo; }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    private UserEvents(android.os.Parcel in) {
+        eventName = in.readString();
+        eventHost = in.readString();
+        eventDescription = in.readString();
+        eventVenue = in.readString();
+        eventInfo = in.readString();
+        eventId = in.readString();
+        eventImage = in.readString();
+        eventTime = in.readString();
+        eventAddress = in.readString();
+    }
+
+    public static final Creator<UserEvents> CREATOR = new Creator<UserEvents>() {
+        @Override
+        public UserEvents createFromParcel(android.os.Parcel in) {
+            return new UserEvents(in);
+        }
+
+        @Override
+        public UserEvents[] newArray(int size) {
+            return new UserEvents[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(android.os.Parcel dest, int flags) {
+        dest.writeString(eventName);
+        dest.writeString(eventHost);
+        dest.writeString(eventDescription);
+        dest.writeString(eventVenue);
+        dest.writeString(eventInfo);
+        dest.writeString(eventId);
+        dest.writeString(eventImage);
+        dest.writeString(eventTime);
+        dest.writeString(eventAddress);
+    }
 }

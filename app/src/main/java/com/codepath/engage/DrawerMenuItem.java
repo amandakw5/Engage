@@ -23,13 +23,12 @@ public class DrawerMenuItem {
     public static final int DRAWER_MENU_ITEM_FEED = 2;
     public static final int DRAWER_MENU_ITEM_EVENTS = 3;
     public static final int DRAWER_MENU_ITEM_CREATE = 4;
-    public static final int DRAWER_MENU_ITEM_LOGOUT = 5;
-    public static final int DRAWER_MENU_ITEM_MESSAGE = 6;
-    public static final int DRAWER_MENU_ITEM_NOTIF = 7;
+    public static final int DRAWER_MENU_ITEM_MESSAGE = 5;
+    public static final int DRAWER_MENU_ITEM_NOTIF = 6;
+    public static final int DRAWER_MENU_ITEM_LOGOUT = 7;
 
     private int mMenuPosition;
     private Context mContext;
-    private DrawerCallBack mCallBack;
 
     @View(R.id.itemNameTxt)
     private TextView itemNameTxt;
@@ -68,21 +67,23 @@ public class DrawerMenuItem {
                 itemNameTxt.setTypeface(font);
                 itemNameTxt.setTextSize((float) 19.0);
                 break;
-            case DRAWER_MENU_ITEM_LOGOUT:
-                itemNameTxt.setText("Log Out");
-                itemNameTxt.setTypeface(font);
-                itemNameTxt.setTextSize((float) 19.0);
-                break;
             case DRAWER_MENU_ITEM_MESSAGE:
-                itemNameTxt.setText("Message");
                 itemNameTxt.setTextSize((float) 19.0);
                 itemNameTxt.setTypeface(font);
+                itemNameTxt.setText("Messaging");
                 break;
             case DRAWER_MENU_ITEM_NOTIF:
                 itemNameTxt.setText("Notifications");
                 itemNameTxt.setTextSize((float) 19.0);
                 itemNameTxt.setTypeface(font);
-        }
+                break;
+            case DRAWER_MENU_ITEM_LOGOUT:
+                itemNameTxt.setText("Log out");
+                itemNameTxt.setTypeface(font);
+                itemNameTxt.setTextSize((float) 19.0);
+                break;
+
+  }
     }
     @Click(R.id.mainView)
     private void onMenuItemClick(){
@@ -105,12 +106,6 @@ public class DrawerMenuItem {
                 Intent in = new Intent(mContext, CreateEventActivity.class);
                 mContext.startActivity(in);
                 break;
-            case DRAWER_MENU_ITEM_LOGOUT:
-                mAuth.signOut();
-                LoginManager.getInstance().logOut();
-                Intent intent = new Intent(mContext, LoginActivity.class);
-                mContext.startActivity(intent);
-                break;
             case DRAWER_MENU_ITEM_MESSAGE:
                 Intent intent1 = new Intent(mContext, SplashActivity.class);
                 mContext.startActivity(intent1);
@@ -119,20 +114,13 @@ public class DrawerMenuItem {
                 Intent not = new Intent(mContext, NotificationsActivity.class);
                 mContext.startActivity(not);
                 break;
+            case DRAWER_MENU_ITEM_LOGOUT:
+                mAuth.signOut();
+                LoginManager.getInstance().logOut();
+                Intent intent = new Intent(mContext, LoginActivity.class);
+                mContext.startActivity(intent);
+                break;
         }
-    }
-
-
-    public void setDrawerCallBack(DrawerCallBack callBack) {
-        mCallBack = callBack;
-    }
-
-    public interface DrawerCallBack{
-        void onProfileMenuSelected();
-        void onFeedMenuSelected();
-        void onEventMenuSelected();
-        void onCreatedMenuSelected();
-        void onLogoutMenuSelected();
     }
 }
 

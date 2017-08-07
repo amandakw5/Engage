@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.codepath.engage.EventDetailsActivity"
+    android:background="@color/white">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ivPicture"
+                android:layout_width="match_parent"
+                android:layout_height="175dp"
+                android:layout_alignParentTop="true"
+                app:srcCompat="@android:color/black"
+                android:layout_marginTop="10dp"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:id="@+id/tvHost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@+id/line"
+                android:text="@string/host"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                android:textSize="20sp"
+                android:layout_marginStart="10dp"/>
+
+            <TextView
+                android:id="@+id/tvEventInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvHost"
+                android:layout_marginBottom="5dp"
+                android:text="@string/event_info"
+                android:textSize="16sp"
+                android:textStyle="italic"
+                android:layout_marginStart="10dp"/>
+
+            <TextView
+                android:id="@+id/tvEventDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/event_description"
+                android:layout_below="@+id/line2"
+                android:layout_marginBottom="5dp"
+                android:layout_alignStart="@+id/tvEventName" />
+
+            <TextView
+                android:id="@+id/tvEventName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_below="@+id/ivPicture"
+                android:layout_marginTop="10dp"
+                android:fontFamily="serif"
+                android:text="@string/event_name"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"/>
+
+            <View
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_margin="5dp"
+                android:layout_below="@+id/tvEventName" />
+
+            <View
+                android:id="@+id/line2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_margin="5dp"
+                android:layout_below="@+id/tvEventInfo" />
+
+            <View
+                android:id="@+id/line3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_margin="5dp"
+                android:layout_below="@+id/tvEventDescription" />
+
+            <fragment
+                android:id="@+id/youtubeFragment"
+                android:layout_below="@+id/line3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="5dp"
+                android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment">
+            </fragment>
+        </RelativeLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/fabSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="5dp"
+        android:text="Save"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.codepath.engage.utils.Constants;
 import com.codepath.engage.utils.SharedPrefUtil;
+import com.facebook.Profile;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -46,7 +47,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
             FirebaseDatabase.getInstance()
                     .getReference()
                     .child(Constants.ARG_USERS)
-                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child(Profile.getCurrentProfile().getId())
                     .child(Constants.ARG_FIREBASE_TOKEN)
                     .setValue(token);
         }

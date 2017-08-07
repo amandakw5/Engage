@@ -44,6 +44,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -51,7 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
     public ArrayList<UserEvents> events;
     public ArrayList<CreatedEvents> createdEventList;
     String uid;
-    String whichprofile;
+    String whichProfile;
     DatabaseReference mDatabase;
     boolean isFollowing;
     User u;
@@ -71,6 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.floatingActionButton) FloatingActionButton floatingActionButton;
     @BindView(R.id.header) ImageView header;
     StorageReference storage;
+    @BindView(R.id.Home) ImageView home;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,22 +83,26 @@ public class ProfileActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         dates = new ArrayList<>();
         eventIDs = new ArrayList<>();
-        whichprofile = getIntent().getStringExtra("whichProfile");
+        whichProfile = getIntent().getStringExtra("whichProfile");
         verb = getIntent().getStringExtra("verb");
         events = new ArrayList<>();
         //createdEventList = new ArrayList<>();
         eventIDs = new ArrayList<>();
+
         progress = new ProgressDialog(this);
-        adapter = new UpdateAdapter(events, whichprofile, verb, dates);
+
+        adapter = new UpdateAdapter(events, whichProfile, verb, dates);
+
         rvUpdates.setLayoutManager(new LinearLayoutManager(this));
         rvUpdates.setAdapter(adapter);
         storage = FirebaseStorage.getInstance().getReference();
 
-        isFollowing= false;
+        isFollowing = false;
         u = new User();
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
         Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
-        if (Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName())) != null){
+
+        if (Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName())) != null) {
             u = Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
             uid = u.getUid();
             profileHeader.setTypeface(font);
@@ -176,7 +182,8 @@ public class ProfileActivity extends AppCompatActivity {
         evDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>(){};
+                GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {
+                };
                 eventIDs = dataSnapshot.getValue(t);
                 if (eventIDs == null) {
                     Log.d("Event IDs", "null");
@@ -184,8 +191,10 @@ public class ProfileActivity extends AppCompatActivity {
                     Log.d("eventIds", eventIDs.toString());
                 }
             }
+
             @Override
-            public void onCancelled(DatabaseError databaseError) { int i=0; }
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
 
         savedEvents.addValueEventListener(new ValueEventListener() {
@@ -232,7 +241,7 @@ public class ProfileActivity extends AppCompatActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!uid.equals(currentProfile.uid)){
+                if (!uid.equals(currentProfile.uid)) {
                     mDatabase.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -245,13 +254,11 @@ public class ProfileActivity extends AppCompatActivity {
                                 }
                             }
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
-                        }
+                            }
                     });
-                    if (isFollowing){
+                    if (isFollowing) {
                         mDatabase.child(uid).child("numFollowers").setValue((u.numFollowers - 1));
                         mDatabase.child(currentProfile.uid).child("numFollowing").setValue(currentProfile.numFollowing - 1);
                         DatabaseReference deleteFollow = mDatabase.child(uid).child("following").child(currentProfile.uid).push();
@@ -259,7 +266,7 @@ public class ProfileActivity extends AppCompatActivity {
                         DatabaseReference deleteFollowing = mDatabase.child(currentProfile.uid).child("followers").child(uid).push();
                         deleteFollowing.setValue(null);
                         isFollowing = false;
-                    }else{
+                    } else {
                         mDatabase.child(uid).child("numFollowers").setValue((u.numFollowers + 1));
                         mDatabase.child(currentProfile.uid).child("numFollowing").setValue(currentProfile.numFollowing + 1);
                         DatabaseReference addFollow = mDatabase.child(uid).child("followers").push();
@@ -267,7 +274,7 @@ public class ProfileActivity extends AppCompatActivity {
                         DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
                         addFollowing.setValue(uid);
                         DatabaseReference addNotif = mDatabase.child(uid).child("notifList").push();
-                        addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + "followed you.");
+                        addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + " followed you.");
                         isFollowing = true;
                     }
                 }
@@ -290,7 +297,18 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        home.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, HomePage.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
+
     public void pick(){
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_PICK);
@@ -300,7 +318,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_CODE && resultCode == RESULT_OK){
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             progress.setMessage("uploading");
             progress.show();
             Uri uri = data.getData();
@@ -309,11 +327,16 @@ public class ProfileActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     progress.dismiss();
-                    Toast.makeText(getApplicationContext(),"Successfully uploaded image",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Successfully uploaded image", Toast.LENGTH_LONG).show();
                     Glide.with(context).using(new FirebaseImageLoader())
                             .load(path).centerCrop().into(header);
                 }
             });
         }
+    }
+
+    public void goHome(View view) {
+        Intent i = new Intent(ProfileActivity.this,HomePage.class);
+        startActivity(i);
     }
 }

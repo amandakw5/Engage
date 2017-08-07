@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.codepath.engage.models.User;
@@ -15,7 +16,9 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,6 +41,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -45,7 +49,12 @@ public class LoginActivity extends AppCompatActivity {
 
     public static CallbackManager mCallbackManager;
     private FirebaseAuth mAuth;
+    private FirebaseUser user;
+    private ValueEventListener valueEventListener;
     private DatabaseReference mDatabase;
+    private AccessToken accessToken;
+    private FirebaseAuth.AuthStateListener authListener;
+    private Boolean authFlag;
 
     LoginButton loginButton;
 
@@ -66,10 +75,68 @@ public class LoginActivity extends AppCompatActivity {
         // Write a message to the database
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
+        accessToken = AccessToken.getCurrentAccessToken();
+
+        authFlag = false;
+
         loginButton = (LoginButton) findViewById(R.id.login_button);
+
+        authListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                user = FirebaseAuth.getInstance().getCurrentUser();
+                if (!authFlag) {
+                    if (user != null) {
+                        if (accessToken != null) {
+                            if (mDatabase == null) {
+                                loginButton.setVisibility(View.VISIBLE);
+                                //check if user in database
+                            } else {
+                                authFlag = true;
+                                mDatabase.addListenerForSingleValueEvent(valueEventListener);
+                            }
+                        } else {
+                            // No user is signed in
+                            loginButton.setVisibility(View.VISIBLE);
+                            Log.d(TAG, "User is not signed in or is null");
+                        }
+
+                    } else {
+                        loginButton.setVisibility(View.VISIBLE);
+                        Toast.makeText(LoginActivity.this, "Please sign in", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        };
+
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean yes = false;
+                for (DataSnapshot userData : dataSnapshot.getChildren()) {
+                    if (userData.getKey().equals(Profile.getCurrentProfile().getId())) {
+                        Intent in = new Intent(LoginActivity.this, HomePage.class);
+                        yes = true;
+                        startActivity(in);
+                        mAuth.removeAuthStateListener(authListener);
+                        finish();
+                    }
+                }
+                if (!yes){
+                    mAuth.signOut();
+                    LoginManager.getInstance().logOut();
+                    loginButton.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
         loginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
 
-        //LoginManager.getInstance()
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -90,18 +157,20 @@ public class LoginActivity extends AppCompatActivity {
                                             isInside = true;
                                             Intent intent = new Intent(LoginActivity.this, HomePage.class);
                                             startActivity(intent);
+                                            overridePendingTransition(0, 0);
+                                            finish();
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
                                 }
-                                if(!isInside){
+                                if(!isInside) {
                                     final User user = new User();
                                     Bundle bFacebookData = getFacebookData(object);
                                     Log.d(TAG, "facebook:onCompleted");
                                     user.setNumFollowers(0);
-                                    user.setFollowers(new HashMap<String,String>());
-                                    user.setFollowing(new HashMap<String,String>());
+                                    user.setFollowers(new HashMap<String, String>());
+                                    user.setFollowing(new HashMap<String, String>());
                                     user.setNumFollowing(0);
                                     try {
                                         String id = object.getString("id");
@@ -109,13 +178,15 @@ public class LoginActivity extends AppCompatActivity {
                                         Log.d(TAG, "facebook id");
                                     } catch (JSONException e) {
                                         e.printStackTrace();
-                                    }try {
+                                    }
+                                    try {
                                         String first_name = object.getString("first_name");
                                         user.setFirstName(first_name);
                                         Log.d(TAG, "facebook first_name");
                                     } catch (JSONException e) {
                                         e.printStackTrace();
-                                    }try {
+                                    }
+                                    try {
                                         String last_name = object.getString("last_name");
                                         user.setLastName(last_name);
                                         Log.d(TAG, "facebook last_name");
@@ -137,7 +208,7 @@ public class LoginActivity extends AppCompatActivity {
                                     } catch (MalformedURLException e) {
                                         e.printStackTrace();
                                     }
-                                    writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), 0, 0, new HashMap<String,String>(), new HashMap<String,String>(), bFacebookData); //, new ArrayList<String>()
+                                        writeNewUser(user.getUid(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getProfilePicture(), 0, 0, new HashMap<String, String>(), new HashMap<String, String>(), bFacebookData);
                                 }
 
                             }
@@ -163,7 +234,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onError(FacebookException error) {
-                Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Error. Check your internet connection.", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "facebook:onError", error);
 
             }
@@ -200,6 +271,9 @@ public class LoginActivity extends AppCompatActivity {
                 return null;
             }
         });
+
+
+
     }
 
 
@@ -212,22 +286,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-
-        if (user != null && accessToken != null) {
-            // User is signed into fire base
-            Intent in = new Intent(LoginActivity.this, HomePage.class);
-            String uid = mAuth.getCurrentUser().getUid();
-            in.putExtra("uid", uid);
-            startActivity(in);
-        } else {
-            // No user is signed in
-            Toast.makeText(LoginActivity.this, "User is not signed in or does not exist.", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "User is not signed in or is null");
-        }
+        loginButton.setVisibility(View.GONE);
+        mAuth.addAuthStateListener(authListener);
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
@@ -253,17 +315,24 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String, String> followers, HashMap<String, String> following, final Bundle facebookData) {
+
 //, List<String> eventsList
-        final User user = new User(uid, firstName, lastName, email, profilePicture, numFollowers, numFollowing, followers, following,null); //, eventsList
+
+        final User user = new User(uid, firstName, lastName, email, profilePicture, numFollowers, numFollowing, followers, following,"", null);
         mDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChild(uid)) {
+                    Intent intent = new Intent (LoginActivity.this, HomePage.class);
+                    intent.putExtras(facebookData);
+                    startActivity(intent);
+                    overridePendingTransition(0, 0);
                 } else {
                     mDatabase.child(uid).setValue(user);
                     Intent intent = new Intent(LoginActivity.this, HomePage.class);
                     intent.putExtras(facebookData);
                     startActivity(intent);
+                    overridePendingTransition(0, 0);
                 }
             }
             @Override
