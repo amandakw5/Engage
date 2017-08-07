@@ -20,6 +20,7 @@ public class UserEvents implements Parcelable {
     public String eventImage;
     public String eventTime;
     public String eventAddress;
+    public boolean createdByUser;
     public String uid;
     public Date date;
 
@@ -57,11 +58,19 @@ public class UserEvents implements Parcelable {
         this.eventDescription = eventDescription;
         this.uid = uid;
         this.date = date;
-
+        createdByUser = false;
 
     }
     public void setUserDateByValues(String date, String day, String hours, String minutes, String months, String seconds, String time, String timezoneOffset, String year){
         this.date = new Date(Integer.parseInt(year),Integer.parseInt(months), Integer.parseInt(date),Integer.parseInt(hours),Integer.parseInt(minutes),Integer.parseInt(seconds));
+    }
+
+    public boolean isCreatedByUser() {
+        return createdByUser;
+    }
+
+    public void setCreatedByUser(boolean createdByUser) {
+        this.createdByUser = createdByUser;
     }
 
     public String getEventTime() {
