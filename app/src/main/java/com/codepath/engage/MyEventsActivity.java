@@ -106,6 +106,7 @@ public class MyEventsActivity extends AppCompatActivity {
                 for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
                     if (uid.equals((String) evSnapshot.child("uid").getValue())){
                         UserEvents e = evSnapshot.getValue(UserEvents.class);
+                        e.setEventId(evSnapshot.getKey());
                         events.add(e);
                         dates.add(e.date);
                         eventAdapter.notifyItemInserted(events.size() -1);

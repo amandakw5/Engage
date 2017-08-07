@@ -2,9 +2,9 @@ package com.codepath.engage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +64,8 @@ public class IssueDetailsAdapter extends RecyclerView.Adapter<IssueDetailsAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         String title = issueSubsectionTitles.get(position);
+        Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
+        holder.subTitle.setTypeface(font);
         holder.subTitle.setText(title);
         ArrayList<String> specificIssueList = new ArrayList<String>();
         specificIssueList.addAll(Arrays.asList(specificIssues) );
@@ -82,6 +84,7 @@ public class IssueDetailsAdapter extends RecyclerView.Adapter<IssueDetailsAdapte
         // Add more planets. If you passed a String[] instead of a List<String> into the ArrayAdapter constructor, you must not add more items.
         // Otherwise an exception will occur.
         // Set the ArrayAdapter as the ListView's adapter.
+
         holder.issueList.setAdapter(listAdapter);
     }
 

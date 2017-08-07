@@ -315,7 +315,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void writeNewUser(final String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String, String> followers, HashMap<String, String> following, final Bundle facebookData) {
-        final User user = new User(uid, firstName, lastName, email, profilePicture, numFollowers, numFollowing, followers, following,"");
+
+//, List<String> eventsList
+
+        final User user = new User(uid, firstName, lastName, email, profilePicture, numFollowers, numFollowing, followers, following,"", null);
         mDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

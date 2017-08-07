@@ -1,6 +1,7 @@
 package com.codepath.engage;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,12 +45,16 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Molengo-Regular.ttf");
+        holder.tvHost.setTypeface(font);
+        holder.tvEventName.setTypeface(font);
+        holder.tvEventInfo.setTypeface(font);
         position = holder.getAdapterPosition();
         UserEvents event = mEvents.get(position);
         holder.tvHost.setText(user.firstName + " " + user.lastName);
         holder.tvEventName.setText(event.eventName);
         holder.tvEventInfo.setText(event.eventAddress);
-        holder.tvDescription.setText(event.eventDescription);
+      //  holder.tvDescription.setText(event.eventDescription);
         StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(event.getEventId()));
         Glide.with(context)
                 .using(new FirebaseImageLoader())
@@ -77,7 +82,7 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsAdapter.ViewHo
             ivProfileImage = (ImageView) itemView.findViewById(R.id.ivProfileImage);
             tvEventName = (TextView) itemView.findViewById(R.id.tvEventName);
             tvEventInfo = (TextView) itemView.findViewById(R.id.tvLocationInfo);
-            tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
+           // tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
             tvHost = (TextView) itemView.findViewById(R.id.tvHost);
             profileImage = (ImageView) itemView.findViewById(R.id.profileImage);
             name = (TextView) itemView.findViewById(R.id.name);

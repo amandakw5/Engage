@@ -1,17 +1,13 @@
 package com.codepath.engage;
 
 import android.content.Context;
-import android.media.Image;
-import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.graphics.Typeface;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.codepath.engage.R;
 import com.codepath.engage.models.User;
-import com.google.firebase.auth.FirebaseAuth;
+import com.facebook.Profile;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -60,7 +56,10 @@ public class DrawerHeader{
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
                 if (user != null){
+                    Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fonts/Roboto-Light.ttf");
+                    nameTxt.setTypeface(font);
                     nameTxt.setText(user.getFirstName()+ " "+ user.getLastName());
+                    emailTxt.setTypeface(font);
                     emailTxt.setText(user.getEmail());
                     Glide.with(mContext)
                             .load(user.getProfilePicture())

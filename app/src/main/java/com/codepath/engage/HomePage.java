@@ -25,10 +25,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,8 +52,6 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.codepath.engage.R.id.search;
-import static com.codepath.engage.R.string.location;
 
 public class HomePage extends AppCompatActivity implements LocationListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -65,6 +62,7 @@ public class HomePage extends AppCompatActivity implements LocationListener,Goog
     @BindView(R.id.drawerView) PlaceHolderView mDrawerView;
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
     @BindView(R.id.toolbar) Toolbar toolbar;
+    //Variable that will reference the Search view/Search bar icon
     @BindView(R.id.search) SearchView searchView;
     @BindView(R.id.btnFilter) ImageButton btnFilter;
     @BindView(R.id.hpIssues) TextView hpIssues;
@@ -89,10 +87,8 @@ public class HomePage extends AppCompatActivity implements LocationListener,Goog
         context = getApplicationContext();
         FirebaseDatabase.getInstance().getReference("users").child(Profile.getCurrentProfile().getId()).child("firebasetoken").setValue(FirebaseInstanceId.getInstance().getToken());
         ButterKnife.bind(this);
+        Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Medium.ttf");
         setSupportActionBar(toolbar);
-
-        Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Molengo-Regular.ttf");
-
         hpIssues.setTypeface(font);
 
         //Getting user location and setting location in google maps
@@ -110,6 +106,20 @@ public class HomePage extends AppCompatActivity implements LocationListener,Goog
                 .build();
 
         String[] strs = {"Women", "Food Insecurity", "Climate Change", "Human Rights", "Poverty"};
+        ActionBar actionbar = getSupportActionBar();
+
+        setSupportActionBar(toolbar);
+        URL profile_picture = null;
+        EditText searchEditText = (EditText)searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchEditText.setTextColor(Color.WHITE);
+        searchEditText.setHintTextColor(Color.WHITE);
+
+        try {
+            profile_picture = new URL("https://graph.facebook.com/" + Profile.getCurrentProfile().getId() + "/picture?width=200&height=200");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
         issues = new ArrayList<>();
         issues.addAll(Arrays.asList(strs));
 
@@ -143,10 +153,8 @@ public class HomePage extends AppCompatActivity implements LocationListener,Goog
                             }
                         }
                         return true;
-
                     }
                 });
-
                 //show popup menu
                 popup.show();
             }
@@ -160,14 +168,12 @@ public class HomePage extends AppCompatActivity implements LocationListener,Goog
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_FEED))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_EVENTS))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_CREATE))
-                .addView(new DrawerMenuItem(this.getApplicationContext(),DrawerMenuItem.DRAWER_MENU_ITEM_MESSAGE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_MESSAGE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_NOTIF))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT));
 
         ActionBarDrawerToggle  drawerToggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open_drawer, R.string.close_drawer){
 
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);

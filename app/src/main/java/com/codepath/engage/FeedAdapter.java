@@ -6,6 +6,7 @@ package com.codepath.engage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,11 +52,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Date d = dates.get(position);
+        Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
+
         int counter = 0;
         for (UserEvents ue: mEvents) {
             if ((ue.date.equals(d))) {
                 UserEvents e = ue;
                 String currentUser = feedUsers.get(counter);
+                holder.update.setTypeface(font);
                 holder.update.setText(currentUser + " is interested in " + e.eventName);
             }
             counter++;
