@@ -116,6 +116,7 @@ public class IssueDetailsAdapter extends RecyclerView.Adapter<IssueDetailsAdapte
                         Event event = upEventIds.get(innerPosition);
                         Intent intent = new Intent(context, EventDetailsActivity.class);
                         intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
+                        intent.putExtra("isCreated", Parcels.wrap(false));
                         context.startActivity(intent);
                     }
                 }

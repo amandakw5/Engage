@@ -22,17 +22,16 @@ import static com.codepath.engage.EventDetailsFragment.newInstance;
 
 public class TabFragmentAdapter extends FragmentPagerAdapter {
     private Context context;
-    private int numOfTabs;
-    Event event;
-    ArrayList<String> createdEventsInfo;
-    UserEvents currentUpdate;
+    private Event event;
+    private UserEvents currentUpdate;
+    private Boolean isUserCreated;
 
-    public TabFragmentAdapter(FragmentManager fm, Context context, ArrayList<String> createdEventsInfo, UserEvents currentUpdate, Event event) {
+    public TabFragmentAdapter(FragmentManager fm, Context context, UserEvents currentUpdate, Event event, Boolean isUserCreated) {
         super(fm);
         this.context = context;
         this.event = event;
-        this.createdEventsInfo = createdEventsInfo;
         this.currentUpdate = currentUpdate;
+        this.isUserCreated = isUserCreated;
     }
 
     @Override
@@ -40,10 +39,10 @@ public class TabFragmentAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 new EventDetailsFragment();
-                return EventDetailsFragment.newInstance(createdEventsInfo, currentUpdate, event);
+                return EventDetailsFragment.newInstance(currentUpdate, event, isUserCreated);
             case 1:
                 new MapFragment();
-                return  MapFragment.newInstance(createdEventsInfo, currentUpdate, event);
+                return  MapFragment.newInstance(currentUpdate, event, isUserCreated);
             default:
                 return null;
         }

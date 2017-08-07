@@ -359,13 +359,13 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
                     //Retrieve the venue for the event
                     if (eventRequestCompleted) {
                         for (int i = 0; i < events.size(); i++) {
-                            client.getVenue(events.get(i).getVeneuId(), new JsonHttpResponseHandler() {
+                            client.getVenue(events.get(i).getVenueId(), new JsonHttpResponseHandler() {
                                 @Override
                                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                                     try {
                                         Venue venue = Venue.fromJSON(response);
                                         for(int i = 0; i  < events.size();i++) {
-                                            if(events.get(i).getVeneuId().equals(venue.getId())) {
+                                            if(events.get(i).getVenueId().equals(venue.getId())) {
                                                 venues.add(venue);
                                                 events.get(i).setVenue(venue);
                                                 String address = "";

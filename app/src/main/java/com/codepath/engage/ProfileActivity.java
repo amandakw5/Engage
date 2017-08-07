@@ -10,9 +10,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,6 +24,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.codepath.engage.models.CreatedEvents;
+import com.codepath.engage.models.DateProgram;
 import com.codepath.engage.models.User;
 import com.codepath.engage.models.UserEvents;
 import com.facebook.Profile;
@@ -34,6 +38,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mindorks.placeholderview.PlaceHolderView;
 
 import org.parceler.Parcels;
 
@@ -44,7 +49,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -73,6 +77,12 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.header) ImageView header;
     StorageReference storage;
     @BindView(R.id.Home) ImageView home;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
+    @BindView(R.id.toolbar_profile)
+    Toolbar toolbar;
+    @BindView(R.id.drawer_view)
+    PlaceHolderView mDrawerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +111,8 @@ public class ProfileActivity extends AppCompatActivity {
         u = new User();
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
         Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
+
+        setUpDrawer();
 
         if (Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName())) != null) {
             u = Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
@@ -145,12 +157,12 @@ public class ProfileActivity extends AppCompatActivity {
         followers.setTypeface(font);
         following.setTypeface(font);
 
-        DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
+        final DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
         final DatabaseReference createdEvents = FirebaseDatabase.getInstance().getReference("CreatedEvents");
         final DatabaseReference evDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
         final StorageReference path = storage.child("headers").child(uid);
         Glide.with(context).using(new FirebaseImageLoader())
-                .load(storage.child("headers").child(uid)).error(R.drawable.image_not_found).centerCrop().into(header);
+                .load(storage.child("headers").child(uid)).error(R.drawable.search_gradient).centerCrop().into(header);
         header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,12 +214,24 @@ public class ProfileActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (eventIDs != null) {
                     for (String id : eventIDs) {
-                        for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
+                        for (final DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
                             if (id.equals(evSnapshot.getKey())) {
-                                UserEvents e = evSnapshot.getValue(UserEvents.class);
-                                events.add(e);
-                                dates.add(e.date);
-                                adapter.notifyItemInserted(events.size() -1);
+                                savedEvents.child(id).child("date").child(Profile.getCurrentProfile().getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot2) {
+                                        UserEvents e = evSnapshot.getValue(UserEvents.class);
+                                        DateProgram date = dataSnapshot2.getValue(DateProgram.class);
+                                        date.setDateConstructed(date.getYear(),date.getMonth(),date.getTimezoneOffset(),date.getTime(),date.getMinutes(),date.getSeconds(),date.getHours(),date.getDay(),date.getDate());
+                                        e.setDate(date.getDateConstructed());
+                                        events.add(e);
+                                        dates.add(e.date);
+                                        adapter.notifyItemInserted(events.size() -1);
+                                    }
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
                                 break;
                             }
                         }
@@ -228,7 +252,8 @@ public class ProfileActivity extends AppCompatActivity {
                         UserEvents e = evSnapshot.getValue(UserEvents.class);
                         events.add(e);
                         dates.add(e.date);
-                        adapter.notifyItemInserted(events.size() -1);                    }
+                        adapter.notifyItemInserted(events.size() -1);
+                    }
                 }
             }
 
@@ -338,5 +363,30 @@ public class ProfileActivity extends AppCompatActivity {
     public void goHome(View view) {
         Intent i = new Intent(ProfileActivity.this,HomePage.class);
         startActivity(i);
+    }
+
+    private void setUpDrawer(){
+        mDrawerView
+                .addView(new DrawerHeader(this.getApplicationContext()))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_FEED))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_EVENTS))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_CREATE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(),DrawerMenuItem.DRAWER_MENU_ITEM_MESSAGE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT));
+
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer){
+
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
     }
 }

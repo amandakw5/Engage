@@ -2,6 +2,7 @@ package com.codepath.engage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.widget.ImageView;
 import android.graphics.Typeface;
 import android.widget.TextView;
 
@@ -32,45 +33,49 @@ public class DrawerMenuItem {
 
     @View(R.id.itemNameTxt)
     private TextView itemNameTxt;
+    @View(R.id.ivIcon)
+    private ImageView ivIcon;
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     public DrawerMenuItem(Context context, int menuPosition) {
         mContext = context;
         mMenuPosition = menuPosition;
-
     }
 
     @Resolve
     private void onResolved() {
-
         Typeface font = Typeface.createFromAsset(mContext.getAssets(), "fonts/Roboto-Light.ttf");
-
         switch (mMenuPosition) {
             case DRAWER_MENU_ITEM_PROFILE:
                 itemNameTxt.setText("My Profile");
+                ivIcon.setImageResource(R.drawable.userprof);
                 itemNameTxt.setTypeface(font);
                 itemNameTxt.setTextSize((float) 19.0);
                 break;
             case DRAWER_MENU_ITEM_FEED:
                 itemNameTxt.setText("My Feed");
+                ivIcon.setImageResource(R.drawable.rss);
                 itemNameTxt.setTypeface(font);
                 itemNameTxt.setTextSize((float) 19.0);
                 break;
             case DRAWER_MENU_ITEM_EVENTS:
                 itemNameTxt.setText("My Events");
+                ivIcon.setImageResource(R.drawable.calendar);
                 itemNameTxt.setTypeface(font);
                 itemNameTxt.setTextSize((float) 19.0);
                 break;
             case DRAWER_MENU_ITEM_CREATE:
                 itemNameTxt.setText("Create an Event");
+                ivIcon.setImageResource(R.drawable.calendaradd);
                 itemNameTxt.setTypeface(font);
                 itemNameTxt.setTextSize((float) 19.0);
                 break;
             case DRAWER_MENU_ITEM_MESSAGE:
-                itemNameTxt.setTextSize((float) 19.0);
+                itemNameTxt.setText("My Messages");
+                ivIcon.setImageResource(R.drawable.speech_bubble);
                 itemNameTxt.setTypeface(font);
-                itemNameTxt.setText("Messaging");
+                itemNameTxt.setTextSize((float) 19.0);
                 break;
             case DRAWER_MENU_ITEM_NOTIF:
                 itemNameTxt.setText("Notifications");
@@ -78,7 +83,8 @@ public class DrawerMenuItem {
                 itemNameTxt.setTypeface(font);
                 break;
             case DRAWER_MENU_ITEM_LOGOUT:
-                itemNameTxt.setText("Log out");
+                itemNameTxt.setText("Log Out");
+                ivIcon.setImageResource(R.drawable.logout);
                 itemNameTxt.setTypeface(font);
                 itemNameTxt.setTextSize((float) 19.0);
                 break;
