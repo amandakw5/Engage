@@ -429,4 +429,6 @@ public class ProfileActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
     }
+
+    
 }
