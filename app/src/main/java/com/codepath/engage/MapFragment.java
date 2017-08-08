@@ -51,13 +51,24 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.client.ClientProtocolException;
+import cz.msebera.android.httpclient.client.HttpClient;
+import cz.msebera.android.httpclient.client.methods.HttpPost;
+import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
 import static android.location.LocationManager.NETWORK_PROVIDER;
 
@@ -491,6 +502,39 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
     public void onLocationChanged(Location location) {
     }
 
+    public JSONObject getJSONfromURL(String address){
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+
+            address = address.replaceAll(" ","%20");
+
+            HttpPost httppost = new HttpPost("http://maps.google.com/maps/api/geocode/json?address=" + address + "&sensor=false");
+            HttpClient client = new DefaultHttpClient();
+            HttpResponse response;
+            stringBuilder = new StringBuilder();
+
+
+            response = client.execute(httppost);
+            HttpEntity entity = response.getEntity();
+            InputStream stream = entity.getContent();
+            int b;
+            while ((b = stream.read()) != -1) {
+                stringBuilder.append((char) b);
+            }
+        } catch (ClientProtocolException e) {
+        } catch (IOException e) {
+        }
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = new JSONObject(stringBuilder.toString());
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return jsonObject;
+    }
     public void getLocationFromAddress(Context context,String strAddress) {
 
         Geocoder coder = new Geocoder(context);
@@ -499,12 +543,27 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
         try {
             // May throw an IOException
             address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
-                return;
+            if (address == null || address.size()==0) {
+                JSONObject jsonObject = getJSONfromURL(strAddress);
+                try {
+
+                    destLng = ((JSONArray)jsonObject.get("results")).getJSONObject(0)
+                            .getJSONObject("geometry").getJSONObject("location")
+                            .getDouble("lng");
+
+                    destLat = ((JSONArray)jsonObject.get("results")).getJSONObject(0)
+                            .getJSONObject("geometry").getJSONObject("location")
+                            .getDouble("lat");
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                }
+            }else {
+                Address location = address.get(0);
+                destLat = location.getLatitude();
+                destLng = location.getLongitude();
             }
-            Address location = address.get(0);
-            destLat = location.getLatitude();
-            destLng = location.getLongitude();
 
         } catch (IOException ex) {
 
