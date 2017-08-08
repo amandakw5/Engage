@@ -36,6 +36,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -138,6 +140,11 @@ public class EventDetailsFragment extends Fragment {
         } else if (currentUpdate != null) {
             tvEventDescription.setText(currentUpdate.eventDescription);
             tvEventInfo.setText(currentUpdate.eventTime);
+            if (currentUpdate.eventAddress != null){
+                tvEventLocation.setText(currentUpdate.eventAddress);
+            } else if (currentUpdate.eventLocation != null) {
+                tvEventLocation.setText(currentUpdate.eventLocation);
+            }
             tvHost.setText(currentUpdate.eventHost);
             if (currentUpdate.eventAddress != null){
                 tvEventLocation.setText(currentUpdate.eventAddress);

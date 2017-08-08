@@ -1,22 +1,11 @@
 package com.codepath.engage;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -39,13 +28,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import org.parceler.Parcels;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-
-import static com.codepath.engage.R.id.fab;
+import java.util.Map;
+import java.util.Objects;
 
 
 public class EventDetailsActivity extends AppCompatActivity{
@@ -134,10 +123,10 @@ public class EventDetailsActivity extends AppCompatActivity{
                             .centerCrop()
                             .into(ivBackdrop);
             } else if (currentUpdate.eventImage.equals("null")) {
-                Glide.with(this)
-                        .load(R.drawable.image_not_found)
-                        .centerCrop()
-                        .into(ivBackdrop);
+                    Glide.with(this)
+                            .load(R.drawable.image_not_found)
+                            .centerCrop()
+                            .into(ivBackdrop);
             }
         }
 
@@ -157,14 +146,13 @@ public class EventDetailsActivity extends AppCompatActivity{
                 public void onClick(View v) {
                     if (event.ivEventImage == null) {
                         saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription, null);
-
                     } else {
                         saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription, null);
                     }
                     Toast.makeText(EventDetailsActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
                 }
             });
-        } else if (currentUpdate!= null){
+        } else if (currentUpdate != null){
             fab.setVisibility(View.GONE);
         }
     }
@@ -176,9 +164,10 @@ public class EventDetailsActivity extends AppCompatActivity{
         Log.i("indo", date.toString());
         UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null, eventLocation);
         savedEvents.child("savedEvents").child(eventId).setValue(info);
-        savedEvents.child("savedEvents").child(eventId).child("date").child(uid).setValue(date);
-        users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener
-                () {
+        Map<String, Object> asdf = new HashMap<>();
+        asdf.put(uid, date);
+        savedEvents.child("savedEvents").child(eventId).child("date").updateChildren(asdf);
+        users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {

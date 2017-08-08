@@ -8,12 +8,6 @@
     tools:context="com.codepath.engage.EventDetailsActivity"
     android:background="@color/white">
 
-    <!--<ScrollView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:layout_alignParentStart="true">-->
-
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,12 +22,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
+<<<<<<< HEAD
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="10dp"
+=======
+>>>>>>> 50fb9fd39b1902ee6f252ae52397cb9d57855ff2
                 android:text="@string/host"
                 android:textAppearance="@android:style/TextAppearance.Large"
                 android:textSize="18sp"
-                android:layout_marginStart="10dp"/>
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"/>
 
             <TextView
                 android:id="@+id/tvEventInfo"
@@ -63,7 +61,20 @@
                 android:layout_below="@+id/line2"
                 android:layout_marginBottom="5dp"
                 android:layout_marginStart="10dp"
+<<<<<<< HEAD
                 />
+=======
+                android:layout_alignStart="@+id/tvEventName" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvEventInfo"
+                android:text="Event Location"
+                android:id="@+id/tvEventLocation"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp"/>
+>>>>>>> 50fb9fd39b1902ee6f252ae52397cb9d57855ff2
 
             <View
                 android:id="@+id/line2"
@@ -94,16 +105,4 @@
             </fragment>
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
-
-    <!--<Button-->
-        <!--android:id="@+id/fabSave"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:layout_marginBottom="5dp"-->
-        <!--android:layout_marginEnd="5dp"-->
-        <!--android:text="Save"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentEnd="true" />-->
-
 </RelativeLayout>

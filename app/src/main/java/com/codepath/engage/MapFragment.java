@@ -158,9 +158,9 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                 destLng = Double.parseDouble(event.venue.getLongitude());
             }
         } else if (currentUpdate!= null) {
-            if (currentUpdate.eventAddress != null){
+            if (currentUpdate.eventAddress!=null){
                 getLocationFromAddress(getContext(), currentUpdate.eventAddress);
-            } else if (currentUpdate.eventLocation != null){
+            } else if (currentUpdate.eventLocation!=null){
                 getLocationFromAddress(getContext(), currentUpdate.eventLocation);
             }
         }
@@ -502,9 +502,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
             if (address == null) {
                 return;
             }
-
             Address location = address.get(0);
-
             destLat = location.getLatitude();
             destLng = location.getLongitude();
 

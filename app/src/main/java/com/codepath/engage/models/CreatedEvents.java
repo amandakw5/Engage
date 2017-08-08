@@ -12,9 +12,7 @@ public class CreatedEvents {
     private String eventDescription;
     private String eventHost;
     private String eventName;
-    private String eventTime;
     private String uid;
-
     private String eventLocation;
     private String eventHour;
     private String eventMinute;
@@ -22,12 +20,12 @@ public class CreatedEvents {
     private String eventMonth;
     private String eventYear;
     private Date date;
-
+    private String eventTime;
 
     public CreatedEvents() {
     }
 
-    public CreatedEvents(String eventName, String eventLocation, String eventDescription, String eventHour, String eventMinute, String eventDay, String eventMonth, String eventYear, String uid, Date dateCreated,String host) {
+    public CreatedEvents(String eventName, String eventLocation, String eventDescription, String eventHour, String eventMinute, String eventDay, String eventMonth, String eventYear, String uid, Date dateCreated, String host, String eventTime) {
         this.eventName = eventName;
         this.eventLocation = eventLocation;
         this.eventDescription = eventDescription;
@@ -39,14 +37,16 @@ public class CreatedEvents {
         this.uid = uid;
         this.date = dateCreated;
         this.eventHost = host;
+        this.eventTime = eventTime;
     }
+
     public void setDateByValues(){
         eventDay = String.valueOf(date.getDay());
         eventHour = String.valueOf(date.getHours());
         eventMinute = String.valueOf(date.getMinutes());
         eventMonth = String.valueOf(date.getMonth());
         eventYear = String.valueOf(date.getYear());
-        eventAddress =eventLocation;
+        eventAddress = eventLocation;
 
     }
     public Date getDate() {
@@ -71,6 +71,14 @@ public class CreatedEvents {
 
     public void setEventName(String eventName) {
         this.eventName = eventName;
+    }
+
+    public String getEventTime() {
+        return eventTime;
+    }
+
+    public void setEventTime(String eventTime) {
+        this.eventTime = eventTime;
     }
 
     public String getEventLocation() {
@@ -143,13 +151,5 @@ public class CreatedEvents {
 
     public void setEventHost(String eventHost) {
         this.eventHost = eventHost;
-    }
-
-    public String getEventTime() {
-        return eventTime;
-    }
-
-    public void setEventTime(String eventTime) {
-        this.eventTime = eventTime;
     }
 }

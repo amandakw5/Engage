@@ -60,6 +60,10 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
     private boolean finishedAddingEvent = false;
     String uid;
     long createdEventID;
+    String eventTime;
+    String eventDate;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +108,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
     }
 
     // handle the date selected
+
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         // store the values selected into a Calendar instance
@@ -127,7 +132,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             mDay = "0" + dayOfMonth;
         }
         eDate.setText(mMonth + "/" + mDay + "/" + mYear);
-        selectedDate =true;
+        selectedDate = true;
     }
 
     public void verifySubmitEvent(){
@@ -142,12 +147,11 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             createdEventInfo.add(eventDescription);
             createdEventInfo.add(Profile.getCurrentProfile().getId());
             Date date = new Date();
-
             createdEventInfo.add(String.valueOf(date));
             finishedAddingEvent = false;
             i.putExtra("createdEventInfo", Parcels.wrap(createdEventInfo));
-//            final UserEvents newEv = new UserEvents(eventName, Profile.getCurrentProfile().getFirstName() + " "+ Profile.getCurrentProfile().getLastName(), mMonth + "-" +mDay + " " + mHour + ":" + mMinute + " " + half, eventLocation,  null, null, eventDescription, Profile.getCurrentProfile().getId());
-            final CreatedEvents createdEvent = new CreatedEvents(eventName,eventLocation,eventDescription,String.valueOf(mHour),String.valueOf(mMinute),String.valueOf(mDay),String.valueOf(mMonth),String.valueOf(mYear), Profile.getCurrentProfile().getId(), date,Profile.getCurrentProfile().getName());
+            String eventTime = mMonth + "/" + mDay + "/" + mYear + ", " + mHour + ":" + mMinute + " " + half;
+            final CreatedEvents createdEvent = new CreatedEvents(eventName, eventLocation, eventDescription, String.valueOf(mHour), String.valueOf(mMinute), String.valueOf(mDay),String.valueOf(mMonth),String.valueOf(mYear), Profile.getCurrentProfile().getId(), date, Profile.getCurrentProfile().getName(), eventTime);
             rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
@@ -261,7 +265,6 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             eTime.setText(mHour + ":" + mMinute + " " + half);
         }
         selectedTime = true;
-
     }
     //User TO upload image
     public void pick(){
