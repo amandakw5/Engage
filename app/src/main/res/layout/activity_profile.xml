@@ -61,14 +61,13 @@
             android:layout_alignParentStart="true"
             android:background="@drawable/search_gradient"/>
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profileImage"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="65dp"
             android:layout_below="@+id/toolbar_profile"
-            android:background="@drawable/border"
             app:srcCompat="@drawable/com_facebook_profile_picture_blank_portrait" />
 
 
@@ -82,33 +81,92 @@
             android:layout_below="@+id/bar"
             android:layout_margin="10dp" />
 
-        <TextView
-            android:id="@+id/followers"
+        <LinearLayout
+            android:id="@+id/lineF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:text="0 followers"
             android:layout_below="@+id/profileImage"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"/>
+            android:layout_centerHorizontal="false"
+            android:layout_alignStart="@id/profileImage"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/following"
+            <TextView
+                android:id="@+id/numFollowers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center_vertical|center_horizontal|center"
+                android:text="0"
+                android:textColor="#000000"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/followers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="#000000"
+                android:text="followers" />
+
+        </LinearLayout>
+
+
+
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="1dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/profileImage"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@id/lineF"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/darker_gray" />
+
+        <LinearLayout
+            android:id="@+id/lineS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:text="0 following"
-            android:layout_below="@+id/followers"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"/>
+            android:layout_alignEnd="@+id/profileImage"
+            android:layout_below="@+id/profileImage"
+
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/numFollowing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:foregroundGravity="center_vertical|center_horizontal|center"
+                android:gravity="center_vertical|center_horizontal|center"
+                android:text="0"
+                android:textColor="#000000"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/following"
+                android:textColor="#000000"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="following" />
+
+        </LinearLayout>
 
         <View
             android:id="@+id/bar"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            android:layout_margin="5dp"
-            android:layout_below="@+id/following" />
+
+            android:layout_below="@+id/lineS"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/darker_gray" />
 
         <android.support.design.widget.CoordinatorLayout
             android:id="@+id/coordinator_layout"
@@ -142,7 +200,8 @@
             android:id="@+id/drawer_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical"/>
+            android:layout_gravity="center_horizontal|center"
+            android:scrollbars="vertical" />
 
     </FrameLayout>
 

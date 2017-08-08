@@ -124,7 +124,7 @@ public class EventDetailsFragment extends Fragment {
         if (event != null){
             tvEventDescription.setText(event.tvDescription);
             tvEventInfo.setText(event.tvEventInfo);
-            tvHost.setText(event.organizerName);
+            tvHost.setText(event.organizer.name);
 
             queryTerm = event.getOrganizerName();
 

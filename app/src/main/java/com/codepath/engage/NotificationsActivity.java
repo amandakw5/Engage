@@ -41,7 +41,7 @@ public class NotificationsActivity extends AppCompatActivity {
     ImageView home;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
-    @BindView(R.id.toolbar_profile)
+    @BindView(R.id.toolbar_notif)
     Toolbar toolbar;
     @BindView(R.id.drawer_view)
     PlaceHolderView mDrawerView;
