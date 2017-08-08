@@ -17,7 +17,6 @@ public class UserEvents implements Parcelable {
     public String eventVenue;
     public String eventInfo;
     public String eventId;
-    public String eventLocation;
     public String eventImage;
     public String eventTime;
     public String eventLocation;
@@ -28,14 +27,14 @@ public class UserEvents implements Parcelable {
 
     public UserEvents(){ }
 
-    public String getEventLocation() {
-        return eventLocation;
-    }
-
-    public void setEventLocation(String eventLocation) {
-        this.eventLocation = eventLocation;
-        eventAddress = eventLocation;
-    }
+//    public String getEventLocation() {
+//        return eventLocation;
+//    }
+//
+//    public void setEventLocation(String eventLocation) {
+//        this.eventLocation = eventLocation;
+//        eventAddress = eventLocation;
+//    }
 
     public String getEventDescription() {
         return eventDescription;
