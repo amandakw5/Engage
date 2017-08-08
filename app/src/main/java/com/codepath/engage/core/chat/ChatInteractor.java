@@ -39,7 +39,8 @@ public class ChatInteractor implements ChatContract.Interactor {
     public void sendMessageToFirebaseUser(final Context context, final Chat chat, final String receiverFirebaseToken) {
         final String room_type_1 = chat.senderUid + "_" + chat.receiverUid;
         final String room_type_2 = chat.receiverUid + "_" + chat.senderUid;
-
+        DatabaseReference md = FirebaseDatabase.getInstance().getReference("users").child(chat.senderUid);
+        md.child("lastMessage").setValue(chat.message);
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
         databaseReference.child(Constants.ARG_CHAT_ROOMS).getRef().addListenerForSingleValueEvent(new ValueEventListener() {
