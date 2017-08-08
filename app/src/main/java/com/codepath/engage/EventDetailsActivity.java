@@ -163,16 +163,24 @@ public class EventDetailsActivity extends AppCompatActivity{
     public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription) {
         savedEventsCreated = false;
         events.clear();
-        Date date = new Date();
+        final Date date = new Date();
         Log.i("indo", date.toString());
         final UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null);
         savedEvents.child("savedEvents").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChild(eventId)){
+                if(dataSnapshot.exists()){
 
                 }else{
                     savedEvents.child("savedEvents").child(eventId).setValue(info);
+                }
+                if(dataSnapshot.hasChild(eventId)){
+                    savedEvents.child("savedEvents").child(eventId).child("date").child(uid).setValue(date);
+
+                }else{
+                    savedEvents.child("savedEvents").child(eventId).setValue(info);
+                    savedEvents.child("savedEvents").child(eventId).child("date").child(uid).setValue(date);
+
                 }
             }
 
@@ -181,7 +189,6 @@ public class EventDetailsActivity extends AppCompatActivity{
 
             }
         });
-        savedEvents.child("savedEvents").child(eventId).child("date").child(uid).setValue(date);
         users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
