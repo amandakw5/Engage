@@ -56,6 +56,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
+import static com.codepath.engage.R.drawable.user;
+
 public class ProfileActivity extends AppCompatActivity {
 
     public UpdateAdapter adapter;
@@ -130,8 +132,6 @@ public class ProfileActivity extends AppCompatActivity {
             profileHeader.setText(u.firstName + " " + u.lastName);
         }
         else {
-//            String id =
-//            Log.d("id", id == null ? "null" : id);
             uid = Profile.getCurrentProfile().getId();
             Log.d("uid", "null");
         }
@@ -149,27 +149,34 @@ public class ProfileActivity extends AppCompatActivity {
                 following.setTypeface(font);
                 flws.setTypeface(font);
                 flwg.setTypeface(font);
-                followers.setText(u.numFollowers + "");
-                following.setText(u.numFollowing + "");
 
                 HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child(currentProfile.uid).child("following").getValue();
-                if (followingList != null) {
-                    for (Object value : followingList.values()) {
-                        if (((String) (value)).equals(uid)) {
-                            isFollowing = true;
-                        }
-                    }
+                HashMap<String, String> followerList = (HashMap<String, String>) dataSnapshot.child(currentProfile.uid).child("followers").getValue();
+
+//                followers.setText(u.numFollowers + "");
+//                following.setText(u.numFollowing + "");
+
+                if (followerList != null) {
+                    followers.setText(followerList.size() + "");
+                } else if (followingList != null) {
+                    following.setText(followingList.size() + "");
+                } else if (followerList == null) {
+                    followers.setText("0");
+                } else {
+                    following.setText("0");
                 }
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
         Glide.with(context).load(u.profilePicture).centerCrop().bitmapTransform(new RoundedCornersTransformation(getApplicationContext(), 100, 0)).into(profileImage);
-        following.setText(u.numFollowing + "");
-        followers.setText(u.numFollowers + "");
-        followers.setTypeface(font);
-        following.setTypeface(font);
+
+//        following.setText(u.numFollowing + "");
+//        followers.setText(u.numFollowers + "");
+//        followers.setTypeface(font);
+//        following.setTypeface(font);
 
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 //        final DatabaseReference savedEvents = databaseReference.child("savedEvents");
@@ -216,33 +223,84 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!uid.equals(currentProfile.uid)) {
-                    mDatabase.addValueEventListener(new ValueEventListener() {
+                    mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child(currentProfile.uid).child("following").getValue();
-                            if (followingList!= null){
-                                for (Object value : followingList.values()){
-                                    if (((String)(value)).equals(uid)){
-//                                        isFollowing = true;
-                                        DatabaseReference deleteFollow = mDatabase.child(uid).child("following").child(currentProfile.uid);
+                            if (followingList != null) {
+                                for (Object value : followingList.values()) {
+                                    if (((String) (value)).equals(uid)) {
+//                                       isFollowing = true;
+//                                        mDatabase.child(uid).child("followers").child(value.toString()).getRef().setValue(null);
+//                                        mDatabase.child(currentProfile.uid).child("following").child(value.toString()).getRef().setValue(null);
+                                        DatabaseReference deleteFollow = mDatabase.child(currentProfile.uid).child("following").child(uid);
                                         deleteFollow.setValue(null);
-
-                                        DatabaseReference deleteFollowing = mDatabase.child(currentProfile.uid).child("followers").child(uid);
+                                        DatabaseReference deleteFollowing = mDatabase.child(uid).child("followers").child(currentProfile.uid);
                                         deleteFollowing.setValue(null);
                                     } else {
                                         DatabaseReference addFollow = mDatabase.child(uid).child("followers").push();
                                         addFollow.setValue(currentProfile.uid);
+                                        DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
+                                        addFollowing.setValue(uid);
+                                        DatabaseReference addNotif = mDatabase.child(uid).child("notifList").push();
+                                        addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + " followed you.");
                                     }
                                 }
                             } else {
                                 DatabaseReference addFollow = mDatabase.child(uid).child("followers").push();
                                 addFollow.setValue(currentProfile.uid);
+                                DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
+                                addFollowing.setValue(uid);
+                                DatabaseReference addNotif = mDatabase.child(uid).child("notifList").push();
+                                addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + " followed you.");
                             }
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            }
+                        }
                     });
+                }
+            }
+        });
+
+//        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (!uid.equals(currentProfile.uid)) {
+//                    mDatabase.addValueEventListener(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                            HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child(currentProfile.uid).child("following").getValue();
+//                            if (followingList!= null){
+//                                for (Object value : followingList.values()){
+//                                    if (((String)(value)).equals(uid)){
+////                                        isFollowing = true;
+//                                        DatabaseReference deleteFollow = mDatabase.child(uid).child("following").child(currentProfile.uid);
+//                                        deleteFollow.setValue(null);
+//
+//                                        DatabaseReference deleteFollowing = mDatabase.child(currentProfile.uid).child("followers").child(uid);
+//                                        deleteFollowing.setValue(null);
+//
+//                                    } else {
+//                                        DatabaseReference addFollow = mDatabase.child(uid).child("followers").push();
+//                                        addFollow.setValue(currentProfile.uid);
+//
+//                                        DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
+//                                        addFollowing.setValue(uid);
+//                                    }
+//                                }
+//                            } else {
+//                                DatabaseReference addFollow = mDatabase.child(uid).child("followers").push();
+//                                addFollow.setValue(currentProfile.uid);
+//
+//                                DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
+//                                addFollowing.setValue(uid);
+//                            }
+//                        }
+//                        @Override
+//                        public void onCancelled(DatabaseError databaseError) {
+//                            }
+//                    });
 
 
 //                    if (isFollowing) {
@@ -265,9 +323,9 @@ public class ProfileActivity extends AppCompatActivity {
 //                        addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + " followed you.");
 //                        isFollowing = true;
 //                    }
-                }
-            }
-        });
+//                }
+//            }
+//        });
 
         followers.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
