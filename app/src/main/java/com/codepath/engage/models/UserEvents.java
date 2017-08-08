@@ -27,14 +27,14 @@ public class UserEvents implements Parcelable {
 
     public UserEvents(){ }
 
-//    public String getEventLocation() {
-//        return eventLocation;
-//    }
-//
-//    public void setEventLocation(String eventLocation) {
-//        this.eventLocation = eventLocation;
-//        eventAddress = eventLocation;
-//    }
+    public String getEventLocation() {
+        return eventLocation;
+    }
+
+    public void setEventLocation(String eventLocation) {
+        this.eventLocation = eventLocation;
+        eventAddress = eventLocation;
+    }
 
     public String getEventDescription() {
         return eventDescription;
@@ -76,13 +76,13 @@ public class UserEvents implements Parcelable {
         this.date = new Date(Integer.parseInt(year),Integer.parseInt(months), Integer.parseInt(date),Integer.parseInt(hours),Integer.parseInt(minutes),Integer.parseInt(seconds));
     }
 
-    public String getEventLocation() {
-        return eventLocation;
-    }
-
-    public void setEventLocation(String eventLocation) {
-        this.eventLocation = eventLocation;
-    }
+//    public String getEventLocation() {
+//        return eventLocation;
+//    }
+//
+//    public void setEventLocation(String eventLocation) {
+//        this.eventLocation = eventLocation;
+//    }
 
     public boolean isCreatedByUser() {
         return createdByUser;

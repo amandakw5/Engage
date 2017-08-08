@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -430,5 +431,128 @@ public class ProfileActivity extends AppCompatActivity {
         drawerToggle.syncState();
     }
 
+    public class getFirebaseData extends AsyncTask<Void, Void, List<String>> {
+        List<String> eventIDs;
+
+        @Override
+        protected List<String> doInBackground(Void... params) {
+            DatabaseReference evDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
+            eventIDs = new ArrayList<>();
+            evDatabase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() { };
+                    eventIDs = dataSnapshot.getValue(t);
+                    if (eventIDs == null) {
+                        Log.d("Event IDs", "null");
+                    } else {
+                        Log.d("eventIds", eventIDs.toString());
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+            return eventIDs;
+        }
+
+        @Override
+        protected void onPostExecute(final List<String> strings) {
+            super.onPostExecute(strings);
+            final DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
+            final DatabaseReference createdEvents = FirebaseDatabase.getInstance().getReference("CreatedEvents");
+            savedEvents.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (strings != null) {
+                        for (String id : strings) {
+                            for (final DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
+                                if (id.equals(evSnapshot.getKey())) {
+                                    savedEvents.child(id).child("date").child(Profile.getCurrentProfile().getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot2) {
+                                            UserEvents e = evSnapshot.getValue(UserEvents.class);
+                                            DateProgram date = dataSnapshot2.getValue(DateProgram.class);
+                                            date.setDateConstructed(date.getYear(), date.getMonth(), date.getTimezoneOffset(), date.getTime(), date.getMinutes(), date.getSeconds(), date.getHours(), date.getDay(), date.getDate());
+                                            e.setDate(date.getDateConstructed());
+                                            events.add(e);
+                                            Collections.sort(events, new Comparator<UserEvents>() {
+                                                @Override
+                                                public int compare(UserEvents o1, UserEvents o2) {
+                                                    if (o1.getDate() == null || o2.getDate() == null)
+                                                        return 0;
+                                                    return o1.getDate().compareTo(o2.getDate());
+                                                }
+                                            });
+                                            Collections.reverse(events);
+                                            Log.d("Saved Events", events.toString());
+                                            dates.add(e.date);
+                                            Collections.sort(dates, new Comparator<Date>() {
+                                                @Override
+                                                public int compare(Date o1, Date o2) {
+                                                    return o1.compareTo(o2);
+                                                }
+                                            });
+                                            Collections.reverse(dates);
+                                            adapter.notifyItemInserted(events.size() - 1);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            createdEvents.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
+                        if (uid.equals((String) evSnapshot.child("uid").getValue())) {
+                            UserEvents e = evSnapshot.getValue(UserEvents.class);
+                            e.setCreatedByUser(true);
+                            events.add(e);
+                            Collections.sort(events, new Comparator<UserEvents>() {
+                                @Override
+                                public int compare(UserEvents o1, UserEvents o2) {
+                                    if (o1.getDate() == null || o2.getDate() == null)
+                                        return 0;
+                                    return o1.getDate().compareTo(o2.getDate());
+                                }
+                            });
+                            Collections.reverse(events);
+                            Log.d("Created Events", events.toString());
+                            dates.add(e.date);
+                            Collections.sort(dates, new Comparator<Date>() {
+                                @Override
+                                public int compare(Date o1, Date o2) {
+                                    return o1.compareTo(o2);
+                                }
+                            });
+                            Collections.reverse(dates);
+//                        adapter.notifyItemInserted(events.size() - 1);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
     
 }

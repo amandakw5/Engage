@@ -162,6 +162,8 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                 getLocationFromAddress(getContext(), currentUpdate.eventAddress);
             } else if (currentUpdate.eventLocation!=null){
                 getLocationFromAddress(getContext(), currentUpdate.eventLocation);
+            } else {
+                noInfo(googleMap);
             }
         }
 
@@ -207,8 +209,10 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                                     } else if (currentUpdate != null) {
                                         if (currentUpdate.eventAddress != null){
                                             getLocationFromAddress(getContext(), currentUpdate.eventAddress);
+                                            showMap(googleMap);
                                         } else if (currentUpdate.eventLocation != null){
                                             getLocationFromAddress(getContext(), currentUpdate.eventLocation);
+                                            showMap(googleMap);
                                         }
                                     }
                                 } else {
@@ -331,11 +335,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                 polyline.remove();
             }
         }
-    }
-
-    @Override
-    public void onDirectionFinderSuccess(List<Route> routes) {
-
     }
 
     @Override
