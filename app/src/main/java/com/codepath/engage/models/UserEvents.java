@@ -27,7 +27,6 @@ public class UserEvents implements Parcelable {
 
     public UserEvents(){ }
 
-<<<<<<< HEAD
 //    public String getEventLocation() {
 //        return eventLocation;
 //    }
@@ -36,15 +35,6 @@ public class UserEvents implements Parcelable {
 //        this.eventLocation = eventLocation;
 //        eventAddress = eventLocation;
 //    }
-=======
-    public String getEventLocation() {
-        return eventLocation;
-    }
-
-    public void setEventLocation(String eventLocation) {
-        this.eventLocation = eventLocation;
-    }
->>>>>>> ViewDisplay
 
     public String getEventDescription() {
         return eventDescription;
@@ -67,10 +57,6 @@ public class UserEvents implements Parcelable {
     public void setEventImage(String eventImage) {
         this.eventImage = eventImage;
     }
-<<<<<<< HEAD
-
-    public UserEvents(String eventName, String eventHost, String eventTime, String eventAddress, String eventId, String eventImage, String eventDescription, String uid, Date date, String eventLocation){
-=======
     public void updateLocations(){
         if(eventAddress == null || eventAddress.equals("null")){
             eventAddress = eventLocation;
@@ -79,8 +65,9 @@ public class UserEvents implements Parcelable {
             eventLocation = eventAddress;
         }
     }
-    public UserEvents(String eventName, String eventHost, String eventTime, String eventAddress, String eventId, String eventImage, String eventDescription, String uid, Date date){
->>>>>>> ViewDisplay
+
+    public UserEvents(String eventName, String eventHost, String eventTime, String eventAddress, String eventId, String eventImage, String eventDescription, String uid, Date date, String eventLocation){
+
         this.eventName = eventName;
         this.eventTime = eventTime;
         this.eventAddress = eventAddress;

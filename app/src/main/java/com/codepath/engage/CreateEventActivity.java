@@ -222,13 +222,13 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                         }
                         builder.setTitle("Upload image")
                                 .setMessage("Do you want to upload an image?")
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         // continue with delete
                                         pick();
                                     }
                                 })
-                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                .setNegativeButton("no", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         // do nothing
                                         Intent intent = new Intent(CreateEventActivity.this, HomePage.class);
