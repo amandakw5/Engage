@@ -5,10 +5,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -43,6 +45,8 @@ import com.mindorks.placeholderview.PlaceHolderView;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +59,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     public UpdateAdapter adapter;
     public ArrayList<UserEvents> events;
-    public ArrayList<CreatedEvents> createdEventList;
+    public ArrayList<UserEvents> createdEventsList;
     String uid;
     String whichProfile;
     DatabaseReference mDatabase;
@@ -201,8 +205,7 @@ public class ProfileActivity extends AppCompatActivity {
         evDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {
-                };
+                GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() { };
                 eventIDs = dataSnapshot.getValue(t);
                 if (eventIDs == null) {
                     Log.d("Event IDs", "null");
@@ -228,11 +231,28 @@ public class ProfileActivity extends AppCompatActivity {
                                     public void onDataChange(DataSnapshot dataSnapshot2) {
                                         UserEvents e = evSnapshot.getValue(UserEvents.class);
                                         DateProgram date = dataSnapshot2.getValue(DateProgram.class);
-                                        date.setDateConstructed(date.getYear(),date.getMonth(),date.getTimezoneOffset(),date.getTime(),date.getMinutes(),date.getSeconds(),date.getHours(),date.getDay(),date.getDate());
+                                        date.setDateConstructed(date.getYear(), date.getMonth(), date.getTimezoneOffset(), date.getTime(), date.getMinutes(), date.getSeconds(), date.getHours(), date.getDay(), date.getDate());
                                         e.setDate(date.getDateConstructed());
                                         events.add(e);
+                                        Collections.sort(events, new Comparator<UserEvents>() {
+                                            @Override
+                                            public int compare(UserEvents o1, UserEvents o2) {
+                                                if (o1.getDate() == null || o2.getDate() == null)
+                                                    return 0;
+                                                return o1.getDate().compareTo(o2.getDate());
+                                            }
+                                        });
+                                        Collections.reverse(events);
+                                        Log.d("Saved Events", events.toString());
                                         dates.add(e.date);
-                                        adapter.notifyItemInserted(events.size() -1);
+                                        Collections.sort(dates, new Comparator<Date>() {
+                                            @Override
+                                            public int compare(Date o1, Date o2) {
+                                                return o1.compareTo(o2);
+                                            }
+                                        });
+                                        Collections.reverse(dates);
+                                        adapter.notifyItemInserted(events.size() - 1);
                                     }
                                     @Override
                                     public void onCancelled(DatabaseError databaseError) {
@@ -259,8 +279,25 @@ public class ProfileActivity extends AppCompatActivity {
                         UserEvents e = evSnapshot.getValue(UserEvents.class);
                         e.setCreatedByUser(true);
                         events.add(e);
+                        Collections.sort(events, new Comparator<UserEvents>() {
+                            @Override
+                            public int compare(UserEvents o1, UserEvents o2) {
+                                if (o1.getDate() == null || o2.getDate() == null)
+                                    return 0;
+                                return o1.getDate().compareTo(o2.getDate());
+                            }
+                        });
+                        Collections.reverse(events);
+                        Log.d("Created Events", events.toString());
                         dates.add(e.date);
-                        adapter.notifyItemInserted(events.size() -1);
+                        Collections.sort(dates, new Comparator<Date>() {
+                            @Override
+                            public int compare(Date o1, Date o2) {
+                                return o1.compareTo(o2);
+                            }
+                        });
+                        Collections.reverse(dates);
+//                        adapter.notifyItemInserted(events.size() - 1);
                     }
                 }
             }
@@ -299,6 +336,7 @@ public class ProfileActivity extends AppCompatActivity {
                         DatabaseReference deleteFollowing = mDatabase.child(currentProfile.uid).child("followers").child(uid).push();
                         deleteFollowing.setValue(null);
                         isFollowing = false;
+
                     } else {
                         mDatabase.child(uid).child("numFollowers").setValue((u.numFollowers + 1));
                         mDatabase.child(currentProfile.uid).child("numFollowing").setValue(currentProfile.numFollowing + 1);

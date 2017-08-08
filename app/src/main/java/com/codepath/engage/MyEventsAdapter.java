@@ -54,13 +54,11 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsAdapter.ViewHo
         holder.tvHost.setText(user.firstName + " " + user.lastName);
         holder.tvEventName.setText(event.eventName);
         holder.tvEventInfo.setText(event.eventAddress);
-      //  holder.tvDescription.setText(event.eventDescription);
         StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(event.getEventId()));
         Glide.with(context)
                 .using(new FirebaseImageLoader())
                 .load(storageReference)
                 .into(holder.ivProfileImage);
-
     }
 
     @Override
@@ -88,18 +86,6 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsAdapter.ViewHo
             name = (TextView) itemView.findViewById(R.id.name);
             //itemView.setOnClickListener(this);
         }
-
-//        @Override
-//        public void onClick(View v) {
-//            final int position = getAdapterPosition();
-//            if (position != RecyclerView.NO_POSITION) {
-//                final UserEvents event = mEvents.get(position);
-//                Intent intent = new Intent(context, EventDetailsActivity.class);
-//                intent.putExtra(Event.class.getSimpleName(), Parcels.wrap(event));
-//                context.startActivity(intent);
-//
-//            }
-//        }
     }
 
     public UserEvents getEvent(int i){

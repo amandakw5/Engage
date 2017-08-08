@@ -69,7 +69,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 //        String currentUser = feedUsers.get(position);
 //        holder.update.setText(currentUser + " is interested in " + e.eventName);
     }
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.notification)
         TextView update;
 
@@ -87,17 +87,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                         // create intent for the new activity
                         Intent intent = new Intent(context, EventDetailsActivity.class);
                         intent.putExtra("current", Parcels.wrap(currentUpdate));
+                        intent.putExtra("isCreated", Parcels.wrap(currentUpdate.createdByUser));
                         // serialize the movie using parceler, use its short name as a key
                         // show the activity
                         context.startActivity(intent);
                     }
                 }
             });
-        }
-
-        @Override
-        public void onClick(View v) {
-
         }
     }
 

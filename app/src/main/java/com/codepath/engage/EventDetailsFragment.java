@@ -25,6 +25,8 @@ import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,7 @@ public class EventDetailsFragment extends Fragment {
     @BindView(R.id.tvHost) TextView tvHost;
     @BindView(R.id.tvEventInfo) TextView tvEventInfo;
     @BindView(R.id.tvEventDescription) TextView tvEventDescription;
+    @BindView(R.id.tvEventLocation) TextView tvEventLocation;
     YouTubePlayerSupportFragment youtubeFragment;
 
     UserEvents currentUpdate;
@@ -128,7 +131,17 @@ public class EventDetailsFragment extends Fragment {
         } else if (currentUpdate != null) {
             tvEventDescription.setText(currentUpdate.eventDescription);
             tvEventInfo.setText(currentUpdate.eventTime);
+            if (currentUpdate.eventAddress != null){
+                tvEventLocation.setText(currentUpdate.eventAddress);
+            } else if (currentUpdate.eventLocation != null) {
+                tvEventLocation.setText(currentUpdate.eventLocation);
+            }
             tvHost.setText(currentUpdate.eventHost);
+            if (currentUpdate.eventAddress != null){
+                tvEventLocation.setText(currentUpdate.eventAddress);
+            } else if (currentUpdate.eventLocation != null){
+                tvEventLocation.setText(currentUpdate.eventLocation);
+            }
 
         }
 

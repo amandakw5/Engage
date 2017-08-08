@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,9 @@ import com.codepath.engage.models.CreatedEvents;
 import com.codepath.engage.models.UserEvents;
 import com.facebook.Profile;
 
-import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 
 import butterknife.BindView;
@@ -53,9 +52,12 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
         View updateView = inflater.inflate(R.layout.item_update, parent, false);
         ViewHolder viewHolder = new ViewHolder(updateView);
         uid = Profile.getCurrentProfile().getId();
-        if (!(dates.equals(null))) {
-            Collections.sort(dates, Collections.reverseOrder());
-        }
+//        if (!(dates.equals(null))) {
+//            Collections.sort(dates, Collections.reverseOrder());
+//        }
+        Log.d("UE All", mEvents.toString());
+        Log.d("UE Dates", dates.toString());
+
         return viewHolder;
     }
     @Override
@@ -63,10 +65,14 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
         Date d = dates.get(position);
         Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
         holder.update.setTypeface(font);
-        for (UserEvents ue: mEvents) {
+        for (UserEvents ue : mEvents) {
+            Log.d("UE", ue.toString());
+            Log.d("UE d", d.toString());
+            Log.d("UE Date", ue.date.toString());
             if ((ue.date.equals(d))) {
                 UserEvents e = ue;
-                if (e.uid != null){
+                Log.d("UE Event", ue.eventName);
+                if (e.uid != null) {
                     holder.update.setText(profilePage + " created the event " + e.eventName);
                 } else {
                     holder.update.setText(profilePage + verb + "interested in " + e.eventName);
@@ -88,9 +94,11 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
                     int position = getAdapterPosition();
                     // fire the listener callback
                     if (position != RecyclerView.NO_POSITION) {
-                        ArrayList<UserEvents> helpme = new ArrayList<UserEvents>(mEvents);
-                        Collections.reverse(helpme);
-                        UserEvents currentUpdate = helpme.get(position);
+//                        ArrayList<UserEvents> helpme = new ArrayList<UserEvents>(mEvents);
+//                        Collections.reverse(helpme);
+//                        UserEvents currentUpdate = helpme.get(position);
+                        UserEvents currentUpdate = mEvents.get(position);
+
                         // create intent for the new activity
                         Intent intent = new Intent(context, EventDetailsActivity.class);
                         intent.putExtra("current", Parcels.wrap(currentUpdate));

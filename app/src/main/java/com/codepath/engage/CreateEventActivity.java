@@ -67,6 +67,10 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
     private boolean finishedAddingEvent = false;
     String uid;
     long createdEventID;
+    String eventTime;
+    String eventDate;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,6 +126,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
     }
 
     // handle the date selected
+
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         // store the values selected into a Calendar instance
@@ -145,7 +150,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             mDay = "0" + dayOfMonth;
         }
         eDate.setText(mMonth + "/" + mDay + "/" + mYear);
-        selectedDate =true;
+        selectedDate = true;
     }
 
     public void verifySubmitEvent(){
@@ -160,12 +165,11 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             createdEventInfo.add(eventDescription);
             createdEventInfo.add(Profile.getCurrentProfile().getId());
             Date date = new Date();
-
             createdEventInfo.add(String.valueOf(date));
             finishedAddingEvent = false;
             i.putExtra("createdEventInfo", Parcels.wrap(createdEventInfo));
-//            final UserEvents newEv = new UserEvents(eventName, Profile.getCurrentProfile().getFirstName() + " "+ Profile.getCurrentProfile().getLastName(), mMonth + "-" +mDay + " " + mHour + ":" + mMinute + " " + half, eventLocation,  null, null, eventDescription, Profile.getCurrentProfile().getId());
-            final CreatedEvents createdEvent = new CreatedEvents(eventName,eventLocation,eventDescription,String.valueOf(mHour),String.valueOf(mMinute),String.valueOf(mDay),String.valueOf(mMonth),String.valueOf(mYear), Profile.getCurrentProfile().getId(), date,Profile.getCurrentProfile().getName());
+            String eventTime = mMonth + "/" + mDay + "/" + mYear + ", " + mHour + ":" + mMinute + " " + half;
+            final CreatedEvents createdEvent = new CreatedEvents(eventName, eventLocation, eventDescription, String.valueOf(mHour), String.valueOf(mMinute), String.valueOf(mDay),String.valueOf(mMonth),String.valueOf(mYear), Profile.getCurrentProfile().getId(), date, Profile.getCurrentProfile().getName(), eventTime);
             rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
@@ -218,13 +222,13 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                         }
                         builder.setTitle("Upload image")
                                 .setMessage("Do you want to upload an image?")
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         // continue with delete
                                         pick();
                                     }
                                 })
-                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                .setNegativeButton("no", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         // do nothing
                                         Intent intent = new Intent(CreateEventActivity.this, HomePage.class);
@@ -279,7 +283,6 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
             eTime.setText(mHour + ":" + mMinute + " " + half);
         }
         selectedTime = true;
-
     }
     //User TO upload image
     public void pick(){

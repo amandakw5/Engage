@@ -32,7 +32,10 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 
 public class EventDetailsActivity extends AppCompatActivity{
@@ -109,17 +112,24 @@ public class EventDetailsActivity extends AppCompatActivity{
                 }
         } else if (currentUpdate!=null){
             tvEventName.setText(currentUpdate.eventName);
-            if (!currentUpdate.eventImage.equals("null")) {
+            if (isUserCreated) {
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(currentUpdate.getEventId()));
+                Glide.with(this)
+                        .using(new FirebaseImageLoader())
+                        .load(storageReference)
+                        .error(R.drawable.image_not_found)
+                        .into(ivBackdrop);
+            } else if (!currentUpdate.eventImage.equals("null")) {
                     Glide.with(this)
                             .load(currentUpdate.eventImage)
                             .centerCrop()
                             .into(ivBackdrop);
-                } else if (currentUpdate.eventImage.equals("null")) {
+            } else if (currentUpdate.eventImage.equals("null")) {
                     Glide.with(this)
                             .load(R.drawable.image_not_found)
                             .centerCrop()
                             .into(ivBackdrop);
-                }
+            }
         }
 
         View root = tabLayout.getChildAt(0);
@@ -137,41 +147,28 @@ public class EventDetailsActivity extends AppCompatActivity{
                 @Override
                 public void onClick(View v) {
                     if (event.ivEventImage == null) {
-                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription);
-
+                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription, null);
                     } else {
-                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
+                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription, null);
                     }
                     Toast.makeText(EventDetailsActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
                 }
             });
-        } else if (currentUpdate!= null){
+        } else if (currentUpdate != null){
             fab.setVisibility(View.GONE);
         }
     }
 
-    public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription) {
+    public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription, String eventLocation) {
         savedEventsCreated = false;
         events.clear();
         Date date = new Date();
         Log.i("indo", date.toString());
-        final UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null);
-        savedEvents.child("savedEvents").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChild(eventId)){
-
-                }else{
-                    savedEvents.child("savedEvents").child(eventId).setValue(info);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        savedEvents.child("savedEvents").child(eventId).child("date").child(uid).setValue(date);
+        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null, eventLocation);
+        savedEvents.child("savedEvents").child(eventId).setValue(info);
+        Map<String, Object> asdf = new HashMap<>();
+        asdf.put(uid, date);
+        savedEvents.child("savedEvents").child(eventId).child("date").updateChildren(asdf);
         users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
