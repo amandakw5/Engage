@@ -162,13 +162,26 @@ public class EventDetailsActivity extends AppCompatActivity{
     public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription, String eventLocation) {
         savedEventsCreated = false;
         events.clear();
-        Date date = new Date();
+        final Date date = new Date();
+        final Map<String, Object> dates = new HashMap<>();
         Log.i("indo", date.toString());
-        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null, eventLocation);
-        savedEvents.child("savedEvents").child(eventId).setValue(info);
-        Map<String, Object> asdf = new HashMap<>();
-        asdf.put(uid, date);
-        savedEvents.child("savedEvents").child(eventId).child("date").updateChildren(asdf);
+        final UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null, eventLocation);
+        savedEvents.child("savedEvents").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.hasChild(eventId)){
+
+                } else {
+                    savedEvents.child("savedEvents").child(eventId).setValue(info);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        savedEvents.child("savedEvents").child(eventId).child("date").child(uid).setValue(date);
         users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
