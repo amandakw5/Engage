@@ -78,6 +78,7 @@ public class DrawerMenuItem {
                 itemNameTxt.setTextSize((float) 19.0);
                 break;
             case DRAWER_MENU_ITEM_NOTIF:
+                ivIcon.setImageResource(R.drawable.notification);
                 itemNameTxt.setText("Notifications");
                 itemNameTxt.setTextSize((float) 19.0);
                 itemNameTxt.setTypeface(font);

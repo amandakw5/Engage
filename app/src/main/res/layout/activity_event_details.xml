@@ -23,7 +23,7 @@
                 android:id="@+id/ivBackdrop"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="?attr/actionBarSize"
+                android:layout_marginTop="80dp"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax" />
@@ -31,7 +31,7 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="70dp"
                 app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
                 app:layout_collapseMode="pin"
                 android:fitsSystemWindows="true"
@@ -40,14 +40,14 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_height="75dp"
                     android:text="Event Name"
                     android:id="@+id/tvEventName"
                     android:textStyle="bold"
                     android:fontFamily="serif"
-                    android:textSize="22sp"
+                    android:textSize="20sp"
                     android:textColor="@color/black"
-                    android:gravity="center|start"
+                    android:gravity="center"
                     />
 
             </android.support.v7.widget.Toolbar>
