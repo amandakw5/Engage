@@ -70,7 +70,7 @@ public class EventDetailsActivity extends AppCompatActivity{
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
         setToolbar();
-        Typeface font = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Light.ttf");
+        Typeface font = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Medium.ttf");
         ivBackdrop = (ImageView) findViewById(R.id.ivBackdrop);
         tvEventName = (TextView) findViewById(R.id.tvEventName);
         tvEventName.setTypeface(font);

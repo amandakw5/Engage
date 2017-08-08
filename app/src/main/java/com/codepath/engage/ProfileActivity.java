@@ -49,6 +49,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -71,8 +72,10 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.rvUpdates) RecyclerView rvUpdates;
     @BindView(R.id.profileImage) ImageView profileImage;
     @BindView(R.id.profileHeader) TextView profileHeader;
-    @BindView(R.id.following) TextView following;
-    @BindView(R.id.followers) TextView followers;
+    @BindView(R.id.numFollowing) TextView following;
+    @BindView(R.id.numFollowers) TextView followers;
+    @BindView(R.id.followers) TextView flws;
+    @BindView(R.id.following) TextView flwg;
     @BindView(R.id.floatingActionButton) FloatingActionButton floatingActionButton;
     @BindView(R.id.header) ImageView header;
     StorageReference storage;
@@ -134,11 +137,14 @@ public class ProfileActivity extends AppCompatActivity {
                 if (uid.equals(Profile.getCurrentProfile().getId())){
                     u = currentProfile;
                 }
-                Glide.with(getApplicationContext()).load(u.profilePicture).centerCrop().into(profileImage);
+                Glide.with(getApplicationContext()).load(u.profilePicture).bitmapTransform(new RoundedCornersTransformation(getApplicationContext(), 100, 0)).centerCrop().into(profileImage);
                 followers.setTypeface(font);
                 following.setTypeface(font);
-                following.setText(u.numFollowing + " following");
-                followers.setText(u.numFollowers + " followers");
+                flws.setTypeface(font);
+                flwg.setTypeface(font);
+                followers.setText(u.numFollowers + "");
+                following.setText(u.numFollowing + "");
+
                 HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child(currentProfile.uid).child("following").getValue();
                 if (followingList != null) {
                     for (Object value : followingList.values()) {
@@ -152,9 +158,9 @@ public class ProfileActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-        Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
-        following.setText(u.numFollowing + " following");
-        followers.setText(u.numFollowers + " followers");
+        Glide.with(context).load(u.profilePicture).centerCrop().bitmapTransform(new RoundedCornersTransformation(getApplicationContext(), 100, 0)).into(profileImage);
+        following.setText(u.numFollowing + "");
+        followers.setText(u.numFollowers + "");
         followers.setTypeface(font);
         following.setTypeface(font);
 
