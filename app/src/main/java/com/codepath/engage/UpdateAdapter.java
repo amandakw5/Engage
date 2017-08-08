@@ -13,7 +13,6 @@ import com.codepath.engage.models.CreatedEvents;
 import com.codepath.engage.models.UserEvents;
 import com.facebook.Profile;
 
-import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -91,6 +90,7 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
                         ArrayList<UserEvents> helpme = new ArrayList<UserEvents>(mEvents);
                         Collections.reverse(helpme);
                         UserEvents currentUpdate = helpme.get(position);
+                        currentUpdate.updateLocations();
                         // create intent for the new activity
                         Intent intent = new Intent(context, EventDetailsActivity.class);
                         intent.putExtra("current", Parcels.wrap(currentUpdate));

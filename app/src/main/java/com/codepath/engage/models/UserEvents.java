@@ -33,7 +33,6 @@ public class UserEvents implements Parcelable {
 
     public void setEventLocation(String eventLocation) {
         this.eventLocation = eventLocation;
-        eventAddress = eventLocation;
     }
 
     public String getEventDescription() {
@@ -57,7 +56,14 @@ public class UserEvents implements Parcelable {
     public void setEventImage(String eventImage) {
         this.eventImage = eventImage;
     }
-
+    public void updateLocations(){
+        if(eventAddress == null || eventAddress.equals("null")){
+            eventAddress = eventLocation;
+        }
+        else{
+            eventLocation = eventAddress;
+        }
+    }
     public UserEvents(String eventName, String eventHost, String eventTime, String eventAddress, String eventId, String eventImage, String eventDescription, String uid, Date date){
         this.eventName = eventName;
         this.eventTime = eventTime;
