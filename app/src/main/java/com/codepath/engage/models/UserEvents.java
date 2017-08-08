@@ -27,14 +27,14 @@ public class UserEvents implements Parcelable {
 
     public UserEvents(){ }
 
-    public String getEventLocation() {
-        return eventLocation;
-    }
-
-    public void setEventLocation(String eventLocation) {
-        this.eventLocation = eventLocation;
-        eventAddress = eventLocation;
-    }
+//    public String getEventLocation() {
+//        return eventLocation;
+//    }
+//
+//    public void setEventLocation(String eventLocation) {
+//        this.eventLocation = eventLocation;
+//        eventAddress = eventLocation;
+//    }
 
     public String getEventDescription() {
         return eventDescription;
@@ -58,7 +58,7 @@ public class UserEvents implements Parcelable {
         this.eventImage = eventImage;
     }
 
-    public UserEvents(String eventName, String eventHost, String eventTime, String eventAddress, String eventId, String eventImage, String eventDescription, String uid, Date date){
+    public UserEvents(String eventName, String eventHost, String eventTime, String eventAddress, String eventId, String eventImage, String eventDescription, String uid, Date date, String eventLocation){
         this.eventName = eventName;
         this.eventTime = eventTime;
         this.eventAddress = eventAddress;
@@ -69,10 +69,19 @@ public class UserEvents implements Parcelable {
         this.uid = uid;
         this.date = date;
         createdByUser = false;
-
+        this.eventLocation = eventLocation;
     }
+
     public void setUserDateByValues(String date, String day, String hours, String minutes, String months, String seconds, String time, String timezoneOffset, String year){
         this.date = new Date(Integer.parseInt(year),Integer.parseInt(months), Integer.parseInt(date),Integer.parseInt(hours),Integer.parseInt(minutes),Integer.parseInt(seconds));
+    }
+
+    public String getEventLocation() {
+        return eventLocation;
+    }
+
+    public void setEventLocation(String eventLocation) {
+        this.eventLocation = eventLocation;
     }
 
     public boolean isCreatedByUser() {

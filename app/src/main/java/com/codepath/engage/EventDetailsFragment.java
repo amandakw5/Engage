@@ -1,5 +1,6 @@
 package com.codepath.engage;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
@@ -8,15 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.codepath.engage.models.Event;
 import com.codepath.engage.models.UserEvents;
-import com.facebook.Profile;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
@@ -28,19 +24,11 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -126,10 +114,13 @@ public class EventDetailsFragment extends Fragment {
         if (container != null) {
             container.removeAllViews();
         }
+        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Light.ttf");
 
         View view = inflater.inflate(R.layout.fragment_event_details, container, false);
         ButterKnife.bind(this,view);
-
+        tvEventDescription.setTypeface(font);
+        tvEventInfo.setTypeface(font);
+        tvHost.setTypeface(font);
         if (event != null){
             tvEventDescription.setText(event.tvDescription);
             tvEventInfo.setText(event.tvEventInfo);
@@ -146,6 +137,11 @@ public class EventDetailsFragment extends Fragment {
                 tvEventLocation.setText(currentUpdate.eventLocation);
             }
             tvHost.setText(currentUpdate.eventHost);
+            if (currentUpdate.eventAddress != null){
+                tvEventLocation.setText(currentUpdate.eventAddress);
+            } else if (currentUpdate.eventLocation != null){
+                tvEventLocation.setText(currentUpdate.eventLocation);
+            }
 
         }
 

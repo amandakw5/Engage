@@ -117,6 +117,13 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
+        try {
+            MapsInitializer.initialize(this.getActivity());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        buildGoogleApiClient();
+
         Bundle bundle = getArguments();
         try {
             event = bundle.getParcelable("event");
@@ -144,7 +151,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                 }
             } else if (event.tvEventInfo == null) {
                 noInfo(googleMap);
-        } else if (event.venue.getLatitude() == null || event.venue.getLongitude() == null){
+        } else if (event.venue.latitude == null || event.venue.longitude == null){
                 getLocationFromAddress(getContext(), event.tvEventInfo);
             } else {
                 destLat = Double.parseDouble(event.venue.getLatitude());
@@ -158,8 +165,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
             }
         }
 
-        buildGoogleApiClient();
-
     }
 
     @Override
@@ -172,12 +177,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
 
         // needed to get the map to display immediately
         mMapView.onResume();
-
-        try {
-            MapsInitializer.initialize(this.getActivity());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         if(event!= null) {
             btnGoogleMaps.setOnClickListener(new View.OnClickListener() {
@@ -195,7 +194,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
             case ConnectionResult.SUCCESS:
                 mMapView.onCreate(savedInstanceState);
                 // Gets to GoogleMap from the MapView and does initialization stuff
-
                 if (mMapView != null) {
                     mMapView.getMapAsync(new OnMapReadyCallback() {
                         @Override
@@ -204,7 +202,15 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                                 if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                                     //Location Permission already granted
                                     googleMap.setMyLocationEnabled(true);
+                                    if (event != null) {
                                         showMap(googleMap);
+                                    } else if (currentUpdate != null) {
+                                        if (currentUpdate.eventAddress != null){
+                                            getLocationFromAddress(getContext(), currentUpdate.eventAddress);
+                                        } else if (currentUpdate.eventLocation != null){
+                                            getLocationFromAddress(getContext(), currentUpdate.eventLocation);
+                                        }
+                                    }
                                 } else {
                                     //Request Location Permission
                                     checkLocationPermission();
@@ -239,9 +245,9 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
     public void onPause() {
         mMapView.onPause();
         super.onPause();
-        if (mGoogleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, (LocationListener) this);
-        }
+//        if (mGoogleApiClient != null) {
+//            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, (LocationListener) this);
+//        }
     }
 
     @Override
@@ -403,12 +409,12 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                     // permission was granted! Do the
                     // location-related task you need to do.
                     if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        if (mGoogleApiClient == null) { buildGoogleApiClient(); }
-
+                        if (mGoogleApiClient == null) {
+//                            buildGoogleApiClient();
+                        }
                         googleMap.setMyLocationEnabled(true);
                     }
 
@@ -536,18 +542,25 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
     }
 
     public void changeLocation(Location location, GoogleMap googleMap) {
+        if(googleMap == null){
+            Toast.makeText(getContext(), "Google Maps unavailable", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getActivity(), HomePage.class);
+            startActivity(intent);
 
-        double latitude = location.getLatitude();
-        double longitude =location.getLongitude();
+        } else {
 
-        LatLng loc = new LatLng(latitude, longitude);
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
 
-        googleMap.addMarker(new MarkerOptions()
-                .position(loc)
-                .title("Current Location")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+            LatLng loc = new LatLng(latitude, longitude);
+
+            googleMap.addMarker(new MarkerOptions()
+                    .position(loc)
+                    .title("Current Location")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+        }
 
     }
 

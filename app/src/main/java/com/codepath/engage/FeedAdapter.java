@@ -87,6 +87,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                         // create intent for the new activity
                         Intent intent = new Intent(context, EventDetailsActivity.class);
                         intent.putExtra("current", Parcels.wrap(currentUpdate));
+                        intent.putExtra("isCreated", Parcels.wrap(currentUpdate.createdByUser));
                         // serialize the movie using parceler, use its short name as a key
                         // show the activity
                         context.startActivity(intent);

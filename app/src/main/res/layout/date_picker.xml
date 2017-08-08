@@ -12,7 +12,10 @@
         android:layout_marginLeft="35dp"
         android:layout_marginTop="34dp"
         android:foregroundGravity="center_vertical|center_horizontal|center"
-        android:headerYearTextAppearance="@color/colorPrimary" />
+        android:headerBackground="@color/black"
+        android:headerYearTextAppearance="@color/black"
+        android:yearListSelectorColor="@color/black"
+        android:theme="@style/MyTextInputLayout"/>
 
     <Button
         android:id="@+id/submitDate"

@@ -1,5 +1,6 @@
 package com.codepath.engage;
 
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -72,9 +73,10 @@ public class EventDetailsActivity extends AppCompatActivity{
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
         setToolbar();
-
+        Typeface font = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Light.ttf");
         ivBackdrop = (ImageView) findViewById(R.id.ivBackdrop);
         tvEventName = (TextView) findViewById(R.id.tvEventName);
+        tvEventName.setTypeface(font);
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
         events = new ArrayList<String>();
@@ -89,6 +91,7 @@ public class EventDetailsActivity extends AppCompatActivity{
         tabLayout.setupWithViewPager(vPager);
 
         if(event!=null){
+            tvEventName.setText(event.tvEventName);
             if (isUserCreated){
                     StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(event.getEventId()));
                     Glide.with(this)
@@ -107,8 +110,8 @@ public class EventDetailsActivity extends AppCompatActivity{
                             .centerCrop()
                             .into(ivBackdrop);
                 }
-            tvEventName.setText(event.tvEventName);
-        } else if (currentUpdate!=null) {
+        } else if (currentUpdate!=null){
+            tvEventName.setText(currentUpdate.eventName);
             if (isUserCreated) {
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(currentUpdate.getEventId()));
                 Glide.with(this)
@@ -127,7 +130,6 @@ public class EventDetailsActivity extends AppCompatActivity{
                             .centerCrop()
                             .into(ivBackdrop);
             }
-            tvEventName.setText(currentUpdate.eventName);
         }
 
         View root = tabLayout.getChildAt(0);
@@ -145,37 +147,24 @@ public class EventDetailsActivity extends AppCompatActivity{
                 @Override
                 public void onClick(View v) {
                     if (event.ivEventImage == null) {
-                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription);
+                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription, null);
                     } else {
-                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
+                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription, null);
                     }
                     Toast.makeText(EventDetailsActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
                 }
             });
-        } else if (currentUpdate!= null){
+        } else if (currentUpdate != null){
             fab.setVisibility(View.GONE);
         }
     }
 
-    public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription) {
+    public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription, String eventLocation) {
         savedEventsCreated = false;
         events.clear();
         Date date = new Date();
         Log.i("indo", date.toString());
-        final UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null);
-//        savedEvents.child("savedEvents").addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                if(!dataSnapshot.hasChild(eventId)){
-//                    savedEvents.child("savedEvents").child(eventId).setValue(info);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
+        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null, eventLocation);
         savedEvents.child("savedEvents").child(eventId).setValue(info);
         Map<String, Object> asdf = new HashMap<>();
         asdf.put(uid, date);

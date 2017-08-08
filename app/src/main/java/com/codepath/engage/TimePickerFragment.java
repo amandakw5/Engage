@@ -24,7 +24,7 @@ public class TimePickerFragment extends DialogFragment{
         TimePickerDialog.OnTimeSetListener listener = (TimePickerDialog.OnTimeSetListener) getActivity();
 
         // Create a new instance of TimePickerDialog and return it
-        return new TimePickerDialog(getActivity(), listener, hour, minute,
+        return new TimePickerDialog(getActivity(), R.style.DialogTheme, listener, hour, minute,
                 DateFormat.is24HourFormat(getActivity()));
     }
 
