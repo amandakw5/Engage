@@ -346,7 +346,11 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
             tvDuration.setText(route.duration.text);
             tvDistance.setText(route.distance.text);
 
-
+            if (event != null) {
+                if (!event.venue.simpleAddress.equals(route.endAddress)){
+                    route.endAddress = event.venue.simpleAddress;
+                }
+            }
 
             originMarkers.add(googleMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
