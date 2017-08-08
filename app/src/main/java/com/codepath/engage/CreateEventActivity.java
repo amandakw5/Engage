@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -43,11 +44,17 @@ import butterknife.ButterKnife;
 
 public class CreateEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,TimePickerDialog.OnTimeSetListener  {
     @BindView(R.id.eDate) TextView eDate;
+    @BindView(R.id.createEventTitle) TextView createEventTitle;
     @BindView(R.id.eTime) TextView eTime;
     @BindView(R.id.eName) EditText eName;
     @BindView(R.id.submitEvent) Button submitEvent;
     @BindView(R.id.eLocation) EditText eLocation;
     @BindView(R.id.eDescription) EditText eDescription;
+    @BindView(R.id.event_location) TextInputLayout event_location;
+    @BindView(R.id.event_name) TextInputLayout event_name;
+    @BindView(R.id.events_description) TextInputLayout event_description;
+    @BindView(R.id.tv_event_date) TextView tv_event_date;
+    @BindView(R.id.tv_event_time) TextView tv_event_time;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference rootRef;
     final int REQUEST_CODE = 1;
@@ -70,6 +77,17 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         rootRef = FirebaseDatabase.getInstance().getReference();
         uid = Profile.getCurrentProfile().getId();
         Typeface font = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Light.ttf");
+        eDate.setTypeface(font);
+        eTime.setTypeface(font);
+        submitEvent.setTypeface(font);
+        eLocation.setTypeface(font);
+        eDescription.setTypeface(font);
+        createEventTitle.setTypeface(font);
+        event_description.setTypeface(font);
+        event_location.setTypeface(font);
+        event_name.setTypeface(font);
+        tv_event_date.setTypeface(font);
+        tv_event_time.setTypeface(font);
 
         submitEvent.setOnClickListener(new View.OnClickListener() {
             @Override

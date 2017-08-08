@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.codepath.engage.CreateEventActivity">
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,7 +23,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="22dp"
         android:text="Create an Event"
-        android:textColor="@color/black"
+        android:textColor="#000000"
         android:textSize="30sp" />
 
     <android.support.design.widget.TextInputLayout
@@ -31,20 +32,23 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/createEventTitle"
+        android:layout_marginTop="10dp"
         android:layout_toEndOf="@+id/visible"
-        android:layout_marginTop="10dp">
+        android:backgroundTint="@color/black"
+        android:textColorHint="#000000"
+        android:theme="@style/MyTextInputLayout">
 
         <EditText
             android:id="@+id/eName"
             android:layout_width="match_parent"
-            android:textColor="#000000"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:layout_marginStart="10dp"
+            android:backgroundTint="#F03A18"
             android:ems="10"
             android:hint="Event Name"
             android:inputType="textPersonName"
-            android:backgroundTint="#F03A18"
+            android:textColor="#000000"
             android:textColorLink="@color/common_google_signin_btn_text_dark_focused" />
 
     </android.support.design.widget.TextInputLayout>
@@ -54,7 +58,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/event_name"
-        android:layout_gravity="center">
+        android:textColorHint="#000000"
+        android:layout_gravity="center"
+        android:theme="@style/MyTextInputLayout">
 
         <EditText
             android:id="@+id/eLocation"
@@ -62,11 +68,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:layout_marginStart="10dp"
+            android:backgroundTint="#F03A18"
             android:ems="10"
             android:hint="Event Location"
-            android:backgroundTint="#F03A18"
-            android:textColor="#000000"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:textColor="#000000" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -74,7 +80,9 @@
         android:id="@+id/events_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/event_location">
+        android:layout_below="@id/event_location"
+        android:textColorHint="#000000"
+        android:theme="@style/MyTextInputLayout">
 
         <EditText
             android:id="@+id/eDescription"
@@ -99,7 +107,8 @@
         android:text="Create"
         android:layout_below="@+id/eTime"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="36dp" />
+        android:layout_marginTop="36dp"
+        android:theme="@style/MyTextInputLayout"/>
 
     <TextView
         android:id="@+id/eDate"
@@ -132,6 +141,7 @@
         android:layout_alignBaseline="@+id/eDate"
         android:layout_alignBottom="@+id/eDate"
         android:layout_marginEnd="26dp"
+        android:textColor="#000000"
         android:text="Event Date:"
         android:textSize="20sp"
         android:layout_marginStart="20dp"/>
@@ -142,6 +152,7 @@
         android:layout_height="wrap_content"
         android:text="Event Time: "
         android:textSize="20sp"
+        android:textColor="#000000"
         android:layout_alignBaseline="@+id/eTime"
         android:layout_alignBottom="@+id/eTime"
         android:layout_alignStart="@+id/tv_event_date" />

@@ -7,11 +7,14 @@
         android:id="@+id/timePicker"
         android:layout_width="300dp"
         android:layout_height="350dp"
-        android:scaleX="0.8"
-        android:scaleY="0.8"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="88dp" />
+        android:layout_marginTop="88dp"
+        android:headerBackground="@color/black"
+        android:numbersSelectorColor="@color/black"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        android:theme="@style/MyTextInputLayout"/>
 
     <Button
         android:id="@+id/submitTime"
