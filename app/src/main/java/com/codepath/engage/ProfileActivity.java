@@ -138,7 +138,7 @@ public class ProfileActivity extends AppCompatActivity {
                 if (uid.equals(Profile.getCurrentProfile().getId())){
                     u = currentProfile;
                 }
-                Glide.with(context).load(u.profilePicture).centerCrop().into(profileImage);
+                Glide.with(getApplicationContext()).load(u.profilePicture).centerCrop().into(profileImage);
                 followers.setTypeface(font);
                 following.setTypeface(font);
                 following.setText(u.numFollowing + " following");

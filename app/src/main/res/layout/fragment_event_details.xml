@@ -21,30 +21,42 @@
                 android:id="@+id/tvHost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+<<<<<<< HEAD
                 android:layout_marginBottom="5dp"
 <<<<<<< HEAD
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="10dp"
 =======
 >>>>>>> 50fb9fd39b1902ee6f252ae52397cb9d57855ff2
+=======
+                android:gravity="center"
+>>>>>>> aa84051c2a93f8143d733cb65a9c023a8b821e06
                 android:text="@string/host"
+                android:textColor="#000000"
                 android:textAppearance="@android:style/TextAppearance.Large"
                 android:textSize="18sp"
+<<<<<<< HEAD
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"/>
+=======
+                android:layout_below="@+id/line"
+                android:layout_centerHorizontal="true" />
+>>>>>>> aa84051c2a93f8143d733cb65a9c023a8b821e06
 
             <TextView
+                android:textColor="#000000"
                 android:id="@+id/tvEventInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tvHost"
-                android:layout_marginBottom="5dp"
+                android:gravity="center"
                 android:text="@string/event_info"
                 android:textSize="16sp"
                 android:textStyle="italic"
-                android:layout_marginStart="10dp"/>
+                android:layout_below="@+id/tvHost"
+                android:layout_centerHorizontal="true" />
 
             <TextView
+<<<<<<< HEAD
                 android:id="@+id/tvEventLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -54,17 +66,26 @@
                 android:textSize="16sp" />
 
             <TextView
+=======
+                android:textColor="#000000"
+
+>>>>>>> aa84051c2a93f8143d733cb65a9c023a8b821e06
                 android:id="@+id/tvEventDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="@string/event_description"
                 android:layout_below="@+id/line2"
+<<<<<<< HEAD
                 android:layout_marginBottom="5dp"
                 android:layout_marginStart="10dp"
 <<<<<<< HEAD
                 />
 =======
                 android:layout_alignStart="@+id/tvEventName" />
+=======
+                android:layout_centerHorizontal="true" />
+>>>>>>> aa84051c2a93f8143d733cb65a9c023a8b821e06
 
             <TextView
                 android:layout_width="wrap_content"
