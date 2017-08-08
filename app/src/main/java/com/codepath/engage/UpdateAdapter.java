@@ -17,7 +17,6 @@ import com.facebook.Profile;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 
 import butterknife.BindView;

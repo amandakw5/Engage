@@ -98,7 +98,7 @@ public class UsersChatFragment extends Fragment implements GetUsersContract.View
         ChatActivity.startActivity(getActivity(),
                 mUserListingRecyclerAdapter.getUser(position).email,
                 mUserListingRecyclerAdapter.getUser(position).uid,
-                mUserListingRecyclerAdapter.getUser(position).firebaseToken);
+                mUserListingRecyclerAdapter.getUser(position).firebasetoken);
     }
 
     @Override
