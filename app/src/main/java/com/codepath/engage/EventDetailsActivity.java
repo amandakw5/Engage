@@ -1,5 +1,6 @@
 package com.codepath.engage;
 
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -69,9 +70,10 @@ public class EventDetailsActivity extends AppCompatActivity{
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
         setToolbar();
-
+        Typeface font = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Light.ttf");
         ivBackdrop = (ImageView) findViewById(R.id.ivBackdrop);
         tvEventName = (TextView) findViewById(R.id.tvEventName);
+        tvEventName.setTypeface(font);
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
         events = new ArrayList<String>();

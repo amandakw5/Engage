@@ -21,6 +21,9 @@
     <style name="MyTextInputLayout" parent="AppTheme.NoActionBar">
         <item name="colorAccent">@android:color/holo_red_dark</item>
     </style>
+    <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@android:color/holo_red_dark</item>
+    </style>
     <style name="MyAppTheme" parent="@style/AppTheme" />
 
     <style name="MaterialDrawer.DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
