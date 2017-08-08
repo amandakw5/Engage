@@ -59,6 +59,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             User u = mUsers.get(position);
             holder.name.setText(u.firstName + " " + u.lastName);
             Glide.with(context).load(u.profilePicture).centerCrop().into(holder.profileImage);
+
         } else {
             Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
             holder.tvHost.setTypeface(font);
@@ -78,7 +79,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
                         .load(storageReference)
                         .error(R.drawable.image_not_found)
                         .into(holder.ivProfileImage);
-            }else {
+            } else {
                 if (event.ivEventImage.equals("null")) {
                     Glide.with(context).load(R.drawable.image_not_found).centerCrop().into(holder.ivProfileImage);
                 } else {

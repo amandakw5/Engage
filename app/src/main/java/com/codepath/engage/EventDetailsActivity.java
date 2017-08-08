@@ -31,7 +31,10 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 
 public class EventDetailsActivity extends AppCompatActivity{
@@ -86,7 +89,6 @@ public class EventDetailsActivity extends AppCompatActivity{
         tabLayout.setupWithViewPager(vPager);
 
         if(event!=null){
-            tvEventName.setText(event.tvEventName);
             if (isUserCreated){
                     StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(event.getEventId()));
                     Glide.with(this)
@@ -105,19 +107,27 @@ public class EventDetailsActivity extends AppCompatActivity{
                             .centerCrop()
                             .into(ivBackdrop);
                 }
-        } else if (currentUpdate!=null){
-            tvEventName.setText(currentUpdate.eventName);
-            if (!currentUpdate.eventImage.equals("null")) {
+            tvEventName.setText(event.tvEventName);
+        } else if (currentUpdate!=null) {
+            if (isUserCreated) {
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(currentUpdate.getEventId()));
+                Glide.with(this)
+                        .using(new FirebaseImageLoader())
+                        .load(storageReference)
+                        .error(R.drawable.image_not_found)
+                        .into(ivBackdrop);
+            } else if (!currentUpdate.eventImage.equals("null")) {
                     Glide.with(this)
                             .load(currentUpdate.eventImage)
                             .centerCrop()
                             .into(ivBackdrop);
-                } else if (currentUpdate.eventImage.equals("null")) {
+            } else if (currentUpdate.eventImage.equals("null")) {
                     Glide.with(this)
                             .load(R.drawable.image_not_found)
                             .centerCrop()
                             .into(ivBackdrop);
-                }
+            }
+            tvEventName.setText(currentUpdate.eventName);
         }
 
         View root = tabLayout.getChildAt(0);
@@ -136,7 +146,6 @@ public class EventDetailsActivity extends AppCompatActivity{
                 public void onClick(View v) {
                     if (event.ivEventImage == null) {
                         saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription);
-
                     } else {
                         saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
                     }
@@ -154,22 +163,23 @@ public class EventDetailsActivity extends AppCompatActivity{
         Date date = new Date();
         Log.i("indo", date.toString());
         final UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null);
-        savedEvents.child("savedEvents").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChild(eventId)){
-
-                }else{
-                    savedEvents.child("savedEvents").child(eventId).setValue(info);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        savedEvents.child("savedEvents").child(eventId).child("date").child(uid).setValue(date);
+//        savedEvents.child("savedEvents").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if(!dataSnapshot.hasChild(eventId)){
+//                    savedEvents.child("savedEvents").child(eventId).setValue(info);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+        savedEvents.child("savedEvents").child(eventId).setValue(info);
+        Map<String, Object> asdf = new HashMap<>();
+        asdf.put(uid, date);
+        savedEvents.child("savedEvents").child(eventId).child("date").updateChildren(asdf);
         users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

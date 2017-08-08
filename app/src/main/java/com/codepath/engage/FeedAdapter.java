@@ -69,7 +69,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 //        String currentUser = feedUsers.get(position);
 //        holder.update.setText(currentUser + " is interested in " + e.eventName);
     }
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.notification)
         TextView update;
 
@@ -93,11 +93,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                     }
                 }
             });
-        }
-
-        @Override
-        public void onClick(View v) {
-
         }
     }
 

@@ -151,7 +151,11 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                 destLng = Double.parseDouble(event.venue.getLongitude());
             }
         } else if (currentUpdate!= null) {
-            getLocationFromAddress(getContext(), currentUpdate.eventAddress);
+            if (currentUpdate.eventAddress!=null){
+                getLocationFromAddress(getContext(), currentUpdate.eventAddress);
+            } else if (currentUpdate.eventLocation!=null){
+                getLocationFromAddress(getContext(), currentUpdate.eventLocation);
+            }
         }
 
         buildGoogleApiClient();
@@ -206,7 +210,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                                     checkLocationPermission();
                                 }
                             } else {
-                                buildGoogleApiClient();
                                 googleMap.setMyLocationEnabled(true);
                             }
                         }
@@ -493,9 +496,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
             if (address == null) {
                 return;
             }
-
             Address location = address.get(0);
-
             destLat = location.getLatitude();
             destLng = location.getLongitude();
 

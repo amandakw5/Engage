@@ -7,16 +7,15 @@ import java.util.Date;
  */
 
 public class DateProgram {
-
-    long year;
-    long month;
-    long timezoneOffset;
-    long time;
-    long minutes;
-    long seconds;
-    long hours;
-    long day;
-    long date;
+    private long year;
+    private long month;
+    private long timezoneOffset;
+    private long time;
+    private long minutes;
+    private long seconds;
+    private long hours;
+    private long day;
+    private long date;
 
     Date dateConstructed;
 
