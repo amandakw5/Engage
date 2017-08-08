@@ -1,9 +1,12 @@
 package com.codepath.engage.models;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.codepath.engage.EventDetailsActivity;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.api.client.json.Json;
@@ -181,4 +184,5 @@ public class DirectionFinder {
 
         return decoded;
     }
+
 }
