@@ -169,13 +169,12 @@ public class EventDetailsActivity extends AppCompatActivity{
         savedEvents.child("savedEvents").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.hasChild(eventId)){
+                if(dataSnapshot.hasChild(eventId)){
 
                 } else {
                     savedEvents.child("savedEvents").child(eventId).setValue(info);
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
