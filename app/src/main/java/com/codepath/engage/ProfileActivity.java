@@ -226,7 +226,7 @@ public class ProfileActivity extends AppCompatActivity {
                                         e.setDate(date.getDateConstructed());
                                         events.add(e);
                                         dates.add(e.date);
-                                        adapter.notifyItemInserted(events.size() -1);
+                                        adapter.notifyItemInserted(events.size() - 1);
                                     }
                                     @Override
                                     public void onCancelled(DatabaseError databaseError) {

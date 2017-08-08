@@ -121,17 +121,24 @@ public class EventDetailsActivity extends AppCompatActivity{
                 }
         } else if (currentUpdate!=null){
             tvEventName.setText(currentUpdate.eventName);
-            if (!currentUpdate.eventImage.equals("null")) {
+            if (isUserCreated) {
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("photos").child(String.valueOf(currentUpdate.getEventId()));
+                Glide.with(this)
+                        .using(new FirebaseImageLoader())
+                        .load(storageReference)
+                        .error(R.drawable.image_not_found)
+                        .into(ivBackdrop);
+            } else if (!currentUpdate.eventImage.equals("null")) {
                     Glide.with(this)
                             .load(currentUpdate.eventImage)
                             .centerCrop()
                             .into(ivBackdrop);
-                } else if (currentUpdate.eventImage.equals("null")) {
-                    Glide.with(this)
-                            .load(R.drawable.image_not_found)
-                            .centerCrop()
-                            .into(ivBackdrop);
-                }
+            } else if (currentUpdate.eventImage.equals("null")) {
+                Glide.with(this)
+                        .load(R.drawable.image_not_found)
+                        .centerCrop()
+                        .into(ivBackdrop);
+            }
         }
 
         View root = tabLayout.getChildAt(0);
@@ -149,10 +156,10 @@ public class EventDetailsActivity extends AppCompatActivity{
                 @Override
                 public void onClick(View v) {
                     if (event.ivEventImage == null) {
-                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription);
+                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription, null);
 
                     } else {
-                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
+                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription, null);
                     }
                     Toast.makeText(EventDetailsActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
                 }
@@ -162,15 +169,16 @@ public class EventDetailsActivity extends AppCompatActivity{
         }
     }
 
-    public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription) {
+    public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription, String eventLocation) {
         savedEventsCreated = false;
         events.clear();
         Date date = new Date();
         Log.i("indo", date.toString());
-        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null);
+        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null, eventLocation);
         savedEvents.child("savedEvents").child(eventId).setValue(info);
         savedEvents.child("savedEvents").child(eventId).child("date").child(uid).setValue(date);
-        users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener() {
+        users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener
+                () {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {

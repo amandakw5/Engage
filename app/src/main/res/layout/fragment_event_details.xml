@@ -28,7 +28,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:layout_below="@+id/line"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
                 android:text="@string/host"
                 android:textAppearance="@android:style/TextAppearance.Large"
                 android:textSize="18sp"
@@ -46,6 +47,15 @@
                 android:layout_marginStart="10dp"/>
 
             <TextView
+                android:id="@+id/tvEventLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvEventInfo"
+                android:layout_marginStart="10dp"
+                android:text="Event Location"
+                android:textSize="16sp" />
+
+            <TextView
                 android:id="@+id/tvEventDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,15 +63,7 @@
                 android:layout_below="@+id/line2"
                 android:layout_marginBottom="5dp"
                 android:layout_marginStart="10dp"
-                android:layout_alignStart="@+id/tvEventName" />
-
-            <View
-                android:id="@+id/line"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
-                android:layout_margin="5dp"
-                android:layout_below="@+id/tvEventName" />
+                />
 
             <View
                 android:id="@+id/line2"
@@ -69,7 +71,7 @@
                 android:layout_height="1dp"
                 android:background="@android:color/darker_gray"
                 android:layout_margin="5dp"
-                android:layout_below="@+id/tvEventInfo" />
+                android:layout_below="@+id/tvEventLocation" />
 
             <View
                 android:id="@+id/line3"

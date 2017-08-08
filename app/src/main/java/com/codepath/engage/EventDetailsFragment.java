@@ -54,6 +54,7 @@ public class EventDetailsFragment extends Fragment {
     @BindView(R.id.tvHost) TextView tvHost;
     @BindView(R.id.tvEventInfo) TextView tvEventInfo;
     @BindView(R.id.tvEventDescription) TextView tvEventDescription;
+    @BindView(R.id.tvEventLocation) TextView tvEventLocation;
     YouTubePlayerSupportFragment youtubeFragment;
 
     UserEvents currentUpdate;
@@ -138,6 +139,11 @@ public class EventDetailsFragment extends Fragment {
             tvEventDescription.setText(currentUpdate.eventDescription);
             tvEventInfo.setText(currentUpdate.eventTime);
             tvHost.setText(currentUpdate.eventHost);
+            if (currentUpdate.eventAddress != null){
+                tvEventLocation.setText(currentUpdate.eventAddress);
+            } else if (currentUpdate.eventLocation != null){
+                tvEventLocation.setText(currentUpdate.eventLocation);
+            }
 
         }
 
