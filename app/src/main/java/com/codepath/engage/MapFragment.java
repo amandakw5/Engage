@@ -160,8 +160,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
         } else if (currentUpdate!= null) {
             if (currentUpdate.eventAddress!=null){
                 getLocationFromAddress(getContext(), currentUpdate.eventAddress);
-            } else if (currentUpdate.eventLocation!=null){
-                getLocationFromAddress(getContext(), currentUpdate.eventLocation);
             } else {
                 noInfo(googleMap);
             }
@@ -347,6 +345,8 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
         for (Route route : routes) {
             tvDuration.setText(route.duration.text);
             tvDistance.setText(route.distance.text);
+
+
 
             originMarkers.add(googleMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))

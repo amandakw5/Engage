@@ -147,34 +147,35 @@ public class EventDetailsActivity extends AppCompatActivity{
                 @Override
                 public void onClick(View v) {
                     if (event.ivEventImage == null) {
-                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription, null);
+                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription);
+
                     } else {
-                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription, null);
+                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
                     }
                     Toast.makeText(EventDetailsActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
                 }
             });
-        } else if (currentUpdate != null){
+        } else if (currentUpdate!= null){
             fab.setVisibility(View.GONE);
         }
     }
 
-    public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription, String eventLocation) {
+    public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription) {
         savedEventsCreated = false;
         events.clear();
-        final Date date = new Date();
-        final Map<String, Object> dates = new HashMap<>();
+        Date date = new Date();
         Log.i("indo", date.toString());
-        final UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null, eventLocation);
+        final UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null);
         savedEvents.child("savedEvents").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChild(eventId)){
 
-                } else {
+                }else{
                     savedEvents.child("savedEvents").child(eventId).setValue(info);
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
