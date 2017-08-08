@@ -35,6 +35,7 @@ public class UserEvents implements Parcelable {
         this.eventLocation = eventLocation;
     }
 
+
     public String getEventDescription() {
         return eventDescription;
     }
@@ -65,6 +66,8 @@ public class UserEvents implements Parcelable {
         }
     }
     public UserEvents(String eventName, String eventHost, String eventTime, String eventAddress, String eventId, String eventImage, String eventDescription, String uid, Date date){
+
+
         this.eventName = eventName;
         this.eventTime = eventTime;
         this.eventAddress = eventAddress;
