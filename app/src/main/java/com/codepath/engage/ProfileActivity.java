@@ -213,6 +213,7 @@ public class ProfileActivity extends AppCompatActivity {
                                                     int followerNum = Integer.valueOf(dataSnapshot.getValue().toString());
                                                     followerNum -= 1;
                                                     mDatabase.child(uid).child("numFollowers").setValue(followerNum);
+                                                    followers.setText(String.valueOf(followerNum));
                                                 }
 
                                             }
@@ -264,6 +265,7 @@ public class ProfileActivity extends AppCompatActivity {
                                                 int followerNum = Integer.valueOf(dataSnapshot.getValue().toString());
                                                 followerNum++;
                                                 mDatabase.child(uid).child("numFollowers").setValue(followerNum);
+                                                followers.setText(String.valueOf(followerNum));
 
 
                                             }
@@ -311,10 +313,12 @@ public class ProfileActivity extends AppCompatActivity {
                                             int followerNum = Integer.valueOf(dataSnapshot.getValue().toString());
                                             followerNum++;
                                             mDatabase.child(uid).child("numFollowers").setValue(followerNum);
+                                            followers.setText(String.valueOf(followerNum));
 
                                         }
                                         else {
                                             mDatabase.child(uid).child("numFollowers").setValue(1);
+                                            followers.setText(String.valueOf(1));
 
                                         }
                                     }
