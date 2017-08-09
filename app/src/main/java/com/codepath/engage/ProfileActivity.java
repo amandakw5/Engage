@@ -234,12 +234,16 @@ public class ProfileActivity extends AppCompatActivity {
                                         deleteFollow.setValue(followerList);
                                         DatabaseReference deleteFollowing = mDatabase.child(currentProfile.uid).child("following");
                                         deleteFollowing.setValue(followingList);
+                                        if (followingList == null||followingList.size() == 0)
+                                        {
+                                            followers.setText("0");
+                                        }
                                         break;
                                     } else {
                                         i++;
                                     }
                                 }
-                                if (i == size ){
+                                if (i == size){
                                     DatabaseReference addFollow = mDatabase.child(uid).child("followers").push();
                                     addFollow.setValue(currentProfile.uid);
                                     DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
