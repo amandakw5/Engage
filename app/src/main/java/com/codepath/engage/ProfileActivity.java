@@ -213,7 +213,7 @@ public class ProfileActivity extends AppCompatActivity {
                             HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child(currentProfile.uid).child("following").getValue();
                             int size = 0;
                             HashMap<String, String> followerList = (HashMap<String, String>) dataSnapshot.child(uid).child("followers").getValue();
-                            if (followingList != null) {
+                            try{
                                 int i = 0;
                                 size = followingList.size();
                                 for (String key : followingList.keySet()) {
@@ -247,7 +247,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     DatabaseReference addNotif = mDatabase.child(uid).child("notifList").push();
                                     addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + " followed you.");
                                 }
-                            } else {
+                            } catch (NullPointerException e){
                                 DatabaseReference addFollow = mDatabase.child(uid).child("followers").push();
                                 addFollow.setValue(currentProfile.uid);
                                 DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
