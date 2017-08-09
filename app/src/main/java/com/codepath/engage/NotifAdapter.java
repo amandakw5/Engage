@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.Profile;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * Created by awestort on 8/6/17.
@@ -38,7 +40,6 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.ViewHolder> 
         View updateView = inflater.inflate(R.layout.item_update, parent, false);
         ViewHolder viewHolder = new ViewHolder(updateView);
         uid = Profile.getCurrentProfile().getId();
-
         return viewHolder;
     }
 
@@ -46,10 +47,10 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.ViewHolder> 
     public void onBindViewHolder(NotifAdapter.ViewHolder holder, int position) {
         Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
         String n = notifs.get(position);
-//        String currentProPic = proPics.get(position);
+       String currentProPic = proPics.get(position);
         holder.update.setTypeface(font);
         holder.update.setText(n);
-       // Glide.with(context).load(currentProPic).bitmapTransform(new RoundedCornersTransformation(context, 100, 0)).into(holder.profPic);
+        Glide.with(context).load(currentProPic).bitmapTransform(new RoundedCornersTransformation(context, 100, 0)).into(holder.profPic);
 
     }
 

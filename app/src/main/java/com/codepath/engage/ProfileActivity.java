@@ -60,6 +60,7 @@ public class ProfileActivity extends AppCompatActivity {
     public ArrayList<UserEvents> createdEventsList;
     String uid;
     String whichProfile;
+    String profileUrl;
     DatabaseReference mDatabase;
     boolean isFollowing;
     User u;
@@ -107,10 +108,9 @@ public class ProfileActivity extends AppCompatActivity {
         eventIDs = new ArrayList<>();
 
         progress = new ProgressDialog(this);
-
-        adapter = new UpdateAdapter(events, whichProfile, verb, dates);
-
-        rvUpdates.setLayoutManager(new LinearLayoutManager(this));
+        profileUrl = "";
+        adapter = new UpdateAdapter(events, whichProfile, verb, dates, profileUrl);
+        rvUpdates.setLayoutManager(new LinearLayoutManager(context));
         rvUpdates.setAdapter(adapter);
         storage = FirebaseStorage.getInstance().getReference();
 
@@ -144,6 +144,8 @@ public class ProfileActivity extends AppCompatActivity {
                     u = currentProfile;
                     profileUsername.setText(u.firstName + " " + u.lastName);
                 }
+                profileUrl = u.profilePicture;
+
                 Glide.with(getApplicationContext()).load(u.profilePicture).bitmapTransform(new RoundedCornersTransformation(getApplicationContext(), 100, 0)).centerCrop().into(profileImage);
                 followers.setTypeface(font);
                 following.setTypeface(font);
