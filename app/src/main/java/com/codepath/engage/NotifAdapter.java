@@ -47,10 +47,12 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.ViewHolder> 
     public void onBindViewHolder(NotifAdapter.ViewHolder holder, int position) {
         Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
         String n = notifs.get(position);
+
        String currentProPic = proPics.get(position);
         holder.update.setTypeface(font);
         holder.update.setText(n);
         Glide.with(context).load(currentProPic).bitmapTransform(new RoundedCornersTransformation(context, 100, 0)).into(holder.profPic);
+
 
     }
 
@@ -61,6 +63,7 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.ViewHolder> 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.notification) TextView update;
         @BindView(R.id.profPic) ImageView profPic;
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

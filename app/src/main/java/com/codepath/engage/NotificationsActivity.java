@@ -67,6 +67,7 @@ public class NotificationsActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child(Profile.getCurrentProfile().getId()).hasChild("notifList")){
                     currentProfile = dataSnapshot.child(Profile.getCurrentProfile().getId()).getValue(User.class);
+
                     ArrayList<String> imgs = currentProfile.notifImg;
                     int i = 1;
                     for (String n : currentProfile.notifList.values()){
