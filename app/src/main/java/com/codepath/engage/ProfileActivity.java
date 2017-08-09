@@ -258,6 +258,8 @@ public class ProfileActivity extends AppCompatActivity {
                                 DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
                                 addFollowing.setValue(uid);
                                 DatabaseReference addNotif = mDatabase.child(uid).child("notifList").push();
+                                DatabaseReference addNotifImg = mDatabase.child(uid).child("notifImg").push();
+                                addNotifImg.setValue(currentProfile.profilePicture + "");
                                 addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + " followed you.");
 
                             }
