@@ -26,7 +26,7 @@ public class User {
     public HashMap<String,String> followers;
     public HashMap<String,String>  following;
     public HashMap<String,String> notifList;
-    public HashMap<String,String> notifImg;
+    public ArrayList<String> notifImg;
     public List<String> eventsList;
     public ArrayList<String> notList;
     public ArrayList<String> imgList;
@@ -35,7 +35,7 @@ public class User {
     public User(){
     }
 
-    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String,String> followers, HashMap<String,String> following, String firebaseToken, HashMap<String,String> notList, HashMap<String,String> notifImgList) {
+    public User(String uid, String firstName, String lastName, String email, String profilePicture, int numFollowers, int numFollowing, HashMap<String,String> followers, HashMap<String,String> following, String firebaseToken, HashMap<String,String> notList, ArrayList<String> imgs) {
         this.uid = uid;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -47,16 +47,16 @@ public class User {
         this.followers = followers;
         this.notifList = notList;
         this.firebaseToken = firebaseToken;
-        this.notifImg = notifImgList;
+        this.notifImg = imgs;
 
     }
 
-    public HashMap<String, String> getNotifImgList() {
+    public ArrayList<String> getNotifImg() {
         return notifImg;
     }
 
-    public void setNotifImgList(HashMap<String, String> notifImgList) {
-        this.notifImg = notifImgList;
+    public void setNotifImg(ArrayList<String> notifImg) {
+        this.notifImg = notifImg;
     }
 
     public ArrayList<String> getNotList() {

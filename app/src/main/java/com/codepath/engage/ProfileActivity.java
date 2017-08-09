@@ -70,7 +70,7 @@ public class ProfileActivity extends AppCompatActivity {
     String verb;
     public ArrayList<Date> dates;
     final int REQUEST_CODE = 1;
-
+    String imgId;
     @BindView(R.id.rvUpdates) RecyclerView rvUpdates;
     @BindView(R.id.profileImage) ImageView profileImage;
     @BindView(R.id.profileHeader) TextView profileHeader;
@@ -262,6 +262,14 @@ public class ProfileActivity extends AppCompatActivity {
                                 DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
                                 addFollowing.setValue(uid);
                                 DatabaseReference addNotif = mDatabase.child(uid).child("notifList").push();
+                                if (dataSnapshot.child(uid).hasChild("notifImg")){
+                                    imgId = dataSnapshot.child(uid).child("notifImg").getChildrenCount() + 1 + "" ;
+                                    dataSnapshot.child(uid).child("notifImg").child(imgId).child(currentProfile.profilePicture + "");
+                                }
+                                else{
+                                    imgId = 1 +"";
+                                    dataSnapshot.child(uid).child("notifImg").child(imgId).child(currentProfile.profilePicture + "");
+                                }
                                 DatabaseReference addNotifImg = mDatabase.child(uid).child("notifImg").push();
                                 addNotifImg.setValue(currentProfile.profilePicture + "");
                                 addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + " followed you.");

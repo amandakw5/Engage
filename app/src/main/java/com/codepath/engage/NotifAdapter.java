@@ -59,8 +59,7 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.ViewHolder> 
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.notification) TextView update;
-        @BindView(R.id.profPic)
-        ImageView profPic;
+        @BindView(R.id.profPic) ImageView profPic;
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
