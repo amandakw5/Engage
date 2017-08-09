@@ -94,11 +94,8 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
                     int position = getAdapterPosition();
                     // fire the listener callback
                     if (position != RecyclerView.NO_POSITION) {
-//                        ArrayList<UserEvents> helpme = new ArrayList<UserEvents>(mEvents);
-//                        Collections.reverse(helpme);
-//                        UserEvents currentUpdate = helpme.get(position);
                         UserEvents currentUpdate = mEvents.get(position);
-
+                        currentUpdate.updateLocations();
                         // create intent for the new activity
                         Intent intent = new Intent(context, EventDetailsActivity.class);
                         intent.putExtra("current", Parcels.wrap(currentUpdate));

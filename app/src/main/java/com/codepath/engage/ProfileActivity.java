@@ -5,12 +5,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.codepath.engage.models.CreatedEvents;
 import com.codepath.engage.models.DateProgram;
 import com.codepath.engage.models.User;
 import com.codepath.engage.models.UserEvents;
@@ -127,10 +125,12 @@ public class ProfileActivity extends AppCompatActivity {
             u = Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
             uid = u.getUid();
             profileHeader.setText(u.firstName + " " + u.lastName);
-
         }
         else {
+//            String id =
+//            Log.d("id", id == null ? "null" : id);
             uid = Profile.getCurrentProfile().getId();
+            Log.d("uid", "null");
         }
 
         mDatabase.addValueEventListener(new ValueEventListener() {
@@ -168,12 +168,17 @@ public class ProfileActivity extends AppCompatActivity {
         followers.setTypeface(font);
         following.setTypeface(font);
 
-        final DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
-        final DatabaseReference createdEvents = FirebaseDatabase.getInstance().getReference("CreatedEvents");
-        final DatabaseReference evDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
-        final StorageReference path = storage.child("headers").child(uid);
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+//        final DatabaseReference savedEvents = databaseReference.child("savedEvents");
+//        final DatabaseReference createdEvents = databaseReference.child("CreatedEvents");
+//        final DatabaseReference evDatabase = databaseReference.child("users").child(uid).child("eventsList");
+
         Glide.with(context).using(new FirebaseImageLoader())
-                .load(storage.child("headers").child(uid)).error(R.drawable.search_gradient).centerCrop().into(header);
+                .load(storage.child("headers").child(uid))
+                .error(R.drawable.search_gradient)
+                .centerCrop().
+                into(header);
+
         header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,152 +207,69 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        evDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() { };
-                eventIDs = dataSnapshot.getValue(t);
-                if (eventIDs == null) {
-                    Log.d("Event IDs", "null");
-                } else {
-                    Log.d("eventIds", eventIDs.toString());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-        savedEvents.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (eventIDs != null) {
-                    for (String id : eventIDs) {
-                        for (final DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
-                            if (id.equals(evSnapshot.getKey())) {
-                                savedEvents.child(id).child("date").child(Profile.getCurrentProfile().getId()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot2) {
-                                        UserEvents e = evSnapshot.getValue(UserEvents.class);
-                                        DateProgram date = dataSnapshot2.getValue(DateProgram.class);
-                                        date.setDateConstructed(date.getYear(), date.getMonth(), date.getTimezoneOffset(), date.getTime(), date.getMinutes(), date.getSeconds(), date.getHours(), date.getDay(), date.getDate());
-                                        e.setDate(date.getDateConstructed());
-                                        events.add(e);
-                                        Collections.sort(events, new Comparator<UserEvents>() {
-                                            @Override
-                                            public int compare(UserEvents o1, UserEvents o2) {
-                                                if (o1.getDate() == null || o2.getDate() == null)
-                                                    return 0;
-                                                return o1.getDate().compareTo(o2.getDate());
-                                            }
-                                        });
-                                        Collections.reverse(events);
-                                        Log.d("Saved Events", events.toString());
-                                        dates.add(e.date);
-                                        Collections.sort(dates, new Comparator<Date>() {
-                                            @Override
-                                            public int compare(Date o1, Date o2) {
-                                                return o1.compareTo(o2);
-                                            }
-                                        });
-                                        Collections.reverse(dates);
-                                        adapter.notifyItemInserted(events.size() - 1);
-                                    }
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        createdEvents.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
-                    if (uid.equals((String) evSnapshot.child("uid").getValue())){
-                        UserEvents e = evSnapshot.getValue(UserEvents.class);
-                        e.setCreatedByUser(true);
-                        events.add(e);
-                        Collections.sort(events, new Comparator<UserEvents>() {
-                            @Override
-                            public int compare(UserEvents o1, UserEvents o2) {
-                                if (o1.getDate() == null || o2.getDate() == null)
-                                    return 0;
-                                return o1.getDate().compareTo(o2.getDate());
-                            }
-                        });
-                        Collections.reverse(events);
-                        Log.d("Created Events", events.toString());
-                        dates.add(e.date);
-                        Collections.sort(dates, new Comparator<Date>() {
-                            @Override
-                            public int compare(Date o1, Date o2) {
-                                return o1.compareTo(o2);
-                            }
-                        });
-                        Collections.reverse(dates);
-//                        adapter.notifyItemInserted(events.size() - 1);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        new getFirebaseData().execute();
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!uid.equals(currentProfile.uid)) {
-                    mDatabase.addValueEventListener(new ValueEventListener() {
+                    isFollowing = true;
+                    mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            String keyFollowers =null;
                             HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child(currentProfile.uid).child("following").getValue();
+                            HashMap<String,String> followers = (HashMap<String,String>) dataSnapshot.child(uid).child("followers").getValue();
                             if (followingList!= null){
-                                for (Object value : followingList.values()){
-                                    if (((String)(value)).equals(uid)){
-                                        isFollowing = true;
+                                for (String key : followingList.keySet()){
+                                    String value = followingList.get(key);
+                                    if (value.equals(uid)){
+                                        mDatabase.child(uid).child("numFollowers").setValue((u.numFollowers - 1));
+                                        mDatabase.child(currentProfile.uid).child("numFollowing").setValue(currentProfile.numFollowing - 1);
+                                        followingList.remove(key);
+                                        for(String keyFollower: followers.keySet())
+                                        {
+                                            if(followers.get(keyFollower).equals(currentProfile.uid)){
+                                              keyFollowers = keyFollower;
+                                            }
+                                        }
+                                        followers.remove(keyFollowers);
+                                        DatabaseReference deleteFollow = mDatabase.child(uid).child("followers");
+                                        deleteFollow.setValue(followers);
+                                        DatabaseReference deleteFollowing = mDatabase.child(currentProfile.uid).child("following");
+                                        deleteFollowing.setValue(followingList);
+                                        isFollowing=false;
+                                        break;
                                     }
+
                                 }
+                                if(isFollowing) {
+                                    mDatabase.child(uid).child("numFollowers").setValue((u.numFollowers + 1));
+                                    mDatabase.child(currentProfile.uid).child("numFollowing").setValue(currentProfile.numFollowing + 1);
+                                    DatabaseReference addFollow = mDatabase.child(uid).child("followers").push();
+                                    addFollow.setValue(currentProfile.uid);
+                                    DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
+                                    addFollowing.setValue(uid);
+                                    DatabaseReference addNotif = mDatabase.child(uid).child("notifList").push();
+                                    addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + " followed you.");
+                                    isFollowing = true;
+                                }
+                            }else{
+                                mDatabase.child(uid).child("numFollowers").setValue((u.numFollowers + 1));
+                                mDatabase.child(currentProfile.uid).child("numFollowing").setValue(currentProfile.numFollowing + 1);
+                                DatabaseReference addFollow = mDatabase.child(uid).child("followers").push();
+                                addFollow.setValue(currentProfile.uid);
+                                DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
+                                addFollowing.setValue(uid);
+                                DatabaseReference addNotif = mDatabase.child(uid).child("notifList").push();
+                                addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + " followed you.");
+                                isFollowing = true;
                             }
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                             }
                     });
-                    if (isFollowing) {
-                        mDatabase.child(uid).child("numFollowers").setValue((u.numFollowers - 1));
-                        mDatabase.child(currentProfile.uid).child("numFollowing").setValue(currentProfile.numFollowing - 1);
-                        DatabaseReference deleteFollow = mDatabase.child(uid).child("following").child(currentProfile.uid).push();
-                        deleteFollow.setValue(null);
-                        DatabaseReference deleteFollowing = mDatabase.child(currentProfile.uid).child("followers").child(uid).push();
-                        deleteFollowing.setValue(null);
-                        isFollowing = false;
-
-                    } else {
-                        mDatabase.child(uid).child("numFollowers").setValue((u.numFollowers + 1));
-                        mDatabase.child(currentProfile.uid).child("numFollowing").setValue(currentProfile.numFollowing + 1);
-                        DatabaseReference addFollow = mDatabase.child(uid).child("followers").push();
-                        addFollow.setValue(currentProfile.uid);
-                        DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
-                        addFollowing.setValue(uid);
-                        DatabaseReference addNotif = mDatabase.child(uid).child("notifList").push();
-                        addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + " followed you.");
-                        isFollowing = true;
-                    }
                 }
             }
         });
@@ -435,4 +357,133 @@ public class ProfileActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
     }
+
+    public class getFirebaseData extends AsyncTask<Void, Void, Boolean> {
+        List<String> eventIDs;
+        Boolean isEventIds;
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            isEventIds = false;
+            DatabaseReference evDatabase = FirebaseDatabase.getInstance().getReference("users").child(uid).child("eventsList");
+            eventIDs = new ArrayList<>();
+            evDatabase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() { };
+                    eventIDs = dataSnapshot.getValue(t);
+                    if (eventIDs == null) {
+                        Log.d("Event IDs", "null");
+                        isEventIds = false;
+                    } else {
+                        isEventIds = true;
+                        Log.d("eventIds", eventIDs.toString());
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.d("Cancelled", databaseError.toString());
+                }
+            });
+            return isEventIds;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isEventIds) {
+            final DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
+            final DatabaseReference createdEvents = FirebaseDatabase.getInstance().getReference("CreatedEvents");
+            if (eventIDs!=null) {
+                savedEvents.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (eventIDs != null) {
+                            for (String id : eventIDs) {
+                                for (final DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
+                                    if (id.equals(evSnapshot.getKey())) {
+                                        savedEvents.child(id).child("date").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot2) {
+                                                UserEvents e = evSnapshot.getValue(UserEvents.class);
+                                                DateProgram date = dataSnapshot2.getValue(DateProgram.class);
+                                                date.setDateConstructed(date.getYear(), date.getMonth(), date.getTimezoneOffset(), date.getTime(), date.getMinutes(), date.getSeconds(), date.getHours(), date.getDay(), date.getDate());
+                                                e.setDate(date.getDateConstructed());
+                                                events.add(e);
+                                                Collections.sort(events, new Comparator<UserEvents>() {
+                                                    @Override
+                                                    public int compare(UserEvents o1, UserEvents o2) {
+                                                        if (o1.getDate() == null || o2.getDate() == null)
+                                                            return 0;
+                                                        return o1.getDate().compareTo(o2.getDate());
+                                                    }
+                                                });
+                                                Collections.reverse(events);
+                                                Log.d("Saved Events", events.toString());
+                                                dates.add(e.date);
+                                                Collections.sort(dates, new Comparator<Date>() {
+                                                    @Override
+                                                    public int compare(Date o1, Date o2) {
+                                                        return o1.compareTo(o2);
+                                                    }
+                                                });
+                                                Collections.reverse(dates);
+                                                adapter.notifyItemInserted(events.size() - 1);
+                                            }
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+                                                }
+                                        });
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+
+                createdEvents.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot evSnapshot : dataSnapshot.getChildren()) {
+                            if (uid.equals((String) evSnapshot.child("uid").getValue())) {
+                                UserEvents e = evSnapshot.getValue(UserEvents.class);
+                                e.setCreatedByUser(true);
+                                events.add(e);
+                                Collections.sort(events, new Comparator<UserEvents>() {
+                                    @Override
+                                    public int compare(UserEvents o1, UserEvents o2) {
+                                        if (o1.getDate() == null || o2.getDate() == null)
+                                            return 0;
+                                        return o1.getDate().compareTo(o2.getDate());
+                                    }
+                                });
+                                Collections.reverse(events);
+                                Log.d("Created Events", events.toString());
+                                dates.add(e.date);
+                                Collections.sort(dates, new Comparator<Date>() {
+                                    @Override
+                                    public int compare(Date o1, Date o2) {
+                                        return o1.compareTo(o2);
+                                    }
+                                });
+                                Collections.reverse(dates);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            } else {
+                events = null;
+                eventIDs = null;
+                dates = null;
+            }
+        }
+    }
+    
 }

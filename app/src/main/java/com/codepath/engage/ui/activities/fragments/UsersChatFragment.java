@@ -96,9 +96,10 @@ public class UsersChatFragment extends Fragment implements GetUsersContract.View
     @Override
     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
         ChatActivity.startActivity(getActivity(),
-                mUserListingRecyclerAdapter.getUser(position).email,
+                mUserListingRecyclerAdapter.getUser(position).firstName + " "+ mUserListingRecyclerAdapter.getUser(position).lastName,
                 mUserListingRecyclerAdapter.getUser(position).uid,
-                mUserListingRecyclerAdapter.getUser(position).firebaseToken);
+                mUserListingRecyclerAdapter.getUser(position).firebasetoken,
+                mUserListingRecyclerAdapter.getUser(position).profilePicture);
     }
 
     @Override
