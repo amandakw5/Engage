@@ -171,8 +171,8 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
         } else if (currentUpdate!= null) {
             if (currentUpdate.eventAddress!=null){
                 getLocationFromAddress(getContext(), currentUpdate.eventAddress);
-            } else if (currentUpdate.eventLocation!=null){
-                getLocationFromAddress(getContext(), currentUpdate.eventLocation);
+            } else {
+                noInfo(googleMap);
             }
         }
 
@@ -218,8 +218,10 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                                     } else if (currentUpdate != null) {
                                         if (currentUpdate.eventAddress != null){
                                             getLocationFromAddress(getContext(), currentUpdate.eventAddress);
+                                            showMap(googleMap);
                                         } else if (currentUpdate.eventLocation != null){
                                             getLocationFromAddress(getContext(), currentUpdate.eventLocation);
+                                            showMap(googleMap);
                                         }
                                     }
                                 } else {
@@ -345,11 +347,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
     }
 
     @Override
-    public void onDirectionFinderSuccess(List<Route> routes) {
-
-    }
-
-    @Override
     public void onDirectionFinderSuccess(List<Route> routes, final GoogleMap googleMap) {
 
         polylinePaths = new ArrayList<>();
@@ -359,6 +356,12 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
         for (Route route : routes) {
             tvDuration.setText(route.duration.text);
             tvDistance.setText(route.distance.text);
+
+            if (event != null) {
+                if (!event.venue.simpleAddress.equals(route.endAddress)){
+                    route.endAddress = event.venue.simpleAddress;
+                }
+            }
 
             originMarkers.add(googleMap.addMarker(new MarkerOptions()
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))

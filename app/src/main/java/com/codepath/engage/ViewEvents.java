@@ -165,6 +165,9 @@ public class  ViewEvents extends AppCompatActivity implements LocationListener,G
             if(intentQuery.getStringExtra("distance") != null){
                 distance = intentQuery.getStringExtra("distance");
             }
+            else{
+                distance = "15mi";
+            }
             callSearchFromIntent(intentQuery);
         }
         //Referencing the variables to their respective I.Ds for the xml style sheet

@@ -32,10 +32,7 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 
 public class EventDetailsActivity extends AppCompatActivity{
@@ -147,28 +144,48 @@ public class EventDetailsActivity extends AppCompatActivity{
                 @Override
                 public void onClick(View v) {
                     if (event.ivEventImage == null) {
-                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription, null);
+                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), "null", event.tvDescription);
+
                     } else {
-                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription, null);
+                        saveNewEvent(uid, event.getEventId(), event.getTvEventName(), event.organizer.getName(), event.getTimeStart(), event.getVenue().getAddress() + " " + event.getVenue().getCity() + " " + event.getVenue().getCountry(), event.ivEventImage, event.tvDescription);
                     }
                     Toast.makeText(EventDetailsActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
                 }
             });
-        } else if (currentUpdate != null){
+        } else if (currentUpdate!= null){
             fab.setVisibility(View.GONE);
         }
     }
 
-    public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription, String eventLocation) {
+    public void saveNewEvent(final String uid, final String eventId, String eventName, String eventHost, String eventTime, String eventAddress, String eventImage, String eventDescription) {
         savedEventsCreated = false;
         events.clear();
-        Date date = new Date();
+        final Date date = new Date();
         Log.i("indo", date.toString());
-        UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null, eventLocation);
-        savedEvents.child("savedEvents").child(eventId).setValue(info);
-        Map<String, Object> asdf = new HashMap<>();
-        asdf.put(uid, date);
-        savedEvents.child("savedEvents").child(eventId).child("date").updateChildren(asdf);
+        final UserEvents info = new UserEvents(eventName, eventHost, eventTime, eventAddress, eventId, eventImage, eventDescription, null, null);
+        savedEvents.child("savedEvents").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+
+                }else{
+                    savedEvents.child("savedEvents").child(eventId).setValue(info);
+                }
+                if(dataSnapshot.hasChild(eventId)){
+                    savedEvents.child("savedEvents").child(eventId).child("date").child(uid).setValue(date);
+
+                }else{
+                    savedEvents.child("savedEvents").child(eventId).setValue(info);
+                    savedEvents.child("savedEvents").child(eventId).child("date").child(uid).setValue(date);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         users.child(uid).child("eventsList").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

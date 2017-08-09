@@ -86,7 +86,7 @@ public class Venue implements Parcelable {
         venue.country = address.getString("country");
         venue.latitude = address.getString("latitude");
         venue.longitude = address.getString("longitude");
-        venue.simpleAddress =venue.address +","+ venue.city +","+ venue.country;
+        venue.simpleAddress =venue.address +", "+ venue.city +", "+ venue.country;
         venue.id = jsonObject.getString("id");
         return venue;
     }
