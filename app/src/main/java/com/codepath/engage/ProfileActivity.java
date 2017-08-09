@@ -84,11 +84,12 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.Home) ImageView home;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    @BindView(R.id.drawer_view)
+    PlaceHolderView mDrawerView;
     @BindView(R.id.profileUsername) TextView profileUsername;
     @BindView(R.id.toolbar_profile)
     Toolbar toolbar;
-    @BindView(R.id.drawer_view)
-    PlaceHolderView mDrawerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -258,6 +259,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 addFollowing.setValue(uid);
                                 DatabaseReference addNotif = mDatabase.child(uid).child("notifList").push();
                                 addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + " followed you.");
+
                             }
                         }
                         @Override
@@ -336,6 +338,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_EVENTS))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_CREATE))
                 .addView(new DrawerMenuItem(this.getApplicationContext(),DrawerMenuItem.DRAWER_MENU_ITEM_MESSAGE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(),DrawerMenuItem.DRAWER_MENU_ITEM_NOTIF))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT));
 
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer){

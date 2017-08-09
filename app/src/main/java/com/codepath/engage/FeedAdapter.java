@@ -11,8 +11,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.engage.models.UserEvents;
 
 import org.parceler.Parcels;
@@ -23,19 +25,22 @@ import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     public ArrayList<UserEvents> mEvents;
     private Context context;
     private String profilePage;
     public ArrayList<String> feedUsers;
+    public ArrayList<String> profPics;
     public ArrayList<Date> dates;
 
 
-    public FeedAdapter(ArrayList<UserEvents> events, ArrayList<String> users, ArrayList<Date> edates) {
+    public FeedAdapter(ArrayList<UserEvents> events, ArrayList<String> users, ArrayList<Date> edates, ArrayList<String> profPics) {
         mEvents = events;
         feedUsers = users;
         dates = edates;
+        this.profPics = profPics;
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -59,8 +64,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             if ((ue.date.equals(d))) {
                 UserEvents e = ue;
                 String currentUser = feedUsers.get(counter);
+                String currentProPic = profPics.get(counter);
                 holder.update.setTypeface(font);
                 holder.update.setText(currentUser + " is interested in " + e.eventName);
+                Glide.with(context).load(currentProPic).bitmapTransform(new RoundedCornersTransformation(context, 100, 0)).into(holder.profPic);
             }
             counter++;
         }
@@ -72,7 +79,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.notification)
         TextView update;
-
+        @BindView(R.id.profPic) ImageView profPic;
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

@@ -11,12 +11,16 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -32,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mindorks.placeholderview.PlaceHolderView;
 
 import org.parceler.Parcels;
 
@@ -55,6 +60,10 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
     @BindView(R.id.events_description) TextInputLayout event_description;
     @BindView(R.id.tv_event_date) TextView tv_event_date;
     @BindView(R.id.tv_event_time) TextView tv_event_time;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.Home) ImageView home;
+    @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
+    @BindView(R.id.drawerView) PlaceHolderView mDrawerView;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference rootRef;
     final int REQUEST_CODE = 1;
@@ -113,7 +122,38 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         });
         storage = FirebaseStorage.getInstance().getReference();
         progress = new ProgressDialog(this);
+        setUpDrawer();
 
+    }
+    public void goHome(View view) {
+        Intent i = new Intent(CreateEventActivity.this,HomePage.class);
+        startActivity(i);
+    }
+
+    private void setUpDrawer(){
+        mDrawerView
+                .addView(new DrawerHeader(this.getApplicationContext()))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_FEED))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_EVENTS))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_CREATE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(),DrawerMenuItem.DRAWER_MENU_ITEM_MESSAGE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(),DrawerMenuItem.DRAWER_MENU_ITEM_NOTIF))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT));
+
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer){
+
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
     }
     public void showTimePickerDialog(View v){
         TimePickerFragment newFragment = new TimePickerFragment();

@@ -53,6 +53,7 @@ public class UserFeed extends AppCompatActivity {
     String whichprofile;
     public ArrayList<String> feedUsers;
     public ArrayList<Date> dates;
+    public ArrayList<String> profPics;
     ImageView header;
     final int REQUEST_CODE = 1;
     ProgressDialog progress;
@@ -75,6 +76,7 @@ public class UserFeed extends AppCompatActivity {
         events = new ArrayList<>();
         feedUsers = new ArrayList<>();
         dates = new ArrayList<>();
+        profPics = new ArrayList<>();
         progress = new ProgressDialog(this);
         storage = FirebaseStorage.getInstance().getReference();
         context = this;
@@ -106,6 +108,7 @@ public class UserFeed extends AppCompatActivity {
                                         events.add(currente);
                                         feedUsers.add((dataSnapshot.child("users").child(ids).child("firstName").getValue() + " " + (dataSnapshot.child("users").child(ids).child("lastName").getValue())));
                                         dates.add(currente.date);
+                                        profPics.add(dataSnapshot.child("users").child(ids).child("profilePicture").getValue() + "");
                                         adapter.notifyDataSetChanged();
                                     }
                                 }
@@ -119,7 +122,7 @@ public class UserFeed extends AppCompatActivity {
 
             }
         });
-        adapter = new FeedAdapter(events, feedUsers, dates);
+        adapter = new FeedAdapter(events, feedUsers, dates, profPics);
 
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
         rvEvents.setAdapter(adapter);

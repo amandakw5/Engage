@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.engage.models.CreatedEvents;
@@ -83,7 +84,7 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.notification) TextView update;
-
+        @BindView(R.id.profPic) ImageView profPic;
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
