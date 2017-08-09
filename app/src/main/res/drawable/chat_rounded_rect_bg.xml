@@ -3,7 +3,6 @@
     android:shape="rectangle">
 
     <!--TODO changes the color for the right side text bubble-->
-    <corners android:radius="4dp"/>
     <solid android:color="@color/red_user"/>
     <!--TODO changes the border color for the text bubble, Increase dp to set thickness of border. Delete if not needed-->
     <stroke

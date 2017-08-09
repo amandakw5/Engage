@@ -5,13 +5,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -26,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.codepath.engage.models.CreatedEvents;
 import com.codepath.engage.models.DateProgram;
 import com.codepath.engage.models.User;
 import com.codepath.engage.models.UserEvents;
@@ -52,6 +49,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -151,8 +149,8 @@ public class ProfileActivity extends AppCompatActivity {
                 flws.setTypeface(font);
                 flwg.setTypeface(font);
 
-                HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child(currentProfile.uid).child("following").getValue();
-                HashMap<String, String> followerList = (HashMap<String, String>) dataSnapshot.child(currentProfile.uid).child("followers").getValue();
+                HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child(uid).child("following").getValue();
+                HashMap<String, String> followerList = (HashMap<String, String>) dataSnapshot.child(uid).child("followers").getValue();
 
                 if (followerList != null) {
                     followers.setText(followerList.size() + "");
@@ -211,14 +209,17 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!uid.equals(currentProfile.uid)) {
+                    isFollowing = true;
                     mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             String keyFollowers = null;
                             HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child(currentProfile.uid).child("following").getValue();
+                            int size = 0;
                             HashMap<String, String> followerList = (HashMap<String, String>) dataSnapshot.child(uid).child("followers").getValue();
                             if (followingList != null) {
                                 int i = 0;
+                                size = followingList.size();
                                 for (String key : followingList.keySet()) {
                                     String keyFollower = followingList.get(key);
                                     if (keyFollower.equals(uid)) {
@@ -235,10 +236,10 @@ public class ProfileActivity extends AppCompatActivity {
                                         deleteFollowing.setValue(followingList);
                                         break;
                                     } else {
-                                        i ++;
+                                        i++;
                                     }
                                 }
-                                if (i == followingList.size()){
+                                if (i == size ){
                                     DatabaseReference addFollow = mDatabase.child(uid).child("followers").push();
                                     addFollow.setValue(currentProfile.uid);
                                     DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
@@ -256,12 +257,12 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                         }
                         @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
+                        public void onCancelled(DatabaseError databaseError) { }
                     });
                 }
             }
         });
+
 
         followers.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
