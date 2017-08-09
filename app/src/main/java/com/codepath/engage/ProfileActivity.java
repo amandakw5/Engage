@@ -84,6 +84,7 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.Home) ImageView home;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    @BindView(R.id.profileUsername) TextView profileUsername;
     @BindView(R.id.toolbar_profile)
     Toolbar toolbar;
     @BindView(R.id.drawer_view)
@@ -120,11 +121,13 @@ public class ProfileActivity extends AppCompatActivity {
         setUpDrawer();
 
         profileHeader.setTypeface(font);
+        profileUsername.setTypeface(font);
 
         if (Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName())) != null) {
             u = Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
             uid = u.getUid();
-            profileHeader.setText(u.firstName + " " + u.lastName);
+            profileUsername.setText(u.firstName + " " + u.lastName);
+
         }
         else {
             uid = Profile.getCurrentProfile().getId();
@@ -138,6 +141,7 @@ public class ProfileActivity extends AppCompatActivity {
                 currentProfile = dataSnapshot.child(Profile.getCurrentProfile().getId()).getValue(User.class);
                 if (uid.equals(Profile.getCurrentProfile().getId())){
                     u = currentProfile;
+                    profileUsername.setText(u.firstName + " " + u.lastName);
                 }
                 Glide.with(getApplicationContext()).load(u.profilePicture).bitmapTransform(new RoundedCornersTransformation(getApplicationContext(), 100, 0)).centerCrop().into(profileImage);
                 followers.setTypeface(font);
