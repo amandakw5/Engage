@@ -48,14 +48,10 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-
-import static com.codepath.engage.R.drawable.user;
 
 public class ProfileActivity extends AppCompatActivity {
 
