@@ -35,9 +35,9 @@
     <application
         android:name=".EventApp"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/engage_icon"
         android:label="Engage"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/engage_icon"
         android:supportsRtl="true">
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
