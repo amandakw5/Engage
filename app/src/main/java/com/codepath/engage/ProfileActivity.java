@@ -145,8 +145,18 @@ public class ProfileActivity extends AppCompatActivity {
                 flws.setTypeface(font);
                 flwg.setTypeface(font);
 
-                followers.setText(u.numFollowers + "");
-                following.setText(u.numFollowing + "");
+                HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child(uid).child("following").getValue();
+                HashMap<String, String> followerList = (HashMap<String, String>) dataSnapshot.child(uid).child("followers").getValue();
+
+                if (followerList != null) {
+                    followers.setText(followerList.size() + "");
+                } else if (followingList != null) {
+                    following.setText(followingList.size() + "");
+                } else if (followerList == null) {
+                    followers.setText("0");
+                } else {
+                    following.setText("0");
+                }
 
             }
             @Override
@@ -201,163 +211,49 @@ public class ProfileActivity extends AppCompatActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             String keyFollowers = null;
                             HashMap<String, String> followingList = (HashMap<String, String>) dataSnapshot.child(currentProfile.uid).child("following").getValue();
-                            HashMap<String,String> followersList = (HashMap<String,String>) dataSnapshot.child(uid).child("followers").getValue();
-                            if (followingList!= null){
-                                for (String key : followingList.keySet()){
-                                    String value = followingList.get(key);
-                                    if (value.equals(uid)){
-                                        mDatabase.child(uid).child("numFollowers").addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                if(dataSnapshot.exists()){
-                                                    int followerNum = Integer.valueOf(dataSnapshot.getValue().toString());
-                                                    followerNum -= 1;
-                                                    mDatabase.child(uid).child("numFollowers").setValue(followerNum);
-                                                    followers.setText(String.valueOf(followerNum));
-                                                }
-
-                                            }
-
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-
-                                            }
-                                        });
-
-                                        mDatabase.child(currentProfile.uid).child("numFollowing").addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                if(dataSnapshot.exists()){
-                                                    int followerNum = Integer.valueOf(dataSnapshot.getValue().toString());
-                                                    followerNum -= 1;
-                                                    mDatabase.child(currentProfile.uid).child("numFollowing").setValue(followerNum);
-
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-
-                                            }
-                                        });
+                            int size = 0;
+                            HashMap<String, String> followerList = (HashMap<String, String>) dataSnapshot.child(uid).child("followers").getValue();
+                            if (followingList != null) {
+                                int i = 0;
+                                size = followingList.size();
+                                for (String key : followingList.keySet()) {
+                                    String keyFollower = followingList.get(key);
+                                    if (keyFollower.equals(uid)) {
                                         followingList.remove(key);
-                                        for(String keyFollower: followersList.keySet())
-                                        {
-                                            if(followersList.get(keyFollower).equals(currentProfile.uid)){
-                                              keyFollowers = keyFollower;
+                                        for (String keyFollowing : followerList.keySet()) {
+                                            if (followerList.get(keyFollowing).equals(currentProfile.uid)) {
+                                                keyFollowers = keyFollowing;
                                             }
                                         }
-                                        followersList.remove(keyFollowers);
+                                        followerList.remove(keyFollowers);
                                         DatabaseReference deleteFollow = mDatabase.child(uid).child("followers");
-                                        deleteFollow.setValue(followersList);
+                                        deleteFollow.setValue(followerList);
                                         DatabaseReference deleteFollowing = mDatabase.child(currentProfile.uid).child("following");
                                         deleteFollowing.setValue(followingList);
-                                        isFollowing = false;
+                                        if (followingList == null||followingList.size() == 0)
+                                        {
+                                            followers.setText("0");
+                                        }
                                         break;
+                                    } else {
+                                        i++;
                                     }
-
                                 }
-                                if(isFollowing) {
-                                    mDatabase.child(uid).child("numFollowers").addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            if(dataSnapshot.exists()){
-                                                int followerNum = Integer.valueOf(dataSnapshot.getValue().toString());
-                                                followerNum++;
-                                                mDatabase.child(uid).child("numFollowers").setValue(followerNum);
-                                                followers.setText(String.valueOf(followerNum));
-
-
-                                            }
-                                            else {
-                                                mDatabase.child(uid).child("numFollowers").setValue(1);
-
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
-
-                                    mDatabase.child(currentProfile.uid).child("numFollowing").addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            if(dataSnapshot.exists()){
-                                                int followerNum = Integer.valueOf(dataSnapshot.getValue().toString());
-                                                followerNum++;
-                                                mDatabase.child(currentProfile.uid).child("numFollowing").setValue(followerNum);
-
-                                            }
-                                            else {
-                                                mDatabase.child(currentProfile.uid).child("numFollowing").setValue(1);
-
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
+                                if (i == size){
+                                    DatabaseReference addFollow = mDatabase.child(uid).child("followers").push();
+                                    addFollow.setValue(currentProfile.uid);
+                                    DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
+                                    addFollowing.setValue(uid);
                                     DatabaseReference addNotif = mDatabase.child(uid).child("notifList").push();
                                     addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + " followed you.");
-                                    isFollowing = true;
                                 }
-                            }else{
-                                mDatabase.child(uid).child("numFollowers").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if(dataSnapshot.exists()){
-                                            int followerNum = Integer.valueOf(dataSnapshot.getValue().toString());
-                                            followerNum++;
-                                            mDatabase.child(uid).child("numFollowers").setValue(followerNum);
-                                            followers.setText(String.valueOf(followerNum));
-
-                                        }
-                                        else {
-                                            mDatabase.child(uid).child("numFollowers").setValue(1);
-                                            followers.setText(String.valueOf(1));
-
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-
-                                mDatabase.child(currentProfile.uid).child("numFollowing").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if(dataSnapshot.exists()){
-                                            int followerNum = Integer.valueOf(dataSnapshot.getValue().toString());
-                                            followerNum++;
-                                            mDatabase.child(currentProfile.uid).child("numFollowing").setValue(followerNum);
-
-
-                                        }
-                                        else {
-                                            mDatabase.child(currentProfile.uid).child("numFollowing").setValue(1);
-
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
+                            } else {
                                 DatabaseReference addFollow = mDatabase.child(uid).child("followers").push();
                                 addFollow.setValue(currentProfile.uid);
                                 DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
                                 addFollowing.setValue(uid);
                                 DatabaseReference addNotif = mDatabase.child(uid).child("notifList").push();
                                 addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + " followed you.");
-
-                                isFollowing = true;
                             }
                         }
                         @Override
