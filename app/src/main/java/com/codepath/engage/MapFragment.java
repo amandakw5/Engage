@@ -562,7 +562,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                     e.printStackTrace();
 
                 }
-            }else {
+            } else {
                 Address location = address.get(0);
                 destLat = location.getLatitude();
                 destLng = location.getLongitude();
