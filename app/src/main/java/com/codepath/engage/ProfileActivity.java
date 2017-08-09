@@ -5,12 +5,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.codepath.engage.models.CreatedEvents;
 import com.codepath.engage.models.DateProgram;
 import com.codepath.engage.models.User;
 import com.codepath.engage.models.UserEvents;
@@ -86,6 +83,7 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.Home) ImageView home;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    @BindView(R.id.profileUsername) TextView profileUsername;
     @BindView(R.id.toolbar_profile)
     Toolbar toolbar;
     @BindView(R.id.drawer_view)
@@ -122,12 +120,12 @@ public class ProfileActivity extends AppCompatActivity {
         setUpDrawer();
 
         profileHeader.setTypeface(font);
+        profileUsername.setTypeface(font);
 
         if (Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName())) != null) {
             u = Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
             uid = u.getUid();
-            profileHeader.setText(u.firstName + " " + u.lastName);
-
+            profileUsername.setText(u.firstName + " " + u.lastName);
         }
         else {
             uid = Profile.getCurrentProfile().getId();
@@ -140,6 +138,7 @@ public class ProfileActivity extends AppCompatActivity {
                 currentProfile = dataSnapshot.child(Profile.getCurrentProfile().getId()).getValue(User.class);
                 if (uid.equals(Profile.getCurrentProfile().getId())){
                     u = currentProfile;
+                    profileUsername.setText(u.firstName + " " + u.lastName);
                 }
                 Glide.with(getApplicationContext()).load(u.profilePicture).bitmapTransform(new RoundedCornersTransformation(getApplicationContext(), 100, 0)).centerCrop().into(profileImage);
                 followers.setTypeface(font);

@@ -56,7 +56,7 @@ public class HomePage extends AppCompatActivity implements LocationListener,Goog
 
     IssueAdapter adapter;
     ArrayList<String> issues;
-
+    ArrayList<Integer> images;
     @BindView(R.id.rvIssues) RecyclerView rvIssues;
     @BindView(R.id.drawerView) PlaceHolderView mDrawerView;
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
@@ -106,8 +106,9 @@ public class HomePage extends AppCompatActivity implements LocationListener,Goog
 
         String[] strs = {"Women", "Food Insecurity", "Climate Change", "Human Rights", "Poverty"};
         ActionBar actionbar = getSupportActionBar();
-
+        Integer[] issueImages = {R.drawable.womenmarch,R.drawable.desert, R.drawable.melting, R.drawable.pride, R.drawable.poverty};
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         URL profile_picture = null;
         EditText searchEditText = (EditText)searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchEditText.setTextColor(Color.WHITE);
@@ -118,7 +119,8 @@ public class HomePage extends AppCompatActivity implements LocationListener,Goog
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-
+        images = new ArrayList<>();
+        images.addAll(Arrays.asList(issueImages));
         issues = new ArrayList<>();
         issues.addAll(Arrays.asList(strs));
 
@@ -126,7 +128,7 @@ public class HomePage extends AppCompatActivity implements LocationListener,Goog
 
         setUpSearchView();
 
-        adapter = new IssueAdapter(issues, tvLatitude, tvLongitude);
+        adapter = new IssueAdapter(issues, tvLatitude, tvLongitude, images);
         rvIssues.setAdapter(adapter);
         setUpDrawer();
         toolbar.setTitle("");

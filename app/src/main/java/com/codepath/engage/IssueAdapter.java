@@ -2,14 +2,15 @@ package com.codepath.engage;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 
@@ -24,6 +25,7 @@ import butterknife.ButterKnife;
 
 public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> {
     ArrayList<String> issues;
+    ArrayList<Integer> images;
     Context context;
     final String TAG = "GPS";
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
@@ -47,18 +49,19 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
         return viewHolder;
     }
 
-    public IssueAdapter(ArrayList<String> issues, String tvLatitude, String tvLongitude) {
+    public IssueAdapter(ArrayList<String> issues, String tvLatitude, String tvLongitude, ArrayList<Integer> images) {
         this.issues = issues;
         this.tvLatitude = tvLatitude;
         this.tvLongitude = tvLongitude;
+        this.images = images;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         String issue = issues.get(position);
-        Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Medium.ttf");
+        Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
+        Glide.with(context).load(images.get(position)).centerCrop().into(holder.issueImage);
         holder.issueTitle.setTypeface(font);
-        holder.issueTitle.setTextColor(Color.BLACK);
         holder.issueTitle.setText(issue);
     }
 
@@ -69,7 +72,8 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.issueTitle) TextView issueTitle;
-
+        @BindView(R.id.issueImage)
+        ImageView issueImage;
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
