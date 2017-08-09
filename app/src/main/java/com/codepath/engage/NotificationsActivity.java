@@ -37,8 +37,9 @@ public class NotificationsActivity extends AppCompatActivity {
     public NotifAdapter adapter;
     public ArrayList<String> notifs;
     @BindView(R.id.nRecylerView) RecyclerView nRecyclerView;
-    @BindView(R.id.Home)
-    ImageView home;
+    @BindView(R.id.Home) ImageView home;
+    public ArrayList<String> profPics;
+
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
     @BindView(R.id.toolbar_notif)
@@ -57,7 +58,8 @@ public class NotificationsActivity extends AppCompatActivity {
         notifHeader.setTypeface(font);
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
         notifs = new ArrayList<>();
-        adapter = new NotifAdapter(notifs);
+        profPics = new ArrayList<>();
+        adapter = new NotifAdapter(notifs, profPics);
         nRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         nRecyclerView.setAdapter(adapter);
         mDatabase.addValueEventListener(new ValueEventListener() {
@@ -65,10 +67,15 @@ public class NotificationsActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child(Profile.getCurrentProfile().getId()).hasChild("notifList")){
                     currentProfile = dataSnapshot.child(Profile.getCurrentProfile().getId()).getValue(User.class);
+                  //  ArrayList<String> imgs = currentProfile.imgList;
+                    int i = 0;
                     for (String n : currentProfile.notifList.values()){
                         notifs.add(n);
+                       // profPics.add(imgs.get(i));
                         adapter.notifyItemInserted(notifs.size() -1);
+                        i++;
                     }
+
                 }
             }
 
@@ -93,7 +100,7 @@ public class NotificationsActivity extends AppCompatActivity {
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_EVENTS))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_CREATE))
                 .addView(new DrawerMenuItem(this.getApplicationContext(),DrawerMenuItem.DRAWER_MENU_ITEM_MESSAGE))
-                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_NOTIF))
+                .addView(new DrawerMenuItem(this.getApplicationContext(),DrawerMenuItem.DRAWER_MENU_ITEM_NOTIF))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT));
 
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer){
