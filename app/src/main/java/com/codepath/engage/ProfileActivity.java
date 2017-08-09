@@ -154,11 +154,13 @@ public class ProfileActivity extends AppCompatActivity {
 
                 if (followerList != null) {
                     followers.setText(followerList.size() + "");
-                } else if (followingList != null) {
-                    following.setText(followingList.size() + "");
                 } else if (followerList == null) {
                     followers.setText("0");
-                } else {
+                }
+
+                if (followingList != null) {
+                    following.setText(followingList.size() + "");
+                } else if (followingList == null){
                     following.setText("0");
                 }
 
@@ -171,7 +173,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         Glide.with(context).using(new FirebaseImageLoader())
                 .load(storage.child("headers").child(uid))
-                .error(R.drawable.search_gradient)
+                .error(R.color.red_300)
                 .centerCrop().
                 into(header);
 
@@ -336,6 +338,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_EVENTS))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_CREATE))
                 .addView(new DrawerMenuItem(this.getApplicationContext(),DrawerMenuItem.DRAWER_MENU_ITEM_MESSAGE))
+                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_NOTIF))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT));
 
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer){

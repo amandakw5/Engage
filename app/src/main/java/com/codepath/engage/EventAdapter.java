@@ -45,10 +45,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         if (recyclerType == 0) {
-            recycleView = inflater.inflate(R.layout.item_user,parent,false);
+            recycleView = inflater.inflate(R.layout.item_user, parent, false);
         }
         else {
-            recycleView = inflater.inflate(R.layout.event_item,parent,false);
+            recycleView = inflater.inflate(R.layout.event_item, parent, false);
         }
         return new ViewHolder(recycleView);
     }
