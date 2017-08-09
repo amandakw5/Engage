@@ -390,6 +390,8 @@ public class ProfileActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean isEventIds) {
             final DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
             final DatabaseReference createdEvents = FirebaseDatabase.getInstance().getReference("CreatedEvents");
+            events.clear();
+            dates.clear();
             if (eventIDs!=null) {
                 savedEvents.addValueEventListener(new ValueEventListener() {
                     @Override
