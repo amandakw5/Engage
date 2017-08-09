@@ -139,7 +139,7 @@ public class HomePage extends AppCompatActivity implements LocationListener,Goog
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        distance = item.getTitle().toString();
+                        item.setChecked(true);
                         if(query != null) {
                             if (!query.equals("null")) {
                                 Intent searchInt = new Intent(HomePage.this, ViewEvents.class);

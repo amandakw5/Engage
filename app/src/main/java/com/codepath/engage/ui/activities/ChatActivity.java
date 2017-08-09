@@ -19,15 +19,16 @@ import com.codepath.engage.utils.Constants;
 
 public class ChatActivity extends AppCompatActivity {
     private Toolbar mToolbar;
-
     public static void startActivity(Context context,
                                      String receiver,
                                      String receiverUid,
-                                     String firebaseToken) {
+                                     String firebaseToken,
+                                     String profilePicture) {
         Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra(Constants.ARG_RECEIVER, receiver);
         intent.putExtra(Constants.ARG_RECEIVER_UID, receiverUid);
         intent.putExtra(Constants.ARG_FIREBASE_TOKEN, firebaseToken);
+        intent.putExtra("urlPicture",profilePicture);
         context.startActivity(intent);
     }
 
@@ -51,7 +52,6 @@ public class ChatActivity extends AppCompatActivity {
 
         // set toolbar title
         mToolbar.setTitle(getIntent().getExtras().getString(Constants.ARG_RECEIVER));
-
         // set the register screen fragment
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout_content_chat,
