@@ -1,7 +1,7 @@
 package com.codepath.engage;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -10,7 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.codepath.engage.models.User;
 import com.codepath.engage.models.UserEvents;
@@ -36,8 +36,7 @@ import butterknife.ButterKnife;
 public class MyEventsActivity extends AppCompatActivity {
 
     //Setting the view for U.I
-    @BindView(R.id.btnFilter)
-    ImageButton btnFilter;
+
    // @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.drawerView)
     PlaceHolderView mDrawerView;
@@ -45,8 +44,8 @@ public class MyEventsActivity extends AppCompatActivity {
     RecyclerView rvEvents;
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawer;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.myeventsHeader) TextView myeventsHeader;
     static int counterToGetPositionOfEvent;
     static int counterToSetOrganizer;
     ArrayList<Venue> venues;
@@ -63,12 +62,9 @@ public class MyEventsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_events);
-
+        setContentView(R.layout.activity_myevents);
         progress = new ProgressDialog(MyEventsActivity.this);
-
         ButterKnife.bind(this);
-
         counterToSetOrganizer = 0;
         counterToGetPositionOfEvent = 0;
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
@@ -80,7 +76,8 @@ public class MyEventsActivity extends AppCompatActivity {
         venues = new ArrayList<>();
         final DatabaseReference createdEvents = FirebaseDatabase.getInstance().getReference("CreatedEvents");
         uid = Profile.getCurrentProfile().getId();
-
+        Typeface font = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Light.ttf");
+        myeventsHeader.setTypeface(font);
         setUpDrawer();
 
         //constructing the adapter from this datasource

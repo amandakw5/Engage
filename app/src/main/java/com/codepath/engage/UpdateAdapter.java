@@ -33,15 +33,17 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
     private String profilePage;
     public String uid;
     public String verb;
+    public String profileUrl;
     public ArrayList<Date> dates;
     public ArrayList<UserEvents> finalEvents;
 
-    public UpdateAdapter(ArrayList<UserEvents> events, String who, String v, ArrayList<Date> dates) {
+    public UpdateAdapter(ArrayList<UserEvents> events, String who, String v, ArrayList<Date> dates, String profileUrl) {
         this.dates = dates;
         finalEvents = new ArrayList<>();
         mEvents = events;
         profilePage = who;
         verb = v;
+        this.profileUrl = profileUrl;
     }
 
     @Override
@@ -49,7 +51,7 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
         context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         // create the view using the item_movie layout
-        View updateView = inflater.inflate(R.layout.item_update, parent, false);
+        View updateView = inflater.inflate(R.layout.profile_item, parent, false);
         ViewHolder viewHolder = new ViewHolder(updateView);
         uid = Profile.getCurrentProfile().getId();
 //        if (!(dates.equals(null))) {
@@ -65,6 +67,8 @@ public class UpdateAdapter extends RecyclerView.Adapter<UpdateAdapter.ViewHolder
         Date d = dates.get(position);
         Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
         holder.update.setTypeface(font);
+        //Glide.with(context).load(profileUrl).bitmapTransform(new RoundedCornersTransformation(context, 100, 0)).into(holder.profPic);
+
         for (UserEvents ue : mEvents) {
             Log.d("UE", ue.toString());
             Log.d("UE d", d.toString());

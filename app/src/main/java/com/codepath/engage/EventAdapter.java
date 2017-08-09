@@ -112,7 +112,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             super(itemView);
             ivProfileImage = (ImageView) itemView.findViewById(R.id.ivProfileImage);
             tvEventName = (TextView) itemView.findViewById(R.id.tvEventName);
-            tvEventInfo = (TextView) itemView.findViewById(R.id.tvLocationInfo);
+            tvEventInfo = (TextView) itemView.findViewById(R.id.time);
            // tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
             tvHost = (TextView) itemView.findViewById(R.id.tvHost);
             profileImage = (ImageView) itemView.findViewById(R.id.profileImage);

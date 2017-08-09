@@ -41,7 +41,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -318,7 +317,7 @@ public class LoginActivity extends AppCompatActivity {
 
 //, List<String> eventsList
 
-        final User user = new User(uid, firstName, lastName, email, profilePicture, numFollowers, numFollowing, followers, following,"", null);
+        final User user = new User(uid, firstName, lastName, email, profilePicture, numFollowers, numFollowing, followers, following,"", null, null);
         mDatabase.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -60,6 +60,7 @@ public class ProfileActivity extends AppCompatActivity {
     public ArrayList<UserEvents> createdEventsList;
     String uid;
     String whichProfile;
+    String profileUrl;
     DatabaseReference mDatabase;
     boolean isFollowing;
     User u;
@@ -70,7 +71,7 @@ public class ProfileActivity extends AppCompatActivity {
     String verb;
     public ArrayList<Date> dates;
     final int REQUEST_CODE = 1;
-
+    String imgId;
     @BindView(R.id.rvUpdates) RecyclerView rvUpdates;
     @BindView(R.id.profileImage) ImageView profileImage;
     @BindView(R.id.profileHeader) TextView profileHeader;
@@ -84,11 +85,12 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.Home) ImageView home;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    @BindView(R.id.drawer_view)
+    PlaceHolderView mDrawerView;
     @BindView(R.id.profileUsername) TextView profileUsername;
     @BindView(R.id.toolbar_profile)
     Toolbar toolbar;
-    @BindView(R.id.drawer_view)
-    PlaceHolderView mDrawerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,10 +108,9 @@ public class ProfileActivity extends AppCompatActivity {
         eventIDs = new ArrayList<>();
 
         progress = new ProgressDialog(this);
-
-        adapter = new UpdateAdapter(events, whichProfile, verb, dates);
-
-        rvUpdates.setLayoutManager(new LinearLayoutManager(this));
+        profileUrl = "";
+        adapter = new UpdateAdapter(events, whichProfile, verb, dates, profileUrl);
+        rvUpdates.setLayoutManager(new LinearLayoutManager(context));
         rvUpdates.setAdapter(adapter);
         storage = FirebaseStorage.getInstance().getReference();
 
@@ -143,6 +144,8 @@ public class ProfileActivity extends AppCompatActivity {
                     u = currentProfile;
                     profileUsername.setText(u.firstName + " " + u.lastName);
                 }
+                profileUrl = u.profilePicture;
+
                 Glide.with(getApplicationContext()).load(u.profilePicture).bitmapTransform(new RoundedCornersTransformation(getApplicationContext(), 100, 0)).centerCrop().into(profileImage);
                 followers.setTypeface(font);
                 following.setTypeface(font);
@@ -251,6 +254,8 @@ public class ProfileActivity extends AppCompatActivity {
                                     DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
                                     addFollowing.setValue(uid);
                                     DatabaseReference addNotif = mDatabase.child(uid).child("notifList").push();
+                                    DatabaseReference addNotifImg = mDatabase.child(uid).child("notifImg").push();
+                                    addNotifImg.setValue(currentProfile.profilePicture + "");
                                     addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + " followed you.");
                                 }
                             } catch (NullPointerException e){
@@ -259,7 +264,19 @@ public class ProfileActivity extends AppCompatActivity {
                                 DatabaseReference addFollowing = mDatabase.child(currentProfile.uid).child("following").push();
                                 addFollowing.setValue(uid);
                                 DatabaseReference addNotif = mDatabase.child(uid).child("notifList").push();
+                                if (dataSnapshot.child(uid).hasChild("notifImg")){
+                                    imgId = dataSnapshot.child(uid).child("notifImg").getChildrenCount() + 1 + "" ;
+                                }
+                                else{
+                                    imgId = 1 +"";
+                                    //dataSnapshot.child(uid).child("notifImg").child(imgId);
+                                }
+                                mDatabase.child(uid).child("notifImg").child(imgId).setValue(currentProfile.profilePicture + "");
+
+//                                DatabaseReference addNotifImg = mDatabase.child(uid).child("notifImg").push();
+//                                addNotifImg.setValue(currentProfile.profilePicture + "");
                                 addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + " followed you.");
+
                             }
                         }
                         @Override
@@ -338,7 +355,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_EVENTS))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_CREATE))
                 .addView(new DrawerMenuItem(this.getApplicationContext(),DrawerMenuItem.DRAWER_MENU_ITEM_MESSAGE))
-                .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_NOTIF))
+                .addView(new DrawerMenuItem(this.getApplicationContext(),DrawerMenuItem.DRAWER_MENU_ITEM_NOTIF))
                 .addView(new DrawerMenuItem(this.getApplicationContext(), DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT));
 
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer){
