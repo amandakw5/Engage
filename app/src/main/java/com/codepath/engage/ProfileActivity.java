@@ -155,11 +155,13 @@ public class ProfileActivity extends AppCompatActivity {
 
                 if (followerList != null) {
                     followers.setText(followerList.size() + "");
-                } else if (followingList != null) {
-                    following.setText(followingList.size() + "");
                 } else if (followerList == null) {
                     followers.setText("0");
-                } else {
+                }
+
+                if (followingList != null) {
+                    following.setText(followingList.size() + "");
+                } else if (followingList == null){
                     following.setText("0");
                 }
 
@@ -172,7 +174,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         Glide.with(context).using(new FirebaseImageLoader())
                 .load(storage.child("headers").child(uid))
-                .error(R.drawable.search_gradient)
+                .error(R.color.red_300)
                 .centerCrop().
                 into(header);
 
@@ -392,6 +394,8 @@ public class ProfileActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean isEventIds) {
             final DatabaseReference savedEvents = FirebaseDatabase.getInstance().getReference("savedEvents");
             final DatabaseReference createdEvents = FirebaseDatabase.getInstance().getReference("CreatedEvents");
+            events.clear();
+            dates.clear();
             if (eventIDs!=null) {
                 savedEvents.addValueEventListener(new ValueEventListener() {
                     @Override

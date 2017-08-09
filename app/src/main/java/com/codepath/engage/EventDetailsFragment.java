@@ -124,9 +124,9 @@ public class EventDetailsFragment extends Fragment {
         if (event != null){
             tvEventDescription.setText(event.tvDescription);
             tvEventInfo.setText(event.tvEventInfo);
-            tvHost.setText(event.organizer.name);
-
-            queryTerm = event.getOrganizerName();
+            tvHost.setText(event.organizerName);
+            tvEventLocation.setVisibility(View.GONE);
+            queryTerm = event.organizerName;
 
         } else if (currentUpdate != null) {
             tvEventDescription.setText(currentUpdate.eventDescription);
@@ -191,9 +191,9 @@ public class EventDetailsFragment extends Fragment {
                                 youTubePlayer.cueVideo(rId.getVideoId());
                             }
                             @Override
-                            public void onInitializationFailure(YouTubePlayer.Provider provider,
-                                                                YouTubeInitializationResult youTubeInitializationResult) {
-
+                            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                                youtubeFragment = (YouTubePlayerSupportFragment) getChildFragmentManager().findFragmentById(R.id.youtubeFragment);
+                                youtubeFragment.getView().setVisibility(View.INVISIBLE);
                             }
                         });
             } else {
@@ -203,10 +203,16 @@ public class EventDetailsFragment extends Fragment {
         } catch (GoogleJsonResponseException e) {
             System.err.println("There was a service error: " + e.getDetails().getCode() + " : "
                     + e.getDetails().getMessage());
+            youtubeFragment = (YouTubePlayerSupportFragment) getChildFragmentManager().findFragmentById(R.id.youtubeFragment);
+            youtubeFragment.getView().setVisibility(View.INVISIBLE);
         } catch (IOException e) {
             System.err.println("There was an IO error: " + e.getCause() + " : " + e.getMessage());
+            youtubeFragment = (YouTubePlayerSupportFragment) getChildFragmentManager().findFragmentById(R.id.youtubeFragment);
+            youtubeFragment.getView().setVisibility(View.INVISIBLE);
         } catch (Throwable t) {
             t.printStackTrace();
+            youtubeFragment = (YouTubePlayerSupportFragment) getChildFragmentManager().findFragmentById(R.id.youtubeFragment);
+            youtubeFragment.getView().setVisibility(View.INVISIBLE);
         }
 
         return view;

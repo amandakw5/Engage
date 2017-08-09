@@ -58,9 +58,9 @@
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:layout_below="@+id/toolbar_profile"
             android:layout_alignParentStart="true"
-            android:background="@drawable/search_gradient"/>
+            android:layout_below="@+id/toolbar_profile"
+            android:background="@color/red_300" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profileImage"

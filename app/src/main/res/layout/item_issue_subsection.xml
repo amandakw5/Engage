@@ -2,6 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/viewevents_border"
+    android:elevation="2dp"
+    android:layout_marginTop="7dp"
     android:orientation="vertical"
     android:weightSum="1">
 
@@ -14,9 +17,9 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:text="Specific Issues"
+        android:textColor="#000000"
         android:textSize="17sp"
-        android:textStyle="bold"
-        android:textColor="#000000"/>
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/issueList"
@@ -31,16 +34,16 @@
         android:scrollbars="vertical"
         android:scrollingCache="true"
         android:smoothScrollbar="true"
-        android:textColor="#000000"/>
+        android:textColor="#000000" />
 
     <TextView
         android:id="@+id/readmore"
-        android:textColor="#000000"
         android:layout_width="96dp"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/issueList"
         android:layout_below="@+id/issueList"
         android:padding="8dp"
         android:text="Read more!"
-        android:layout_alignEnd="@+id/issueList" />
+        android:textColor="#000000" />
 
 </RelativeLayout>

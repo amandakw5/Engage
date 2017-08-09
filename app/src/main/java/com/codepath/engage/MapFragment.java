@@ -24,9 +24,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.codepath.engage.models.DirectionFinder;
 import com.codepath.engage.models.DirectionFinderListener;
 import com.codepath.engage.models.Event;
@@ -90,7 +92,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
     @BindView(R.id.tvDistance)
     TextView tvDistance;
     @BindView(R.id.btnGoogleMaps)
-    Button btnGoogleMaps;
+    ImageButton btnGoogleMaps;
 
     boolean isUserCreated;
     boolean isGPSEnabled = false;
@@ -188,6 +190,8 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
 
         // needed to get the map to display immediately
         mMapView.onResume();
+
+        Glide.with(getActivity()).load(R.drawable.googlemaps).centerCrop().into(btnGoogleMaps);
 
         if(event!= null) {
             btnGoogleMaps.setOnClickListener(new View.OnClickListener() {
@@ -358,8 +362,12 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
             tvDistance.setText(route.distance.text);
 
             if (event != null) {
-                if (!event.venue.simpleAddress.equals(route.endAddress)){
-                    route.endAddress = event.venue.simpleAddress;
+                if (event.venue != null) {
+                    if (event.venue.simpleAddress != null) {
+                        if (!event.venue.simpleAddress.equals(route.endAddress)) {
+                            route.endAddress = event.venue.simpleAddress;
+                        }
+                    }
                 }
             }
 
@@ -562,7 +570,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                     e.printStackTrace();
 
                 }
-            }else {
+            } else {
                 Address location = address.get(0);
                 destLat = location.getLatitude();
                 destLng = location.getLongitude();

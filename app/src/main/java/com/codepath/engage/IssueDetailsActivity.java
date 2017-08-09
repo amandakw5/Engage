@@ -80,7 +80,7 @@ public class IssueDetailsActivity extends AppCompatActivity implements LocationL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue_details);
         progress  = new ProgressDialog(IssueDetailsActivity.this);
-        Typeface font = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Medium.ttf");
+        Typeface font = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Light.ttf");
         String[] strs = {"Specific Issues", "Organizations", "Upcoming Events"}; //, "Past events"
         String[] womenSpecificIssues = new String[] {"Sexual and Reproductive Rights","Freedom from violence", "Economic and Political Empowerment"};
         String[] womenOrganizations = new String[] {"National Organization for Women","Planned Parenthood", "Association of Women's Rights in Development", "American Association of University Women"};
