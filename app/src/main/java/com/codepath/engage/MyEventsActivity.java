@@ -1,6 +1,7 @@
 package com.codepath.engage;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -142,6 +143,11 @@ public class MyEventsActivity extends AppCompatActivity {
 
         mDrawer.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
+    }
+
+    public void goHome(View view) {
+        Intent i = new Intent(MyEventsActivity.this,HomePage.class);
+        startActivity(i);
     }
 
 }
