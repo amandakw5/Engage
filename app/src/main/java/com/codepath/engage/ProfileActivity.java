@@ -264,14 +264,15 @@ public class ProfileActivity extends AppCompatActivity {
                                 DatabaseReference addNotif = mDatabase.child(uid).child("notifList").push();
                                 if (dataSnapshot.child(uid).hasChild("notifImg")){
                                     imgId = dataSnapshot.child(uid).child("notifImg").getChildrenCount() + 1 + "" ;
-                                    dataSnapshot.child(uid).child("notifImg").child(imgId).child(currentProfile.profilePicture + "");
                                 }
                                 else{
                                     imgId = 1 +"";
-                                    dataSnapshot.child(uid).child("notifImg").child(imgId).child(currentProfile.profilePicture + "");
+                                    //dataSnapshot.child(uid).child("notifImg").child(imgId);
                                 }
-                                DatabaseReference addNotifImg = mDatabase.child(uid).child("notifImg").push();
-                                addNotifImg.setValue(currentProfile.profilePicture + "");
+                                mDatabase.child(uid).child("notifImg").child(imgId).setValue(currentProfile.profilePicture + "");
+
+//                                DatabaseReference addNotifImg = mDatabase.child(uid).child("notifImg").push();
+//                                addNotifImg.setValue(currentProfile.profilePicture + "");
                                 addNotif.setValue(currentProfile.firstName + " " + currentProfile.lastName + " followed you.");
 
                             }
